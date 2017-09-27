@@ -18,7 +18,7 @@ TEST(TimerTest, TimedExecute) {
 
 	{	// Wait at most half a second for task to get executed.
 		std::unique_lock<std::mutex> lck(mtx);
-		EXPECT_TRUE(cv.wait_until(lck, std::chrono::steady_clock::now() + std::chrono::milliseconds(500), [&executed]() { return executed; }));
+		ASSERT_TRUE(cv.wait_until(lck, std::chrono::steady_clock::now() + std::chrono::milliseconds(500), [&executed]() { return executed; }));
 	}
 }
 
@@ -30,7 +30,7 @@ TEST(TimerTest, CatchException) {
 	{
 		timer t;
 		t.set_exception_handler([&](auto ex) {
-			EXPECT_TRUE(!(!ex));
+			ASSERT_TRUE(!(!ex));
 			std::unique_lock<std::mutex> lck(mtx);
 			executed = true;
 			cv.notify_all();
@@ -42,7 +42,7 @@ TEST(TimerTest, CatchException) {
 
 		{	// Wait at most half a second for task to get executed.
 			std::unique_lock<std::mutex> lck(mtx);
-			EXPECT_TRUE(cv.wait_until(lck, std::chrono::steady_clock::now() + std::chrono::milliseconds(500), [&executed]() { return executed; }));
+			ASSERT_TRUE(cv.wait_until(lck, std::chrono::steady_clock::now() + std::chrono::milliseconds(500), [&executed]() { return executed; }));
 		}
 	}
 }

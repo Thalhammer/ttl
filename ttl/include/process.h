@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include "string_util.h"
+#include "noncopyable.h"
 #include <fstream>
 #include <memory>
 
@@ -20,7 +21,7 @@
 #endif
 
 namespace thalhammer {
-	class process {
+	class process : public noncopyable {
 	public:
 		typedef std::vector<std::string> args_t;
 		typedef std::map<std::string, std::string> env_t;
@@ -375,11 +376,6 @@ namespace thalhammer {
 			if (res == 0) { // execve successfull
 				close(child_exec_check[0]);
 				// Setup handler streams
-
-				//_stdin = std::make_shared<HandleOutputStream>(child_stdin[1]);
-				//_stdout = std::make_shared<HandleInputStream>(child_stdout[0]);
-				//_stderr = std::make_shared<HandleInputStream>(child_stderr[0]);
-
 				_stdin_buf = __gnu_cxx::stdio_filebuf<char>(child_stdin[1], std::ios_base::out | std::ios_base::binary);
 				_stdout_buf = __gnu_cxx::stdio_filebuf<char>(child_stdout[0], std::ios_base::in | std::ios_base::binary);
 				_stderr_buf = __gnu_cxx::stdio_filebuf<char>(child_stderr[0], std::ios_base::in | std::ios_base::binary);

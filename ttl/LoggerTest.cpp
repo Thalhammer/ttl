@@ -18,11 +18,11 @@ TEST(LoggerTest, LogOutput) {
 	logger log(logout);
 
 	// Check default loglevel
-	EXPECT_EQ(loglevel::INFO, log.get_loglevel());
+	ASSERT_EQ(loglevel::INFO, log.get_loglevel());
 
 	{
 		log << loglevel::INFO << logmodule("test") << "Hello Logger";
-		EXPECT_TRUE(string::ends_with(logout.str(), " | INFO  | test | Hello Logger" + endl));
+		ASSERT_TRUE(string::ends_with(logout.str(), " | INFO  | test | Hello Logger" + endl));
 	}
 }
 
@@ -35,13 +35,13 @@ TEST(LoggerTest, LevelCheck) {
 	logger log(logout);
 
 	// Check default loglevel
-	EXPECT_EQ(loglevel::INFO, log.get_loglevel());
+	ASSERT_EQ(loglevel::INFO, log.get_loglevel());
 	log.set_loglevel(loglevel::WARN);
-	EXPECT_EQ(loglevel::WARN, log.get_loglevel());
+	ASSERT_EQ(loglevel::WARN, log.get_loglevel());
 
 	{
 		log << loglevel::INFO << logmodule("test") << "Hello Logger";
-		EXPECT_TRUE(logout.str().empty());
+		ASSERT_TRUE(logout.str().empty());
 	}
 }
 
@@ -55,10 +55,10 @@ TEST(LoggerTest, LogOutputShort) {
 	logger log(logout);
 
 	// Check default loglevel
-	EXPECT_EQ(loglevel::INFO, log.get_loglevel());
+	ASSERT_EQ(loglevel::INFO, log.get_loglevel());
 
 	{
 		log(loglevel::INFO,"test") << std::string("Hello Logger");
-		EXPECT_TRUE(string::ends_with(logout.str(), " | INFO  | test | Hello Logger" + endl));
+		ASSERT_TRUE(string::ends_with(logout.str(), " | INFO  | test | Hello Logger" + endl));
 	}
 }

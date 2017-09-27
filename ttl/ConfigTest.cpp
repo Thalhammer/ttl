@@ -16,20 +16,20 @@ values=    get trimmed
 )");
 
 	config cfg;
-	EXPECT_TRUE(cfg.read(data));
-	EXPECT_TRUE(cfg.errormsg().empty());
+	ASSERT_TRUE(cfg.read(data));
+	ASSERT_TRUE(cfg.errormsg().empty());
 
 	std::string value;
-	EXPECT_TRUE(cfg.get("normal", value));
-	EXPECT_EQ("Value", value);
-	EXPECT_TRUE(cfg.get("spaces", value));
-	EXPECT_EQ("Value with spaces", value);
-	EXPECT_TRUE(cfg.get("empty", value));
-	EXPECT_EQ("", value);
-	EXPECT_TRUE(cfg.get("tabs", value));
-	EXPECT_EQ("get removed", value);
-	EXPECT_TRUE(cfg.get("values", value));
-	EXPECT_EQ("get trimmed", value);
+	ASSERT_TRUE(cfg.get("normal", value));
+	ASSERT_EQ("Value", value);
+	ASSERT_TRUE(cfg.get("spaces", value));
+	ASSERT_EQ("Value with spaces", value);
+	ASSERT_TRUE(cfg.get("empty", value));
+	ASSERT_EQ("", value);
+	ASSERT_TRUE(cfg.get("tabs", value));
+	ASSERT_EQ("get removed", value);
+	ASSERT_TRUE(cfg.get("values", value));
+	ASSERT_EQ("get trimmed", value);
 }
 
 TEST(ConfigTest, Iterator) {
@@ -44,10 +44,10 @@ values=    get trimmed
 )");
 
 	config cfg;
-	EXPECT_TRUE(cfg.read(data));
-	EXPECT_TRUE(cfg.errormsg().empty());
+	ASSERT_TRUE(cfg.read(data));
+	ASSERT_TRUE(cfg.errormsg().empty());
 
-	EXPECT_EQ(5, cfg.size());
+	ASSERT_EQ(5, cfg.size());
 	// Just check compile
 	for (auto& entry : cfg) {}
 }
@@ -58,22 +58,22 @@ normal=Value
 )");
 
 	config cfg;
-	EXPECT_TRUE(cfg.read(data));
-	EXPECT_TRUE(cfg.errormsg().empty());
+	ASSERT_TRUE(cfg.read(data));
+	ASSERT_TRUE(cfg.errormsg().empty());
 
 	std::string value;
-	EXPECT_TRUE(cfg.get("normal", value));
-	EXPECT_EQ("Value", value);
+	ASSERT_TRUE(cfg.get("normal", value));
+	ASSERT_EQ("Value", value);
 
 	cfg.set("normal", "Other Value");
-	EXPECT_TRUE(cfg.get("normal", value));
-	EXPECT_EQ("Other Value", value);
+	ASSERT_TRUE(cfg.get("normal", value));
+	ASSERT_EQ("Other Value", value);
 
-	EXPECT_FALSE(cfg.get("new", value));
+	ASSERT_FALSE(cfg.get("new", value));
 
 	cfg.set("new", "Added Value");
-	EXPECT_TRUE(cfg.get("new", value));
-	EXPECT_EQ("Added Value", value);
+	ASSERT_TRUE(cfg.get("new", value));
+	ASSERT_EQ("Added Value", value);
 }
 
 TEST(ConfigTest, Transaction) {
@@ -83,32 +83,32 @@ TEST(ConfigTest, Transaction) {
 	auto transaction = cfg.begin_transaction();
 
 	std::string value;
-	EXPECT_TRUE(transaction.get("base", value));
-	EXPECT_EQ("Value", value);
+	ASSERT_TRUE(transaction.get("base", value));
+	ASSERT_EQ("Value", value);
 
-	EXPECT_FALSE(transaction.changed());
+	ASSERT_FALSE(transaction.changed());
 
 	transaction.set("base", "Other Value");
-	EXPECT_TRUE(transaction.get("base", value));
-	EXPECT_EQ("Other Value", value);
-	EXPECT_TRUE(cfg.get("base", value));
-	EXPECT_EQ("Value", value);
+	ASSERT_TRUE(transaction.get("base", value));
+	ASSERT_EQ("Other Value", value);
+	ASSERT_TRUE(cfg.get("base", value));
+	ASSERT_EQ("Value", value);
 
-	EXPECT_TRUE(transaction.changed());
+	ASSERT_TRUE(transaction.changed());
 
 	transaction.set("new", "Test");
-	EXPECT_TRUE(transaction.get("new", value));
-	EXPECT_EQ("Test", value);
-	EXPECT_FALSE(cfg.get("new", value));
+	ASSERT_TRUE(transaction.get("new", value));
+	ASSERT_EQ("Test", value);
+	ASSERT_FALSE(cfg.get("new", value));
 
 	transaction.commit();
 
-	EXPECT_FALSE(transaction.changed());
+	ASSERT_FALSE(transaction.changed());
 	
-	EXPECT_TRUE(cfg.get("new", value));
-	EXPECT_EQ("Test", value);
-	EXPECT_TRUE(cfg.get("base", value));
-	EXPECT_EQ("Other Value", value);
+	ASSERT_TRUE(cfg.get("new", value));
+	ASSERT_EQ("Test", value);
+	ASSERT_TRUE(cfg.get("base", value));
+	ASSERT_EQ("Other Value", value);
 }
 
 TEST(ConfigTest, IncludeHandler) {
@@ -128,10 +128,10 @@ include file.incl
 	});
 
 	cfg.read(data);
-	EXPECT_TRUE(visited);
+	ASSERT_TRUE(visited);
 	std::string value;
-	EXPECT_TRUE(cfg.get("normal", value));
-	EXPECT_EQ("Value", value);
-	EXPECT_TRUE(cfg.get("example", value));
-	EXPECT_EQ("Include", value);
+	ASSERT_TRUE(cfg.get("normal", value));
+	ASSERT_EQ("Value", value);
+	ASSERT_TRUE(cfg.get("example", value));
+	ASSERT_EQ("Include", value);
 }
