@@ -68,7 +68,7 @@ namespace thalhammer {
 
 		/* Set a config entry. Existing entries get overwritten. */
 		void set(const std::string& key, const std::string& value) {
-			entries.insert_or_assign(key, value);
+			entries[key]=value;
 		}
 
 		auto cbegin() const { return entries.cbegin(); }
@@ -142,7 +142,7 @@ namespace thalhammer {
 
 		/* Update a value in transaction. This will not affect parent config until commit is called. */
 		void set(const std::string& key, const std::string& value) {
-			tentries.insert_or_assign(key, value);
+			tentries[key]=value;
 		}
 	};
 

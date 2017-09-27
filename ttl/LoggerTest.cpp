@@ -45,6 +45,7 @@ TEST(LoggerTest, LevelCheck) {
 	}
 }
 
+
 TEST(LoggerTest, LogOutputShort) {
 	std::ostringstream logout;
 	logout << std::endl;
@@ -57,7 +58,7 @@ TEST(LoggerTest, LogOutputShort) {
 	EXPECT_EQ(loglevel::INFO, log.get_loglevel());
 
 	{
-		log(loglevel::INFO,"test") << "Hello Logger";
+		log(loglevel::INFO,"test") << std::string("Hello Logger");
 		EXPECT_TRUE(string::ends_with(logout.str(), " | INFO  | test | Hello Logger" + endl));
 	}
 }

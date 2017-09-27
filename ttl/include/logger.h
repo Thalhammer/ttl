@@ -82,7 +82,7 @@ namespace thalhammer {
 				return level;
 			}
 			template<typename T>
-			friend ptr& operator<<(ptr& lhs, T const& rhs);
+			friend ptr operator<<(ptr lhs, T const& rhs);
 		};
 
 		stream::ptr operator()(loglevel lvl, const std::string& module);
@@ -102,21 +102,21 @@ namespace thalhammer {
 	}
 
 	template<>
-	inline logger::stream::ptr& operator<<(logger::stream::ptr& lhs, logmodule const& rhs)
+	inline logger::stream::ptr operator<<(logger::stream::ptr lhs, logmodule const& rhs)
 	{
 		lhs->module = rhs.name;
 		return lhs;
 	}
 
 	template<>
-	inline logger::stream::ptr& operator<<(logger::stream::ptr& lhs, loglevel const& rhs)
+	inline logger::stream::ptr operator<<(logger::stream::ptr lhs, loglevel const& rhs)
 	{
 		lhs->level = rhs;
 		return lhs;
 	}
 
 	template<typename T>
-	inline logger::stream::ptr& operator<<(logger::stream::ptr& lhs, T const& rhs)
+	inline logger::stream::ptr operator<<(logger::stream::ptr lhs, T const& rhs)
 	{
 		if (lhs->level >= lhs->level_output) {
 			lhs->str << rhs;

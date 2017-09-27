@@ -30,14 +30,14 @@ TEST(TimerTest, CatchException) {
 	{
 		timer t;
 		t.set_exception_handler([&](auto ex) {
-			EXPECT_TRUE(ex);
+			EXPECT_TRUE(!(!ex));
 			std::unique_lock<std::mutex> lck(mtx);
 			executed = true;
 			cv.notify_all();
 		});
 
 		auto token = t.schedule([&]() {
-			throw std::exception("HELP");
+			throw std::runtime_error("HELP");
 		}, std::chrono::milliseconds(10));
 
 		{	// Wait at most half a second for task to get executed.
