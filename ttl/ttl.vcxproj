@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="ConfigTest.cpp" />
     <ClCompile Include="DynLibTest.cpp" />
+    <ClCompile Include="LINQTest.cpp" />
     <ClCompile Include="LoggerTest.cpp" />
     <ClCompile Include="ProcessTest.cpp" />
     <ClCompile Include="StringTest.cpp" />
@@ -160,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="include\config.h" />
     <ClInclude Include="include\dynlib.h" />
+    <ClInclude Include="include\linq.h" />
     <ClInclude Include="include\logger.h" />
     <ClInclude Include="include\noncopyable.h" />
     <ClInclude Include="include\process.h" />

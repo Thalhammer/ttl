@@ -34,3 +34,6 @@ Schedule a task at a specified point in time or in a fixed interval.
 
 #### noncopyable ####
 Inherit to disable copy and assignment construction.
+
+#### linq ####
+Query containers in a linq like query.
