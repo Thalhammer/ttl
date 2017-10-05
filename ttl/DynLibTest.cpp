@@ -39,6 +39,20 @@ TEST(DynLibTest, LoadLibFailedFunction) {
 	ASSERT_FALSE(lib.errormsg().empty());
 	ASSERT_EQ(nullptr, ptr);
 }
+
+TEST(DynLibTest, LoadLibSymbolTable) {
+	dynlib lib;
+	ASSERT_TRUE(lib.errormsg().empty());
+	ASSERT_TRUE(lib.open("kernel32.dll"));
+	ASSERT_TRUE(lib.errormsg().empty());
+
+	std::set<std::string> symbols;
+	ASSERT_TRUE(lib.get_symbols(symbols));
+
+	// Check if function exists
+	ASSERT_TRUE(symbols.count("GetCurrentProcessId"));
+}
+
 #else
 TEST(DynLibTest, LoadLib) {
 	dynlib lib;
@@ -74,4 +88,21 @@ TEST(DynLibTest, LoadLibFailedFunction) {
 	ASSERT_FALSE(lib.errormsg().empty());
 	ASSERT_EQ(nullptr, ptr);
 }
+
+TEST(DynLibTest, LoadLibSymbolTable) {
+	dynlib lib;
+	ASSERT_TRUE(lib.errormsg().empty());
+	ASSERT_TRUE(lib.open("libm.so.6"));
+	ASSERT_TRUE(lib.errormsg().empty());
+
+	std::set<std::string> symbols;
+	ASSERT_TRUE(lib.get_symbols(symbols));
+	for (auto& e : symbols) {
+		auto ptr = lib.get_function(e);
+		ASSERT_TRUE(ptr != nullptr);
+	}
+	// Check if function exists
+	ASSERT_TRUE(symbols.count("sin"));
+}
 #endif
+
