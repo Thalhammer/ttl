@@ -96,7 +96,7 @@ namespace thalhammer
 		// Check if string ends with a given string
 		template<typename StringType = std::string>
 		inline bool ends_with(const StringType& s, const StringType& end) {
-			return s.compare(s.size() - end.size(), end.size(), end) == 0;
+			return s.size() > end.size() && s.compare(s.size() - end.size(), end.size(), end) == 0;
 		}
 	}
 }
