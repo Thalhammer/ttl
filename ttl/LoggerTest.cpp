@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <sstream>
 
-#include "logger.h"
-#include "string_util.h"
+#include <ttl/logger.h>
+#include <ttl/string_util.h>
 
 using thalhammer::logger;
 using thalhammer::loglevel;

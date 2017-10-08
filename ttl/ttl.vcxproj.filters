@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Headerdateien\ttl">
+      <UniqueIdentifier>{a95d3279-c2e5-42b7-94cc-8015ac661f97}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConfigTest.cpp">
@@ -36,31 +39,37 @@
     <ClCompile Include="LINQTest.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="SignalTest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\config.h">
-      <Filter>Headerdateien</Filter>
+    <ClInclude Include="include\ttl\config.h">
+      <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
-    <ClInclude Include="include\logger.h">
-      <Filter>Headerdateien</Filter>
+    <ClInclude Include="include\ttl\dynlib.h">
+      <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
-    <ClInclude Include="include\string_util.h">
-      <Filter>Headerdateien</Filter>
+    <ClInclude Include="include\ttl\linq.h">
+      <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
-    <ClInclude Include="include\timer.h">
-      <Filter>Headerdateien</Filter>
+    <ClInclude Include="include\ttl\logger.h">
+      <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
-    <ClInclude Include="include\process.h">
-      <Filter>Headerdateien</Filter>
+    <ClInclude Include="include\ttl\noncopyable.h">
+      <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
-    <ClInclude Include="include\dynlib.h">
-      <Filter>Headerdateien</Filter>
+    <ClInclude Include="include\ttl\process.h">
+      <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
-    <ClInclude Include="include\noncopyable.h">
-      <Filter>Headerdateien</Filter>
+    <ClInclude Include="include\ttl\string_util.h">
+      <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
-    <ClInclude Include="include\linq.h">
-      <Filter>Headerdateien</Filter>
+    <ClInclude Include="include\ttl\timer.h">
+      <Filter>Headerdateien\ttl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\signal.h">
+      <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

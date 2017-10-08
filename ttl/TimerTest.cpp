@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "timer.h"
+#include <ttl/timer.h>
 
 using thalhammer::timer;
 

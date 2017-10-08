@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "string_util.h"
+#include <ttl/string_util.h>
 
 using namespace thalhammer;
 

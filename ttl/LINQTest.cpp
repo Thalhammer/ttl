@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <vector>
 #include <string>
-#include "linq.h"
+#include <ttl/linq.h>
 
 
 using thalhammer::linq;
