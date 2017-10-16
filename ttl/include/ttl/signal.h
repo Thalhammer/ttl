@@ -27,7 +27,7 @@ namespace thalhammer {
 				Func func;
 			public:
 				delegate(Func f, std::shared_ptr<signal_data> evt)
-					: func(f), delegate_base(evt)
+					: delegate_base(evt), func(f)
 				{}
 				virtual void invoke(Args... args) override {
 					func(std::forward<Args>(args)...);
