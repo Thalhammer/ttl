@@ -158,6 +158,7 @@
     <ClCompile Include="SignalTest.cpp" />
     <ClCompile Include="StringTest.cpp" />
     <ClCompile Include="TimerTest.cpp" />
+    <ClCompile Include="ContractTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ttl\config.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="include\ttl\signal.h" />
     <ClInclude Include="include\ttl\string_util.h" />
     <ClInclude Include="include\ttl\timer.h" />
+    <ClInclude Include="include\ttl\contract.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,12 +2,11 @@
 
 #include <ttl/signal.h>
 
-using thalhammer::signal;
 
 TEST(SignalTest, Executed) {
 	bool executed = false;
 	
-	signal<> sig;
+	thalhammer::signal<> sig;
 	auto token = sig.add([&executed]() {
 		executed = true;
 	});
@@ -19,7 +18,7 @@ TEST(SignalTest, Executed) {
 TEST(SignalTest, OperatorPlus) {
 	bool executed = false;
 
-	signal<> sig;
+	thalhammer::signal<> sig;
 	auto token = sig += [&executed]() {
 		executed = true;
 	};
@@ -31,7 +30,7 @@ TEST(SignalTest, OperatorPlus) {
 TEST(SignalTest, Params) {
 	bool executed = false;
 
-	signal<const std::string&> sig;
+	thalhammer::signal<const std::string&> sig;
 	auto token = sig.add([&executed](auto& str) {
 		executed = true;
 		ASSERT_EQ("Hello", str);
@@ -44,7 +43,7 @@ TEST(SignalTest, Params) {
 TEST(SignalTest, TokenCleared) {
 	bool executed = false;
 
-	signal<> sig;
+	thalhammer::signal<> sig;
 	auto token = sig.add([&executed]() {
 		executed = true;
 	});
