@@ -12,15 +12,17 @@ namespace thalhammer
 	class contract_value {
         T value;
     public:
-        constexpr contract_value(T val) {
+        constexpr contract_value(T val)
+			: value(val)
+		{
             if(val < vmin || val > vmax) {
                 throw contract_failed(std::to_string(val) + " is not in range [" + std::to_string(vmin) + ";" + std::to_string(vmax)+"]");
             }
-            value = val;
         }
 
-        constexpr contract_value() {
-            value = vmin;
+        constexpr contract_value()
+			: value(vmin)
+		{
         }
 
         constexpr T min() const {
