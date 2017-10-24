@@ -37,3 +37,26 @@ Inherit to disable copy and assignment construction.
 
 #### linq ####
 Query containers in a linq like query.
+
+#### signal ####
+Allows to wire up callbacks and handle events in a easy and intuitive way.
+
+#### contract[wip] ####
+Contract based programming.
+
+## Building ##
+
+Since ttl is a header only library there is not really something to build.
+You can however build and execute the Testcases to check if there are any bugs in ttl on your system configuration.
+```
+make -C ttl
+./ttl/test
+```
+If you experience a build failure or one of the tests fails please create a issue to help me solve the problem.
+Feel free to create a pullrequest to add features or fix bugs.
+#### Building a debian package ####
+You can also create a debian package.
+```
+make -C ttl package
+```
+This will create a debian package named libttl_\<version\>.deb within the ttl subfolder.

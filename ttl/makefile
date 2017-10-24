@@ -1,4 +1,5 @@
 SRC = $(shell find . -name '*.cpp') $(shell find . -name '*.c')
+HEADERS = $(shell find . -name '*.h')
 EXCLUDE_SRC = 
 FSRC = $(filter-out $(EXCLUDE_SRC), $(SRC))
 OBJ = $(FSRC:=.o)
@@ -12,7 +13,11 @@ CXXFLAGS = -std=c++14
 CFLAGS = 
 LINKFLAGS = -I /usr/src/gtest/ $(GTEST) -ldl -pthread
 
+OUTNAME = libttl
 OUTFILE = test
+
+DEBVERSION = $(shell git describe --tags --long | cut -d- -f1,2 | cut -c2-)
+DEBFOLDER = $(OUTNAME)_$(DEBVERSION)
 
 .PHONY: clean debug release
 
@@ -51,5 +56,25 @@ clean:
 	@rm -f $(OBJ)
 	@echo Removing dependency files
 	@rm -rf $(DEP_DIR)
+	@echo Removing package folders
+	@rm -r -f $(DEBFOLDER)
+
+package: $(DEBFOLDER).deb
+
+$(DEBFOLDER).deb: $(HEADERS)
+	@rm -r -f $(DEBFOLDER)
+	@echo Creating package
+	@mkdir -p $(DEBFOLDER)/DEBIAN
+	@mkdir -p $(DEBFOLDER)/usr/include/ttl/
+	@echo "Package: $(OUTNAME)" >> $(DEBFOLDER)/DEBIAN/control
+	@echo "Version: $(DEBVERSION)" >> $(DEBFOLDER)/DEBIAN/control
+	@echo "Section: devel" >> $(DEBFOLDER)/DEBIAN/control
+	@echo "Priority: optional" >> $(DEBFOLDER)/DEBIAN/control
+	@echo "Architecture: all" >> $(DEBFOLDER)/DEBIAN/control
+	@echo "Maintainer: Dominik Thalhammer <dominik@thalhammer.it>" >> $(DEBFOLDER)/DEBIAN/control
+	@echo "Description: Thalhammer Template Library" >> $(DEBFOLDER)/DEBIAN/control
+	@echo "Homepage: https://github.com/Thalhammer/ttl" >> $(DEBFOLDER)/DEBIAN/control
+	@find . -name $(DEBFOLDER) -prune -o -name '*.h' -exec cp --parents \{\} $(DEBFOLDER)/usr/include/ttl/ \;
+	@fakeroot dpkg-deb --build $(DEBFOLDER)
 
 -include $(OBJ:%=$(DEP_DIR)/%.d)

@@ -10,3 +10,4 @@ TestResults
 *.VC.db
 *.user
 ttl/test
+libttl_*
