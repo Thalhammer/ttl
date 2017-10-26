@@ -74,7 +74,7 @@ $(DEBFOLDER).deb: $(HEADERS)
 	@echo "Maintainer: Dominik Thalhammer <dominik@thalhammer.it>" >> $(DEBFOLDER)/DEBIAN/control
 	@echo "Description: Thalhammer Template Library" >> $(DEBFOLDER)/DEBIAN/control
 	@echo "Homepage: https://github.com/Thalhammer/ttl" >> $(DEBFOLDER)/DEBIAN/control
-	@find . -name $(DEBFOLDER) -prune -o -name '*.h' -exec cp --parents \{\} $(DEBFOLDER)/usr/include/ttl/ \;
+	@cp include/ttl/* ${DEBFOLDER}/usr/include/ttl/ -R
 	@fakeroot dpkg-deb --build $(DEBFOLDER)
 
 -include $(OBJ:%=$(DEP_DIR)/%.d)
