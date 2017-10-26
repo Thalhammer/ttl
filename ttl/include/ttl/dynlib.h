@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "noncopyable.h"
+#include <set>
 #ifdef _WIN32
 #include "string_util.h"
 #include <Windows.h>
@@ -142,7 +143,7 @@ namespace thalhammer {
 	void* dynlib::get_function(const std::string& fn) {
 		if (_native_handle == nullptr)
 			return nullptr;
-		void* sym = (void*)dlsym(_native_handle, fn.c_str());
+		void* sym = dlsym(_native_handle, fn.c_str());
 		if (sym == nullptr)
 			this->_errormsg = dlerror();
 		return sym;

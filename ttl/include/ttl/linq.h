@@ -2,6 +2,7 @@
 #include <type_traits>
 #include <memory>
 #include <map>
+#include <vector>
 #include <set>
 
 namespace thalhammer {

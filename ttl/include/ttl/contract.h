@@ -44,5 +44,40 @@ namespace thalhammer
             value = val;
             return *this;
         }
+	};
+	
+	template<typename T>
+	class contract_not_null {
+        T* value;
+    public:
+        constexpr contract_not_null(T* val)
+			: value(val)
+		{
+            if(val == nullptr)
+				throw contract_failed("value is null");
+        }
+
+		constexpr T* operator->() const {
+            return value;
+		}
+
+		T* operator->() {
+            return value;
+		}
+		
+		constexpr T& operator*() const {
+            return *value;
+		}
+
+		T& operator*() {
+            return *value;
+		}
+
+        auto& operator=(T* val) {
+            if(val == nullptr)
+				throw contract_failed("value is null");
+            value = val;
+            return *this;
+        }
     };
 }

@@ -2,10 +2,11 @@
 #include <memory>
 #include "noncopyable.h"
 #include <mutex>
+#include <set>
 
 namespace thalhammer {
-	template<typename... Args>
-	class signal {
+	template<typename MutexType, typename... Args>
+	class signal_base {
 		class signal_data : public std::enable_shared_from_this<signal_data>, public noncopyable {
 		private:
 			class delegate_base {
@@ -34,15 +35,15 @@ namespace thalhammer {
 				}
 			};
 
-			std::mutex mutex;
+			MutexType mutex;
 			std::set<delegate_base*> delegates;
 
 			void add(delegate_base* del) {
-				std::lock_guard<std::mutex> lck(mutex);
+				std::lock_guard<MutexType> lck(mutex);
 				delegates.insert(del);
 			}
 			void remove(delegate_base* del) {
-				std::lock_guard<std::mutex> lck(mutex);
+				std::lock_guard<MutexType> lck(mutex);
 				delegates.erase(del);
 			}
 		public:
@@ -54,7 +55,7 @@ namespace thalhammer {
 			}
 
 			void invoke(Args... args) {
-				std::lock_guard<std::mutex> lck(mutex);
+				std::lock_guard<MutexType> lck(mutex);
 				for (delegate_base* e : delegates) {
 					e->invoke(std::forward<Args>(args)...);
 				}
@@ -62,7 +63,7 @@ namespace thalhammer {
 		};
 		std::shared_ptr<signal_data> data;
 	public:
-		signal() {
+		signal_base() {
 			data = std::make_shared<signal_data>();
 		}
 
@@ -84,4 +85,7 @@ namespace thalhammer {
 			data->invoke(std::forward<Args>(args)...);
 		}
 	};
+
+	template<typename... Args>
+	using signal = signal_base<std::mutex, Args...>;
 }

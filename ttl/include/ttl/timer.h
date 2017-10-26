@@ -6,6 +6,7 @@
 #include <memory>
 #include <set>
 #include <atomic>
+#include <functional>
 
 namespace thalhammer {
 	class timer {

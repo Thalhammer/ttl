@@ -1,12 +1,25 @@
 #include <gtest/gtest.h>
 
 #include <ttl/signal.h>
+#include <ttl/noop_mutex.h>
 
 
 TEST(SignalTest, Executed) {
 	bool executed = false;
 	
 	thalhammer::signal<> sig;
+	auto token = sig.add([&executed]() {
+		executed = true;
+	});
+	ASSERT_FALSE(!token);
+	sig();
+	ASSERT_TRUE(executed);
+}
+
+TEST(SignalTest, MutexCustom) {
+	bool executed = false;
+	
+	thalhammer::signal_base<thalhammer::noop_mutex> sig;
 	auto token = sig.add([&executed]() {
 		executed = true;
 	});

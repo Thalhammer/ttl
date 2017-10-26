@@ -3,6 +3,7 @@
 #include <cctype>
 #include <locale>
 #include <limits>
+#include <vector>
 
 namespace thalhammer
 {
