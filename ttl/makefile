@@ -8,7 +8,7 @@ DEP_DIR = .deps
 
 GTEST = /usr/src/gtest/src/gtest-all.cc /usr/src/gtest/src/gtest_main.cc
 
-FLAGS = -fPIC -Wall -Wno-unknown-pragmas -O2 -march=native -I include
+FLAGS = -fPIC -Wall -Wno-unknown-pragmas -I include
 CXXFLAGS = -std=c++14
 CFLAGS = 
 LINKFLAGS = -I /usr/src/gtest/ $(GTEST) -ldl -pthread
@@ -21,9 +21,10 @@ DEBFOLDER = $(OUTNAME)_$(DEBVERSION)
 
 .PHONY: clean debug release
 
+release: FLAGS += -O2 -march=native
 release: $(OUTFILE)
 
-debug: FLAGS += -g
+debug: FLAGS += -g -O0 -D_LIBCPP_DEBUG=1
 debug: $(OUTFILE)
 
 $(OUTFILE): $(OBJ)
