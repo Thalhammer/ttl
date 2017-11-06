@@ -54,6 +54,39 @@ namespace thalhammer
 		// Create empty
 		any()
 		{}
+		
+		#ifdef __GLIBCXX__
+		static void* upcast(const std::type_info& from, const std::type_info& to, void* ptr) {
+			if(from == to)
+				return ptr;
+			if(typeid(from) == typeid(abi::__vmi_class_type_info)) {
+				auto* vmi = static_cast<const abi::__vmi_class_type_info*>(&from);
+				for(size_t i = 0; i<vmi->__base_count; i++) {
+					const abi::__base_class_type_info* info = &(vmi->__base_info[i]);
+					auto offset = info->__offset_flags >> info->__offset_shift;
+					if(*info->__base_type == to)
+						return reinterpret_cast<void*>(reinterpret_cast<uint8_t*>(ptr) + offset);
+				}
+				// No type found, second pass, check children of base classes
+				for(size_t i = 0; i<vmi->__base_count; i++) {
+					const abi::__base_class_type_info* info = &(vmi->__base_info[i]);
+					auto offset = info->__offset_flags >> info->__offset_shift;
+					void* child = upcast(*info->__base_type, to, reinterpret_cast<void*>(reinterpret_cast<uint8_t*>(ptr) + offset));
+					if(child)
+						return child;
+				}
+			} else if(typeid(from) == typeid(abi::__si_class_type_info)) {
+				// Simple case, single base class offset zero, compare and return
+				auto* si = static_cast<const abi::__si_class_type_info*>(&from);
+				if(si->__base_type == nullptr)
+					throw std::logic_error("invalid rtti data");
+				if(*si->__base_type == to)
+					return ptr;
+				else return upcast(*si->__base_type, to, ptr);
+			}
+			return nullptr;
+		}
+		#endif
 	public:
 		// Create with explicit type
 		template<typename T>
@@ -97,8 +130,32 @@ namespace thalhammer
 		}
 		#endif
 
+		#ifdef __GLIBCXX__
+		const void* upcast(const std::type_info& to) const noexcept {
+			auto& from = this->std_type();
+			auto* ptr = this->val->data_ptr();
+			return upcast(from, to, ptr);
+		}
+
 		template<typename T>
-		T* get_pointer() {
+		const T* upcast() const noexcept {
+			return (const T*)this->upcast(typeid(T));
+		}
+
+		void* upcast(const std::type_info& to) noexcept {
+			auto& from = this->std_type();
+			auto* ptr = this->val->data_ptr();
+			return upcast(from, to, ptr);
+		}
+
+		template<typename T>
+		T* upcast() noexcept {
+			return (T*)this->upcast(typeid(T));
+		}
+		#endif
+
+		template<typename T>
+		T* get_pointer() noexcept {
 			return (T*)val->data_ptr();
 		}
 		template<typename T>
