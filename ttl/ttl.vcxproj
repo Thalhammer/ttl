@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnyTest.cpp" />
     <ClCompile Include="ConfigTest.cpp" />
     <ClCompile Include="DynLibTest.cpp" />
     <ClCompile Include="LINQTest.cpp" />
@@ -159,18 +160,22 @@
     <ClCompile Include="StringTest.cpp" />
     <ClCompile Include="TimerTest.cpp" />
     <ClCompile Include="ContractTest.cpp" />
+    <ClCompile Include="TypeTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\ttl\any.h" />
     <ClInclude Include="include\ttl\config.h" />
     <ClInclude Include="include\ttl\dynlib.h" />
     <ClInclude Include="include\ttl\linq.h" />
     <ClInclude Include="include\ttl\logger.h" />
     <ClInclude Include="include\ttl\noncopyable.h" />
+    <ClInclude Include="include\ttl\noop_mutex.h" />
     <ClInclude Include="include\ttl\process.h" />
     <ClInclude Include="include\ttl\signal.h" />
     <ClInclude Include="include\ttl\string_util.h" />
     <ClInclude Include="include\ttl\timer.h" />
     <ClInclude Include="include\ttl\contract.h" />
+    <ClInclude Include="include\ttl\type.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

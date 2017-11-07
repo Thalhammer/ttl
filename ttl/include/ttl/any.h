@@ -22,9 +22,9 @@ namespace thalhammer
 			const thalhammer::type& type() const noexcept { return type_info; }
 			virtual void* data_ptr() noexcept = 0;
 			virtual std::unique_ptr<data_base> clone() const = 0;
-			#ifdef __cpp_lib_any
+#ifdef __cpp_lib_any
 			virtual std::any to_std_any() const = 0;
-			#endif
+#endif
 		};
 		template<typename T>
 		struct data final : data_base {
@@ -42,11 +42,11 @@ namespace thalhammer
 			std::unique_ptr<data_base> clone() const {
 				return std::make_unique<data<T>>(val);
 			}
-			#ifdef __cpp_lib_any
+#ifdef __cpp_lib_any
 			std::any to_std_any() const {
 				return val;
 			}
-			#endif
+#endif
 		};
 
 		std::unique_ptr<data_base> val;
@@ -54,39 +54,115 @@ namespace thalhammer
 		// Create empty
 		any()
 		{}
-		
-		#ifdef __GLIBCXX__
+
+#ifdef __GLIBCXX__
 		static void* upcast(const std::type_info& from, const std::type_info& to, void* ptr) {
-			if(from == to)
+			if (from == to)
 				return ptr;
-			if(typeid(from) == typeid(abi::__vmi_class_type_info)) {
+			if (typeid(from) == typeid(abi::__vmi_class_type_info)) {
 				auto* vmi = static_cast<const abi::__vmi_class_type_info*>(&from);
-				for(size_t i = 0; i<vmi->__base_count; i++) {
+				for (size_t i = 0; i < vmi->__base_count; i++) {
 					const abi::__base_class_type_info* info = &(vmi->__base_info[i]);
 					auto offset = info->__offset_flags >> info->__offset_shift;
-					if(*info->__base_type == to)
+					if (*info->__base_type == to)
 						return reinterpret_cast<void*>(reinterpret_cast<uint8_t*>(ptr) + offset);
 				}
 				// No type found, second pass, check children of base classes
-				for(size_t i = 0; i<vmi->__base_count; i++) {
+				for (size_t i = 0; i < vmi->__base_count; i++) {
 					const abi::__base_class_type_info* info = &(vmi->__base_info[i]);
 					auto offset = info->__offset_flags >> info->__offset_shift;
 					void* child = upcast(*info->__base_type, to, reinterpret_cast<void*>(reinterpret_cast<uint8_t*>(ptr) + offset));
-					if(child)
+					if (child)
 						return child;
 				}
-			} else if(typeid(from) == typeid(abi::__si_class_type_info)) {
+			}
+			else if (typeid(from) == typeid(abi::__si_class_type_info)) {
 				// Simple case, single base class offset zero, compare and return
 				auto* si = static_cast<const abi::__si_class_type_info*>(&from);
-				if(si->__base_type == nullptr)
+				if (si->__base_type == nullptr)
 					throw std::logic_error("invalid rtti data");
-				if(*si->__base_type == to)
+				if (*si->__base_type == to)
 					return ptr;
 				else return upcast(*si->__base_type, to, ptr);
 			}
 			return nullptr;
 		}
-		#endif
+#elif defined(_WIN32)
+		static void* upcast(const std::type_info& sfrom, const std::type_info& sto, void* ptr) {
+			if (sfrom == sto)
+				return ptr;
+
+#pragma warning (push)
+#pragma warning (disable:4200)
+			struct RTTITypeDescriptor
+			{
+				unsigned long hash;
+				void* spare;
+				const char name[0];
+			};
+
+			struct RTTIBaseClassDescriptor
+			{
+				struct RTTITypeDescriptor* pTypeDescriptor; //type descriptor of the class
+				uint32_t numContainedBases; //number of nested classes following in the Base Class Array
+				int mdisp;  //member displacement
+				int pdisp;  //vbtable displacement
+				int vdisp;  //displacement inside vbtable
+				uint32_t attributes;        //flags, usually 0
+			};
+
+			struct RTTIClassHierarchyDescriptor
+			{
+				uint32_t signature;      //always zero?
+				uint32_t attributes;     //bit 0 set = multiple inheritance, bit 1 set = virtual inheritance
+				uint32_t numBaseClasses; //number of classes in pBaseClassArray
+				struct {
+					RTTIBaseClassDescriptor *arrayOfBaseClassDescriptors[];
+				}*pBaseClassArray;
+			};
+
+			struct RTTICompleteObjectLocator
+			{
+				uint32_t signature; //always zero ?
+				uint32_t offset;    //offset of this vtable in the complete class
+				uint32_t cdOffset;  //constructor displacement offset
+				struct RTTITypeDescriptor* pTypeDescriptor; //TypeDescriptor of the complete class
+				struct RTTIClassHierarchyDescriptor* pClassDescriptor; //describes inheritance hierarchy
+			};
+#pragma warning (pop)
+
+			void* ptrin = __RTCastToVoid(ptr);
+			RTTICompleteObjectLocator *pCompleteLocator = (RTTICompleteObjectLocator *)((*((void***)ptrin))[-1]);
+			auto* hierarchy = pCompleteLocator->pClassDescriptor;
+			auto* from = (RTTITypeDescriptor*)&sfrom;
+			auto* to = (RTTITypeDescriptor*)&sto;
+
+			hierarchy->pBaseClassArray->arrayOfBaseClassDescriptors[0]->pTypeDescriptor->name;
+
+			for (uint32_t i = 0; i < hierarchy->numBaseClasses; i++)
+			{
+				RTTIBaseClassDescriptor *pBCD = hierarchy->pBaseClassArray->arrayOfBaseClassDescriptors[i];
+
+				if (pBCD->pTypeDescriptor == to)
+				{
+					ptrdiff_t offset = 0;
+					if (pBCD->pdisp >= 0) {
+						// if base is in the virtual part of class
+						offset = pBCD->pdisp;
+						offset += *(__int32*)((char*)*(ptrdiff_t*)((char*)ptrin + offset) +
+							pBCD->vdisp);
+					}
+
+					offset += pBCD->mdisp;
+					return ((char *)ptrin) + offset;
+				}
+			}
+
+			return nullptr;
+		}
+#else
+#error Unsupported plattfrom
+#endif
 	public:
 		// Create with explicit type
 		template<typename T>
@@ -124,13 +200,38 @@ namespace thalhammer
 			return a;
 		}
 
-		#ifdef __cpp_lib_any
+#ifdef __cpp_lib_any
 		std::any to_std_any() const {
 			return val->to_std_any();
 		}
-		#endif
+#endif
+#ifdef _WIN32
+		const void* upcast(const std::type_info& to) const {
+			auto& from = this->std_type();
+			auto* ptr = this->val->data_ptr();
+			if (!type().is_polymorphic())
+				throw std::logic_error("type needs to be polymorphic");
+			return upcast(from, to, ptr);
+		}
 
-		#ifdef __GLIBCXX__
+		template<typename T>
+		const T* upcast() const {
+			return (const T*)this->upcast(typeid(T));
+		}
+
+		void* upcast(const std::type_info& to) {
+			auto& from = this->std_type();
+			auto* ptr = this->val->data_ptr();
+			if (!type().is_polymorphic())
+				throw std::logic_error("type needs to be polymorphic");
+			return upcast(from, to, ptr);
+		}
+
+		template<typename T>
+		T* upcast() {
+			return (T*)this->upcast(typeid(T));
+		}
+#else
 		const void* upcast(const std::type_info& to) const noexcept {
 			auto& from = this->std_type();
 			auto* ptr = this->val->data_ptr();
@@ -152,7 +253,7 @@ namespace thalhammer
 		T* upcast() noexcept {
 			return (T*)this->upcast(typeid(T));
 		}
-		#endif
+#endif
 
 		template<typename T>
 		T* get_pointer() noexcept {
@@ -171,7 +272,7 @@ namespace thalhammer
 		const T& get_reference() const {
 			return *get_pointer<T>();
 		}
-		
+
 		template<typename T>
 		T get() const {
 			return *get_pointer<T>();

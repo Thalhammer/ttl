@@ -6,8 +6,13 @@ using thalhammer::type;
 TEST(TypeTest, Types) {
 	auto type = type::create<int* const>();
 
+#ifdef __linux__
 	ASSERT_EQ("int* const", type.pretty_name());
 	ASSERT_EQ("int", type.base_type().pretty_name());
+#else
+	ASSERT_EQ("int * const", type.pretty_name());
+	ASSERT_EQ("int", type.base_type().pretty_name());
+#endif
 
 	ASSERT_FALSE(type.is_fundamental());
 	ASSERT_TRUE(type.is_const());

@@ -45,6 +45,12 @@
     <ClCompile Include="ContractTest.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="AnyTest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeTest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ttl\config.h">
@@ -75,6 +81,15 @@
       <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
     <ClInclude Include="include\ttl\contract.h">
+      <Filter>Headerdateien\ttl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\any.h">
+      <Filter>Headerdateien\ttl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\noop_mutex.h">
+      <Filter>Headerdateien\ttl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\type.h">
       <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
   </ItemGroup>

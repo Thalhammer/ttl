@@ -5,6 +5,7 @@ using thalhammer::any;
 
 
 struct A {
+	A(){}
 	virtual ~A() {}
 	virtual void test() {
 		std::cout<<"A"<<std::endl;
@@ -30,9 +31,15 @@ struct D : C {
 };
 
 struct E {
-
+	virtual void x() {}
 };
 struct F : E {
+
+};
+
+struct G {
+};
+struct H : G {
 
 };
 
@@ -52,7 +59,6 @@ TEST(AnyTest, AnyInt) {
 	ASSERT_EQ(1, cloned.get<int>());
 }
 
-#ifdef __GLIBCXX__
 TEST(AnyTest, UpCast) {
 	any test(D{});
 	ASSERT_EQ(typeid(D), test.std_type());
@@ -68,5 +74,20 @@ TEST(AnyTest, UpCast) {
 	F* ptr2 = test2.get_pointer<F>();
 	ASSERT_EQ(dynamic_cast<E*>(ptr2), test2.upcast<E>());
 	ASSERT_EQ(dynamic_cast<F*>(ptr2), test2.upcast<F>());
-}
+
+#ifdef _WIN32
+	// Windows needs a vtable to emit rtti data so check if we throw a exception
+	any test3(H{});
+	ASSERT_EQ(typeid(H), test3.std_type());
+	H* ptr3 = test2.get_pointer<H>();
+	ASSERT_THROW(test3.upcast<G>(), std::logic_error);
+	ASSERT_THROW(test3.upcast<H>(), std::logic_error);
+#else
+	// Linux seems to support rtti for classes without a vtable, so test this also
+	any test3(H{});
+	ASSERT_EQ(typeid(H), test3.std_type());
+	H* ptr3 = test3.get_pointer<H>();
+	ASSERT_EQ(dynamic_cast<G*>(ptr3), test3.upcast<G>());
+	ASSERT_EQ(dynamic_cast<H*>(ptr3), test3.upcast<H>());
 #endif
+}
