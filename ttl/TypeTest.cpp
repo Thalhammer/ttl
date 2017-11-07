@@ -10,7 +10,11 @@ TEST(TypeTest, Types) {
 	ASSERT_EQ("int* const", type.pretty_name());
 	ASSERT_EQ("int", type.base_type().pretty_name());
 #else
+#ifdef _WIN64
+	ASSERT_EQ("int * __ptr64 const", type.pretty_name());
+#else
 	ASSERT_EQ("int * const", type.pretty_name());
+#endif
 	ASSERT_EQ("int", type.base_type().pretty_name());
 #endif
 

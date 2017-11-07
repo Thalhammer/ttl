@@ -91,3 +91,8 @@ TEST(AnyTest, UpCast) {
 	ASSERT_EQ(dynamic_cast<H*>(ptr3), test3.upcast<H>());
 #endif
 }
+
+TEST(AnyTest, UpCastNotClass) {
+	any test(10);
+	ASSERT_THROW(test.upcast<std::string>(), std::logic_error);
+}

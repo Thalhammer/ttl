@@ -7,6 +7,12 @@
 #ifdef __GLIBCXX__
 #include <cxxabi.h>
 #endif
+#ifdef _WIN64
+#ifndef _APISETLIBLOADER_
+// We need GetModuleHandle to get the image base address, but do not want to include all the trash in windows.h
+extern "C" __declspec(dllimport) void* __stdcall GetModuleHandleA(const char* lpModuleName);
+#endif
+#endif
 
 namespace thalhammer
 {
@@ -88,6 +94,19 @@ namespace thalhammer
 			return nullptr;
 		}
 #elif defined(_WIN32)
+		typedef uint32_t rva_t;
+
+		template<typename T>
+		static T* convertRVA(rva_t rva)
+		{
+#ifdef _WIN64
+			const static uint64_t imgbase = reinterpret_cast<uint64_t>(GetModuleHandleA(nullptr));
+			return reinterpret_cast<T*>(imgbase + rva);
+#else
+			return (T*)rva;
+#endif
+		}
+
 		static void* upcast(const std::type_info& sfrom, const std::type_info& sto, void* ptr) {
 			if (sfrom == sto)
 				return ptr;
@@ -103,7 +122,7 @@ namespace thalhammer
 
 			struct RTTIBaseClassDescriptor
 			{
-				struct RTTITypeDescriptor* pTypeDescriptor; //type descriptor of the class
+				rva_t pTypeDescriptor; //type descriptor of the class (struct RTTITypeDescriptor*)
 				uint32_t numContainedBases; //number of nested classes following in the Base Class Array
 				int mdisp;  //member displacement
 				int pdisp;  //vbtable displacement
@@ -111,14 +130,16 @@ namespace thalhammer
 				uint32_t attributes;        //flags, usually 0
 			};
 
+			struct RTTIBaseClassArray {
+				rva_t arrayOfBaseClassDescriptors[]; // struct RTTIBaseClassDescriptor *
+			};
+
 			struct RTTIClassHierarchyDescriptor
 			{
 				uint32_t signature;      //always zero?
 				uint32_t attributes;     //bit 0 set = multiple inheritance, bit 1 set = virtual inheritance
 				uint32_t numBaseClasses; //number of classes in pBaseClassArray
-				struct {
-					RTTIBaseClassDescriptor *arrayOfBaseClassDescriptors[];
-				}*pBaseClassArray;
+				rva_t pBaseClassArray;
 			};
 
 			struct RTTICompleteObjectLocator
@@ -126,24 +147,25 @@ namespace thalhammer
 				uint32_t signature; //always zero ?
 				uint32_t offset;    //offset of this vtable in the complete class
 				uint32_t cdOffset;  //constructor displacement offset
-				struct RTTITypeDescriptor* pTypeDescriptor; //TypeDescriptor of the complete class
-				struct RTTIClassHierarchyDescriptor* pClassDescriptor; //describes inheritance hierarchy
+				rva_t pTypeDescriptor; //TypeDescriptor of the complete class (struct RTTITypeDescriptor*)
+				rva_t pClassDescriptor; //describes inheritance hierarchy (struct RTTIClassHierarchyDescriptor*)
 			};
 #pragma warning (pop)
 
 			void* ptrin = __RTCastToVoid(ptr);
 			RTTICompleteObjectLocator *pCompleteLocator = (RTTICompleteObjectLocator *)((*((void***)ptrin))[-1]);
-			auto* hierarchy = pCompleteLocator->pClassDescriptor;
+			auto* hierarchy = convertRVA<struct RTTIClassHierarchyDescriptor>(pCompleteLocator->pClassDescriptor);
 			auto* from = (RTTITypeDescriptor*)&sfrom;
 			auto* to = (RTTITypeDescriptor*)&sto;
 
-			hierarchy->pBaseClassArray->arrayOfBaseClassDescriptors[0]->pTypeDescriptor->name;
+			auto* base_array = convertRVA<struct RTTIBaseClassArray>(hierarchy->pBaseClassArray);
+			//->arrayOfBaseClassDescriptors[0]->pTypeDescriptor->name;
 
 			for (uint32_t i = 0; i < hierarchy->numBaseClasses; i++)
 			{
-				RTTIBaseClassDescriptor *pBCD = hierarchy->pBaseClassArray->arrayOfBaseClassDescriptors[i];
-
-				if (pBCD->pTypeDescriptor == to)
+				auto* pBCD = convertRVA<struct RTTIBaseClassDescriptor>(base_array->arrayOfBaseClassDescriptors[i]);
+				auto* type = convertRVA<struct RTTITypeDescriptor>(pBCD->pTypeDescriptor);
+				if (type == to)
 				{
 					ptrdiff_t offset = 0;
 					if (pBCD->pdisp >= 0) {
@@ -235,6 +257,8 @@ namespace thalhammer
 		const void* upcast(const std::type_info& to) const noexcept {
 			auto& from = this->std_type();
 			auto* ptr = this->val->data_ptr();
+			if (!type().is_class())
+				throw std::logic_error("type needs to be a class");
 			return upcast(from, to, ptr);
 		}
 
@@ -246,6 +270,8 @@ namespace thalhammer
 		void* upcast(const std::type_info& to) noexcept {
 			auto& from = this->std_type();
 			auto* ptr = this->val->data_ptr();
+			if (!type().is_class())
+				throw std::logic_error("type needs to be a class");
 			return upcast(from, to, ptr);
 		}
 
