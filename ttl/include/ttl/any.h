@@ -236,11 +236,6 @@ namespace thalhammer
 			return upcast(from, to, ptr);
 		}
 
-		template<typename T>
-		const T* upcast() const {
-			return (const T*)this->upcast(typeid(T));
-		}
-
 		void* upcast(const std::type_info& to) {
 			auto& from = this->std_type();
 			auto* ptr = this->val->data_ptr();
@@ -248,38 +243,34 @@ namespace thalhammer
 				throw std::logic_error("type needs to be polymorphic");
 			return upcast(from, to, ptr);
 		}
+#else
+		const void* upcast(const std::type_info& to) const {
+			auto& from = this->std_type();
+			auto* ptr = this->val->data_ptr();
+			if (!type().is_class())
+				throw std::logic_error("type needs to be a class");
+			return upcast(from, to, ptr);
+		}
+
+		void* upcast(const std::type_info& to) {
+			auto& from = this->std_type();
+			auto* ptr = this->val->data_ptr();
+			if (!type().is_class())
+				throw std::logic_error("type needs to be a class");
+			return upcast(from, to, ptr);
+		}
+
+#endif
+
+		template<typename T>
+		const T* upcast() const {
+			return (const T*)this->upcast(typeid(T));
+		}
 
 		template<typename T>
 		T* upcast() {
 			return (T*)this->upcast(typeid(T));
 		}
-#else
-		const void* upcast(const std::type_info& to) const noexcept {
-			auto& from = this->std_type();
-			auto* ptr = this->val->data_ptr();
-			if (!type().is_class())
-				throw std::logic_error("type needs to be a class");
-			return upcast(from, to, ptr);
-		}
-
-		template<typename T>
-		const T* upcast() const noexcept {
-			return (const T*)this->upcast(typeid(T));
-		}
-
-		void* upcast(const std::type_info& to) noexcept {
-			auto& from = this->std_type();
-			auto* ptr = this->val->data_ptr();
-			if (!type().is_class())
-				throw std::logic_error("type needs to be a class");
-			return upcast(from, to, ptr);
-		}
-
-		template<typename T>
-		T* upcast() noexcept {
-			return (T*)this->upcast(typeid(T));
-		}
-#endif
 
 		template<typename T>
 		T* get_pointer() noexcept {
