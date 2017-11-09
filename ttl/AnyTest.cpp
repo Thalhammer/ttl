@@ -96,3 +96,18 @@ TEST(AnyTest, UpCastNotClass) {
 	any test(10);
 	ASSERT_THROW(test.upcast<std::string>(), std::logic_error);
 }
+
+struct strTest {
+	std::string to_string() const {
+		return "Test";
+	}
+};
+
+TEST(AnyTest, ToString) {
+	any test(10);
+	ASSERT_EQ("10", test.to_string());
+	any test2(A{});
+	ASSERT_THROW(test2.to_string(), std::logic_error);
+	any test3(strTest{});
+	ASSERT_EQ("Test", test3.to_string());
+}

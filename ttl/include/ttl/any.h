@@ -16,6 +16,34 @@ extern "C" __declspec(dllimport) void* __stdcall GetModuleHandleA(const char* lp
 
 namespace thalhammer
 {
+	namespace detail {
+		template < typename T >
+		class has_global_to_string
+		{
+			typedef char (&yes) [1];
+			typedef char (&no)  [2];
+			
+			template<typename U> static yes check(decltype(std::to_string(U()))*);
+
+			template<typename> static no check(...);
+		public:
+			enum { value = sizeof(check<T>(0)) == sizeof(yes) };
+		};
+
+		template <typename T>
+		class has_tostring {
+			typedef char (&yes) [1];
+			typedef char (&no)  [2];
+
+			template<typename U> static auto check(void*)
+				-> decltype(std::string{std::declval<U const>().to_string()}, yes{});
+
+			template<typename> static no& check(...);
+
+		public:
+			enum { value = sizeof(check<T>(0)) == sizeof(yes) };
+		};
+	}
 	class any {
 		class data_base {
 			thalhammer::type type_info;
@@ -31,6 +59,7 @@ namespace thalhammer
 #ifdef __cpp_lib_any
 			virtual std::any to_std_any() const = 0;
 #endif
+			virtual std::string to_string() const = 0;
 		};
 		template<typename T>
 		struct data final : data_base {
@@ -53,6 +82,27 @@ namespace thalhammer
 				return val;
 			}
 #endif
+			std::string to_string() const {
+				return to_string_impl();
+			}
+
+			template<typename U = T>
+			typename std::enable_if<detail::has_global_to_string<U>::value, std::string>::type
+				to_string_impl() const {
+				return std::to_string(val);
+			}
+
+			template<typename U = T>
+			typename std::enable_if<!detail::has_global_to_string<U>::value && !detail::has_tostring<U>::value, std::string>::type
+				to_string_impl() const {
+				throw std::logic_error("to_string not implemented");
+			}
+
+			template<typename U = T>
+			typename std::enable_if<!detail::has_global_to_string<U>::value && detail::has_tostring<U>::value, std::string>::type
+				to_string_impl() const {
+				return val.to_string();
+			}
 		};
 
 		std::unique_ptr<data_base> val;
@@ -227,6 +277,11 @@ namespace thalhammer
 			return val->to_std_any();
 		}
 #endif
+
+		std::string to_string() const {
+			return val->to_string();
+		}
+
 #ifdef _WIN32
 		const void* upcast(const std::type_info& to) const {
 			auto& from = this->std_type();
