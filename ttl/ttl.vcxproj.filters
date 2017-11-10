@@ -51,6 +51,9 @@
     <ClCompile Include="TypeTest.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="RCUTest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ttl\config.h">
@@ -90,6 +93,9 @@
       <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
     <ClInclude Include="include\ttl\type.h">
+      <Filter>Headerdateien\ttl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\rcu.h">
       <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
   </ItemGroup>

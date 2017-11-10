@@ -156,6 +156,7 @@
     <ClCompile Include="LINQTest.cpp" />
     <ClCompile Include="LoggerTest.cpp" />
     <ClCompile Include="ProcessTest.cpp" />
+    <ClCompile Include="RCUTest.cpp" />
     <ClCompile Include="SignalTest.cpp" />
     <ClCompile Include="StringTest.cpp" />
     <ClCompile Include="TimerTest.cpp" />
@@ -171,6 +172,7 @@
     <ClInclude Include="include\ttl\noncopyable.h" />
     <ClInclude Include="include\ttl\noop_mutex.h" />
     <ClInclude Include="include\ttl\process.h" />
+    <ClInclude Include="include\ttl\rcu.h" />
     <ClInclude Include="include\ttl\signal.h" />
     <ClInclude Include="include\ttl\string_util.h" />
     <ClInclude Include="include\ttl\timer.h" />

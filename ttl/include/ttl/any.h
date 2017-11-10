@@ -17,31 +17,34 @@ extern "C" __declspec(dllimport) void* __stdcall GetModuleHandleA(const char* lp
 namespace thalhammer
 {
 	namespace detail {
-		template < typename T >
+		template<typename T>
 		class has_global_to_string
 		{
-			typedef char (&yes) [1];
-			typedef char (&no)  [2];
-			
-			template<typename U> static yes check(decltype(std::to_string(U()))*);
+			template<typename U>
+			static constexpr auto check(U*)
+				-> typename std::is_same<std::decay_t<decltype(std::to_string(std::declval<U>()))>, std::string>::type;
 
-			template<typename> static no check(...);
+			template<typename> static constexpr std::false_type check(...);
+
+			typedef decltype(check<T>(0)) type;
+
 		public:
-			enum { value = sizeof(check<T>(0)) == sizeof(yes) };
+			static constexpr bool value = type::value;
 		};
 
-		template <typename T>
-		class has_tostring {
-			typedef char (&yes) [1];
-			typedef char (&no)  [2];
+		template<typename T>
+		class has_member_to_string
+		{
+			template<typename U>
+			static constexpr auto check(U*)
+				-> typename std::is_same<std::decay_t<decltype(std::declval<U>().to_string())>, std::string>::type;
 
-			template<typename U> static auto check(void*)
-				-> decltype(std::string{std::declval<U const>().to_string()}, yes{});
+			template<typename> static constexpr std::false_type check(...);
 
-			template<typename> static no& check(...);
+			typedef decltype(check<T>(0)) type;
 
 		public:
-			enum { value = sizeof(check<T>(0)) == sizeof(yes) };
+			static constexpr bool value = type::value;
 		};
 	}
 	class any {
@@ -93,15 +96,15 @@ namespace thalhammer
 			}
 
 			template<typename U = T>
-			typename std::enable_if<!detail::has_global_to_string<U>::value && !detail::has_tostring<U>::value, std::string>::type
+			typename std::enable_if<!detail::has_global_to_string<U>::value && detail::has_member_to_string<U>::value, std::string>::type
 				to_string_impl() const {
-				throw std::logic_error("to_string not implemented");
+				return val.to_string();
 			}
 
 			template<typename U = T>
-			typename std::enable_if<!detail::has_global_to_string<U>::value && detail::has_tostring<U>::value, std::string>::type
+			typename std::enable_if<!detail::has_global_to_string<U>::value && !detail::has_member_to_string<U>::value, std::string>::type
 				to_string_impl() const {
-				return val.to_string();
+				throw std::logic_error("to_string not implemented");
 			}
 		};
 
