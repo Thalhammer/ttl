@@ -20,6 +20,7 @@ namespace thalhammer {
 		loglevel level;
 		std::ostream& ostream;
 		std::mutex mtx;
+		bool autoflush;
 
 		std::string time_format = "%C";
 	public:
@@ -27,6 +28,7 @@ namespace thalhammer {
 			: ostream(stream)
 		{
 			set_loglevel(loglevel::INFO);
+			set_autoflush(true);
 		}
 
 		void set_loglevel(loglevel l) {
@@ -35,6 +37,18 @@ namespace thalhammer {
 
 		loglevel get_loglevel() {
 			return level;
+		}
+
+		void set_autoflush(bool b) {
+			autoflush = b;
+		}
+
+		bool get_autoflush() const {
+			return autoflush;
+		}
+
+		std::ostream& get_ostream() {
+			return ostream;
 		}
 
 		void log(loglevel l, const std::string& module, const std::string& message)
@@ -59,6 +73,8 @@ namespace thalhammer {
 				{
 					std::unique_lock<std::mutex> lck(mtx);
 					ostream << std::put_time(&t, "%c") << " | " << strlevel << " | " << module << " | " << message << std::endl;
+					if(autoflush)
+						ostream.flush();
 				}
 			}
 		}
