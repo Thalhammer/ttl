@@ -21,11 +21,11 @@ namespace thalhammer {
 		typedef void* native_handle_t;
 #endif
 
-		dynlib();
-		~dynlib();
+		inline dynlib();
+		inline ~dynlib();
 
-		bool open(const std::string& file);
-		void* get_function(const std::string& fn);
+		inline bool open(const std::string& file);
+		inline void* get_function(const std::string& fn);
 		template<typename T>
 		T* get_function(const std::string& fn) {
 			return (T*)get_function(fn);
@@ -51,10 +51,10 @@ namespace thalhammer {
 		std::string _errormsg;
 		native_handle_t _native_handle;
 
-		bool impl_get_symbols(std::set<std::string>& table);
+		inline bool impl_get_symbols(std::set<std::string>& table);
 
 #ifdef _WIN32
-		static std::string last_error();
+		inline static std::string last_error();
 #endif
 	};
 

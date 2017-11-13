@@ -31,17 +31,17 @@ namespace thalhammer {
 		typedef pid_t native_handle_t;
 #endif
 
-		process();
-		~process();
+		inline process();
+		inline ~process();
 
-		bool open(const std::string& path, const args_t& args = {}, const env_t& env = {});
-		bool kill();
-		bool wait();
-		bool is_alive();
-		std::ostream& get_stdin();
-		std::istream& get_stdout();
-		std::istream& get_stderr();
-		uint32_t exitcode();
+		inline bool open(const std::string& path, const args_t& args = {}, const env_t& env = {});
+		inline bool kill();
+		inline bool wait();
+		inline bool is_alive();
+		inline std::ostream& get_stdin();
+		inline std::istream& get_stdout();
+		inline std::istream& get_stderr();
+		inline uint32_t exitcode();
 		native_handle_t native_handle() const {	return _native_handle; }
 
 		const std::string& errormsg() const { return _errormsg; }
@@ -49,10 +49,10 @@ namespace thalhammer {
 		native_handle_t _native_handle;
 		std::string _errormsg;
 #ifdef _WIN32
-		static FILE* open_handle(native_handle_t hdl, const char* mode);
-		static bool open_handle(native_handle_t hdl, std::ifstream& stream);
-		static bool open_handle(native_handle_t hdl, std::ofstream& stream);
-		static std::string last_error();
+		inline static FILE* open_handle(native_handle_t hdl, const char* mode);
+		inline static bool open_handle(native_handle_t hdl, std::ifstream& stream);
+		inline static bool open_handle(native_handle_t hdl, std::ofstream& stream);
+		inline static std::string last_error();
 
 		std::ofstream _stdin;
 		std::ifstream _stdout;

@@ -364,12 +364,12 @@ namespace thalhammer {
 		};
 	}
 	template<typename T, typename Iterator>
-	auto linq(Iterator start, Iterator end) {
+	inline auto linq(Iterator start, Iterator end) {
 		return linq_detail::sourceiterator<T, Iterator>(start, end);
 	}
 
 	template<typename T>
-	auto linq(const std::vector<T>& data) {
+	inline auto linq(const std::vector<T>& data) {
 		return linq<T>(std::cbegin(data), std::cend(data));
 	}
 }

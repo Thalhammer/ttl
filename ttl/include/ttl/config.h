@@ -20,10 +20,10 @@ namespace thalhammer {
 		include_handler_t include_handler;
 	public:
 		/* Read config entries from a std::istream. */
-		bool read(std::istream& input);
+		inline bool read(std::istream& input);
 
 		/* Read config entries from a std::istream, using an existing transaction. */
-		bool read(transaction& trans, std::istream& input);
+		inline bool read(transaction& trans, std::istream& input);
 
 		/* Read config entries from a file. */
 		bool read_file(const std::string& file) {
@@ -78,7 +78,7 @@ namespace thalhammer {
 		auto size() const { return entries.size(); }
 
 		/* Start a transaction. */
-		transaction begin_transaction();
+		inline transaction begin_transaction();
 
 		/* Set a function to handle includes. */
 		void set_include_handler(include_handler_t fn) { include_handler = fn; }
