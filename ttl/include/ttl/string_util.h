@@ -99,5 +99,27 @@ namespace thalhammer
 		inline bool ends_with(const StringType& s, const StringType& end) {
 			return s.size() > end.size() && s.compare(s.size() - end.size(), end.size(), end) == 0;
 		}
+
+		template<typename StringType = std::string>
+		inline void to_lower(StringType& s) {
+			std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+		}
+
+		template<typename StringType = std::string>
+		inline void to_upper(StringType& s) {
+			std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+		}
+
+		template<typename StringType = std::string>
+		inline StringType to_lower_copy(StringType s) {
+			std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+			return s;
+		}
+
+		template<typename StringType = std::string>
+		inline StringType to_upper_copy(StringType s) {
+			std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+			return s;
+		}
 	}
 }

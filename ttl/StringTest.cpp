@@ -77,3 +77,29 @@ TEST(StringTest, StartEnd) {
 	ASSERT_TRUE(string::ends_with(test_str, std::string("World")));
 	ASSERT_FALSE(string::ends_with(test_str, std::string("t")));
 }
+
+TEST(StringTest, CaseConv) {
+	const static std::string test_str = "TestString";
+	{
+		std::string in = test_str;
+		string::to_lower(in);
+		ASSERT_EQ("teststring", in);
+	}
+	{
+		std::string in = test_str;
+		string::to_upper(in);
+		ASSERT_EQ("TESTSTRING", in);
+	}
+	{
+		std::string in = test_str;
+		auto out = string::to_lower_copy(in);
+		ASSERT_EQ("teststring", out);
+		ASSERT_EQ(test_str, in);
+	}
+	{
+		std::string in = test_str;
+		auto out = string::to_upper_copy(in);
+		ASSERT_EQ("TESTSTRING", out);
+		ASSERT_EQ(test_str, in);
+	}
+}
