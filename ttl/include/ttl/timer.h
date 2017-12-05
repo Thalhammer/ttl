@@ -96,7 +96,11 @@ namespace thalhammer {
 					std::unique_lock<std::mutex> lck(mtx);
 					if (!exit_thread) {
 						auto next = get_next_task();
-						if (next) cv.wait_until(lck, next->tp);
+						if (next) {
+							auto tp = next->tp;
+							next = nullptr;
+							cv.wait_until(lck, tp);
+						}
 						else cv.wait(lck);
 					}
 				}
@@ -144,9 +148,13 @@ namespace thalhammer {
 		token_t schedule(handler_fn_t fn, every t)
 		{
 			auto task = std::make_shared<task_t>();
-			task->fn = [fn, dur = t.dur, task, this](){
-				task->tp = std::chrono::steady_clock::now() + dur;
-				this->schedule(task);
+			auto weaktask = std::weak_ptr<task_t>(task);
+			task->fn = [fn, dur = t.dur, weaktask, this](){
+				auto task = weaktask.lock();
+				if(task) {
+					task->tp = std::chrono::steady_clock::now() + dur;
+					this->schedule(task);
+				}
 				fn();
 			};
 			task->tp = std::chrono::steady_clock::now() + t.dur;
