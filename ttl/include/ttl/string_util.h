@@ -4,6 +4,7 @@
 #include <locale>
 #include <limits>
 #include <vector>
+#include <sstream>
 
 namespace thalhammer
 {
