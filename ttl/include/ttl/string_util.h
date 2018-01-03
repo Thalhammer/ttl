@@ -121,5 +121,14 @@ namespace thalhammer
 			std::transform(s.begin(), s.end(), s.begin(), ::toupper);
 			return s;
 		}
+
+		template<typename StringType = std::string>
+		inline double stod(const StringType& str, const std::locale& loc) {
+			double res;
+			std::istringstream ss(str);
+			ss.imbue(loc);
+			ss >> res;
+			return res;
+		}
 	}
 }
