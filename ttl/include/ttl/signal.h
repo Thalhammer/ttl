@@ -57,7 +57,7 @@ namespace thalhammer {
 			void invoke(Args... args) {
 				std::lock_guard<MutexType> lck(mutex);
 				for (delegate_base* e : delegates) {
-					e->invoke(std::forward<Args>(args)...);
+					e->invoke(args...);
 				}
 			}
 		};
