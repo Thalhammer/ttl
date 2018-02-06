@@ -7,6 +7,7 @@
 #include <list>
 #include <forward_list>
 #include <stack>
+#include <algorithm>
 
 namespace thalhammer {
 	namespace linq_detail {
@@ -104,9 +105,9 @@ namespace thalhammer {
 			}
 
 			std::forward_list<T> to_forward_list() {
-				if (is_end())
-					return{};
 				std::forward_list<T> res;
+				if (is_end())
+					return res;
 				res.push_front(this->element());
 				auto it = res.cbegin();
 				while(next()) {
@@ -116,9 +117,9 @@ namespace thalhammer {
 			}
 
 			std::stack<T> to_stack() {
-				if (is_end())
-					return{};
 				std::stack<T> res;
+				if (is_end())
+					return res;
 				do {
 					res.push(this->element());
 				} while (next());
