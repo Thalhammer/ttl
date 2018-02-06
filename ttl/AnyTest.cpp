@@ -90,6 +90,7 @@ TEST(AnyTest, UpCast) {
 	ASSERT_EQ(dynamic_cast<G*>(ptr3), test3.upcast<G>());
 	ASSERT_EQ(dynamic_cast<H*>(ptr3), test3.upcast<H>());
 #endif
+	ASSERT_NE(nullptr, ptr3);
 }
 
 TEST(AnyTest, UpCastNotClass) {

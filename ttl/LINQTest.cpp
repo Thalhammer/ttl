@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <vector>
 #include <string>
+#include <array>
 #include <ttl/linq.h>
 
 
@@ -276,4 +277,46 @@ TEST(LINQTest, Quantifier) {
 
 	ASSERT_TRUE(linq(data).contains("World"));
 	ASSERT_FALSE(linq(data).contains("notexistent"));
+}
+
+TEST(LINQTest, Params) {
+	std::vector<std::string> vector { "Hello", "World", "how", "are", "you", "?" };
+	std::set<std::string> set { "Hello", "World", "how", "are", "you", "?" };
+	std::list<std::string> list { "Hello", "World", "how", "are", "you", "?" };
+	std::forward_list<std::string> fwdlist { "Hello", "World", "how", "are", "you", "?" };
+	std::array<std::string, 6> stdarray { "Hello", "World", "how", "are", "you", "?" };
+	std::string carray[6] = { "Hello", "World", "how", "are", "you", "?" };
+
+	ASSERT_EQ(6, linq(vector).count());
+	ASSERT_EQ(6, linq(set).count());
+	ASSERT_EQ(6, linq(list).count());
+	ASSERT_EQ(6, linq(fwdlist).count());
+	ASSERT_EQ(6, linq(stdarray).count());
+	ASSERT_EQ(6, linq(carray).count());
+}
+
+TEST(LINQTest, Except) {
+	std::vector<std::string> vector{ "Hello", "World", "how", "are", "you", "?" };
+	std::set<std::string> set{ "World", "are", "you" };
+	
+	auto res = linq(vector).except(set).to_vector();
+	ASSERT_EQ(3, res.size());
+	ASSERT_EQ("Hello", res[0]);
+	ASSERT_EQ("how", res[1]);
+	ASSERT_EQ("?", res[2]);
+}
+
+TEST(LINQTest, Result) {
+	std::vector<std::string> data{ "Hello", "World", "how", "are", "you", "?" };
+
+	auto vector = linq(data).to_vector();
+	auto list = linq(data).to_list();
+	auto fwdlist = linq(data).to_forward_list();
+	auto stack = linq(data).to_stack();
+	auto set = linq(data).to_set();
+	ASSERT_EQ(6, vector.size());
+	ASSERT_EQ(6, list.size());
+	ASSERT_EQ(6, linq(fwdlist).count());
+	ASSERT_EQ(6, stack.size());
+	ASSERT_EQ(6, set.size());
 }

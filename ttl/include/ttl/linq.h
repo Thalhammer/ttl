@@ -4,6 +4,9 @@
 #include <map>
 #include <vector>
 #include <set>
+#include <list>
+#include <forward_list>
+#include <stack>
 
 namespace thalhammer {
 	namespace linq_detail {
@@ -52,6 +55,13 @@ namespace thalhammer {
 				return orderiterator<T, Func, comparer>(func, *this);
 			}
 
+			template<typename U>
+			auto except(const U& other) {
+				return where([&other](const T& elem) {
+					return std::cend(other) == std::find(std::cbegin(other), std::cend(other), elem);
+				});
+			}
+
 			template<typename Func>
 			auto orderby_descending(Func func) {
 				struct comparer {
@@ -69,6 +79,48 @@ namespace thalhammer {
 				std::vector<T> res;
 				do {
 					res.push_back(this->element());
+				} while (next());
+				return res;
+			}
+
+			std::set<T> to_set() {
+				if (is_end())
+					return{};
+				std::set<T> res;
+				do {
+					res.insert(this->element());
+				} while (next());
+				return res;
+			}
+
+			std::list<T> to_list() {
+				if (is_end())
+					return{};
+				std::list<T> res;
+				do {
+					res.push_back(this->element());
+				} while (next());
+				return res;
+			}
+
+			std::forward_list<T> to_forward_list() {
+				if (is_end())
+					return{};
+				std::forward_list<T> res;
+				res.push_front(this->element());
+				auto it = res.cbegin();
+				while(next()) {
+					it = res.insert_after(it, this->element());
+				}
+				return res;
+			}
+
+			std::stack<T> to_stack() {
+				if (is_end())
+					return{};
+				std::stack<T> res;
+				do {
+					res.push(this->element());
 				} while (next());
 				return res;
 			}
@@ -363,6 +415,7 @@ namespace thalhammer {
 			}
 		};
 	}
+
 	template<typename T, typename Iterator>
 	inline auto linq(Iterator start, Iterator end) {
 		return linq_detail::sourceiterator<T, Iterator>(start, end);
@@ -370,6 +423,31 @@ namespace thalhammer {
 
 	template<typename T>
 	inline auto linq(const std::vector<T>& data) {
+		return linq<T>(std::cbegin(data), std::cend(data));
+	}
+
+	template<typename T>
+	inline auto linq(const std::set<T>& data) {
+		return linq<T>(std::cbegin(data), std::cend(data));
+	}
+
+	template<typename T>
+	inline auto linq(const std::list<T>& data) {
+		return linq<T>(std::cbegin(data), std::cend(data));
+	}
+
+	template<typename T>
+	inline auto linq(const std::forward_list<T>& data) {
+		return linq<T>(std::cbegin(data), std::cend(data));
+	}
+
+	template<typename T, size_t Num>
+	inline auto linq(const std::array<T, Num>& data) {
+		return linq<T>(std::cbegin(data), std::cend(data));
+	}
+
+	template<typename T, size_t Num>
+	inline auto linq(const T (&data)[Num]) {
 		return linq<T>(std::cbegin(data), std::cend(data));
 	}
 }
