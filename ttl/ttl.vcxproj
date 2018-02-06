@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AnyTest.cpp" />
+    <ClCompile Include="BinaryReaderWriterTest.cpp" />
     <ClCompile Include="ConfigTest.cpp" />
     <ClCompile Include="DynLibTest.cpp" />
     <ClCompile Include="LINQTest.cpp" />
@@ -165,6 +166,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ttl\any.h" />
+    <ClInclude Include="include\ttl\binary_reader.h" />
+    <ClInclude Include="include\ttl\binary_writer.h" />
     <ClInclude Include="include\ttl\config.h" />
     <ClInclude Include="include\ttl\dynlib.h" />
     <ClInclude Include="include\ttl\linq.h" />

@@ -54,6 +54,9 @@
     <ClCompile Include="RCUTest.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="BinaryReaderWriterTest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ttl\config.h">
@@ -96,6 +99,12 @@
       <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
     <ClInclude Include="include\ttl\rcu.h">
+      <Filter>Headerdateien\ttl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\binary_writer.h">
+      <Filter>Headerdateien\ttl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\binary_reader.h">
       <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
   </ItemGroup>
