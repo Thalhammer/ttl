@@ -153,6 +153,7 @@
     <ClCompile Include="AnyTest.cpp" />
     <ClCompile Include="BinaryReaderWriterTest.cpp" />
     <ClCompile Include="ConfigTest.cpp" />
+    <ClCompile Include="CRCTest.cpp" />
     <ClCompile Include="DynLibTest.cpp" />
     <ClCompile Include="LINQTest.cpp" />
     <ClCompile Include="LoggerTest.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="include\ttl\binary_reader.h" />
     <ClInclude Include="include\ttl\binary_writer.h" />
     <ClInclude Include="include\ttl\config.h" />
+    <ClInclude Include="include\ttl\crc.h" />
     <ClInclude Include="include\ttl\dynlib.h" />
     <ClInclude Include="include\ttl\linq.h" />
     <ClInclude Include="include\ttl\logger.h" />
