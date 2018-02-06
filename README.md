@@ -56,6 +56,9 @@ A class to allow passing around information about a type (basicly everything in 
 #### binary_reader and binary_writer ####
 A class used to write and read binary data into/from a stream oriented on C#'s BinaryWriter.
 
+#### crc ####
+High performance templated CRC generation.
+
 ## Building ##
 
 Since ttl is a header only library there is not really something to build.
