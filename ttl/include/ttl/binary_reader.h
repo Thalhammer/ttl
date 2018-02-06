@@ -40,7 +40,7 @@ namespace thalhammer
 			uint64_t res = 0;
 			uint8_t t = read_uint8();
 			while (t & 0x80) {
-				res = (res << 7) | t & 0x7f;
+				res = (res << 7) | (t & 0x7f);
 				t = read_uint8();
 			}
 			res = (res << 7) | t;
