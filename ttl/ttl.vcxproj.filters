@@ -60,6 +60,9 @@
     <ClCompile Include="CRCTest.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="ModuleTest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ttl\config.h">
@@ -111,6 +114,12 @@
       <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
     <ClInclude Include="include\ttl\crc.h">
+      <Filter>Headerdateien\ttl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\to_string.h">
+      <Filter>Headerdateien\ttl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\module.h">
       <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
   </ItemGroup>
