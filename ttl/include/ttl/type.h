@@ -371,15 +371,15 @@ namespace thalhammer
 				return nullptr;
 			}
 
-			template<unsigned long int Rank>
-			static typename std::enable_if<Rank != 0, unsigned long int>::type extent_impl(unsigned long int i) noexcept {
+			template<size_t Rank>
+			static typename std::enable_if<Rank != 0, unsigned long int>::type extent_impl(size_t i) noexcept {
 				if(i == Rank)
 					return std::extent<T, Rank>::value;
 				return extent_impl<Rank-1>(i);
 			}
 
-			template<unsigned long int Rank>
-			static typename std::enable_if<Rank == 0, unsigned long int>::type extent_impl(unsigned long int i) noexcept {
+			template<size_t Rank>
+			static typename std::enable_if<Rank == 0, unsigned long int>::type extent_impl(size_t i) noexcept {
 				return std::extent<T, 0>::value;
 			}
 

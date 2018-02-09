@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include "type.h"
+#include "to_string.h"
 #ifdef __cpp_lib_any
 #include <any>
 #endif
@@ -22,7 +23,7 @@ namespace thalhammer
 		{
 			template<typename U>
 			static constexpr auto check(U*)
-				-> typename std::is_same<std::decay_t<decltype(std::to_string(std::declval<U>()))>, std::string>::type;
+				-> typename std::is_same<std::decay_t<decltype(to_string(std::declval<U>()))>, std::string>::type;
 
 			template<typename> static constexpr std::false_type check(...);
 

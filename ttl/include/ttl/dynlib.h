@@ -58,9 +58,9 @@ namespace thalhammer {
 #endif
 	};
 
-	dynlib::dynlib() {
-		_native_handle = nullptr;
-	}
+	dynlib::dynlib()
+		: _native_handle(nullptr)
+	{}
 
 #ifdef _WIN32
 	dynlib::~dynlib() {
@@ -69,6 +69,9 @@ namespace thalhammer {
 	}
 
 	bool dynlib::open(const std::string& file) {
+		if (_native_handle != nullptr) {
+			FreeLibrary(_native_handle);
+		}
 		_native_handle = LoadLibraryA(file.c_str());
 		if (_native_handle == nullptr) {
 			this->_errormsg = last_error();
@@ -112,6 +115,8 @@ namespace thalhammer {
 		// Use PE header to find export names
 		// More information: https://msdn.microsoft.com/en-us/library/windows/desktop/ms680547(v=vs.85).aspx
 
+		if (_native_handle == nullptr) return false;
+
 		const uint8_t* image = (const uint8_t*)_native_handle;
 		PIMAGE_NT_HEADERS header = (PIMAGE_NT_HEADERS)image;
 		if (image[0] == 'M' && image[1] == 'Z') {
@@ -132,6 +137,8 @@ namespace thalhammer {
 	}
 
 	bool dynlib::open(const std::string& file) {
+		if (_native_handle != nullptr)
+			dlclose(_native_handle);
 		_native_handle = dlopen(file.c_str(), RTLD_NOW);
 		if (_native_handle == nullptr) {
 			this->_errormsg = dlerror();
@@ -151,6 +158,8 @@ namespace thalhammer {
 
 	bool dynlib::impl_get_symbols(std::set<std::string>& tab) {
 		tab.clear();
+
+		if (_native_handle == nullptr) return false;
 
 		auto get_ptr = [](const ElfW(Dyn)* dyn, ElfW(Word) tag)-> void* {
 			for (; dyn->d_tag != DT_NULL; ++dyn) {
