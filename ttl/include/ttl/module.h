@@ -8,6 +8,7 @@
 #include <dlfcn.h>
 #include <elf.h>
 #include <link.h>
+#include <linux/limits.h>
 #endif
 
 namespace thalhammer {
@@ -67,9 +68,12 @@ namespace thalhammer {
 		static module from_address(void* address) {
 			module res;
 			Dl_info info;
-			if (dladdr((void*)addr, &info) == 0)
-				throw std::runtime_error("Failed to get module")
-				res.filename = info.dli_fname;
+			if (dladdr((void*)address, &info) == 0)
+				throw std::runtime_error("Failed to get module");
+			res.filename.resize(PATH_MAX);
+			if (realpath(info.dli_fname, (char*)res.filename.data()) == NULL)
+				throw std::runtime_error("Failed to get module path");
+			res.filename.resize(strlen(res.filename.c_str()));
 			return res;
 		}
 

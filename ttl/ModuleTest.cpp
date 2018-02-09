@@ -10,7 +10,7 @@ TEST(ModuleTest, GetModule) {
 	module entry = module::entry_module();
 	module calling = module::calling_module();
 	module current = module::current_module();
-	module fn = module::from_address(&testfn);
+	module fn = module::from_address((void*)&testfn);
 
 	ASSERT_NE("", entry.get_filename());
 	ASSERT_EQ(entry.get_filename(), calling.get_filename());
