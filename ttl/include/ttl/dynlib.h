@@ -122,10 +122,17 @@ namespace thalhammer {
 		if (image[0] == 'M' && image[1] == 'Z') {
 			header = (const PIMAGE_NT_HEADERS)(*((uint32_t*)(&image[0x3c])) + image);
 		}
+		if (header->Signature != 0x00004550)
+			return false;
+		if (header->FileHeader.SizeOfOptionalHeader < sizeof(decltype(header->OptionalHeader)))
+			return false;
+		if (header->OptionalHeader.DataDirectory[0].Size < sizeof(IMAGE_EXPORT_DIRECTORY))
+			return false;
 		// Get Export directory
 		auto etable = (IMAGE_EXPORT_DIRECTORY*)(image + header->OptionalHeader.DataDirectory[0].VirtualAddress);
 		// Get name indexes and iterate over them
 		auto ptr = (uint32_t*)(&image[etable->AddressOfNames]);
+		// 4096 is the maximum length of symbols allowed by ms compilers
 		for (size_t i = 0; i < etable->NumberOfNames; i++)
 			table.insert((const char*)(&image[ptr[i]]));
 		return true;
