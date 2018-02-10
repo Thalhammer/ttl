@@ -22,7 +22,7 @@ namespace thalhammer {
 		static module from_handle(native_handle_t hdl) {
 			module res;
 			res.filename.resize(MAX_PATH);
-			if (GetModuleFileNameA(hdl, (LPSTR)res.filename.data(), res.filename.size()) == 0)
+			if (GetModuleFileNameA(hdl, (LPSTR)res.filename.data(), (DWORD)res.filename.size()) == 0)
 				throw std::runtime_error("Failed to get filename");
 			res.filename.resize(strlen(res.filename.c_str()));
 			return res;
@@ -37,7 +37,7 @@ namespace thalhammer {
 			try {
 				m = module::from_handle(cmodule);
 			}
-			catch (const std::exception& e) {
+			catch (const std::exception&) {
 				FreeModule(cmodule);
 				throw;
 			}
