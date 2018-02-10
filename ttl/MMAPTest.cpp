@@ -7,7 +7,7 @@ using namespace thalhammer;
 TEST(MMAPTest, MapFile) {
 	const std::string data = "Hello World, how are you ?";
 
-	mmap map;
+	thalhammer::mmap map;
 
 	ASSERT_EQ(nullptr, map.data());
 	ASSERT_FALSE(map.is_valid());
@@ -21,7 +21,7 @@ TEST(MMAPTest, MapFile) {
 }
 
 TEST(MMAPTest, MapFileFailed) {
-	mmap map;
+	thalhammer::mmap map;
 
 	ASSERT_EQ(nullptr, map.data());
 	ASSERT_FALSE(map.is_valid());
@@ -34,10 +34,10 @@ TEST(MMAPTest, MapFileConstructor) {
 	const std::string data = "Hello World, how are you ?";
 
 	ASSERT_THROW([]() {
-		mmap map("test_data/mmap_test_not_existent.txt");
+		thalhammer::mmap map("test_data/mmap_test_not_existent.txt");
 	}(), std::runtime_error);
 
-	mmap map("test_data/mmap_test.txt");
+	thalhammer::mmap map("test_data/mmap_test.txt");
 	ASSERT_TRUE(map.is_valid());
 	ASSERT_NE(nullptr, map.data());
 	ASSERT_EQ(map.data(), &map[0]);
