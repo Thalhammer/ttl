@@ -69,6 +69,9 @@
     <ClCompile Include="MMAPTest.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="PredicateTest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ttl\config.h">
@@ -129,6 +132,9 @@
       <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
     <ClInclude Include="include\ttl\mmap.h">
+      <Filter>Headerdateien\ttl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\predicate.h">
       <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
   </ItemGroup>

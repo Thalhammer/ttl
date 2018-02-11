@@ -159,6 +159,7 @@
     <ClCompile Include="LoggerTest.cpp" />
     <ClCompile Include="MMAPTest.cpp" />
     <ClCompile Include="ModuleTest.cpp" />
+    <ClCompile Include="PredicateTest.cpp" />
     <ClCompile Include="ProcessTest.cpp" />
     <ClCompile Include="RCUTest.cpp" />
     <ClCompile Include="SignalTest.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="include\ttl\module.h" />
     <ClInclude Include="include\ttl\noncopyable.h" />
     <ClInclude Include="include\ttl\noop_mutex.h" />
+    <ClInclude Include="include\ttl\predicate.h" />
     <ClInclude Include="include\ttl\process.h" />
     <ClInclude Include="include\ttl\rcu.h" />
     <ClInclude Include="include\ttl\signal.h" />

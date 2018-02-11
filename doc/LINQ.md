@@ -12,6 +12,12 @@ int data[] = { 10, 20, 50, 20 };
 auto sum = linq(data).where([](int i) { return i < 50; }).sum();
 ```
 
+Same example using predicates:
+```cpp
+int data[] = { 10, 20, 50, 20 };
+auto sum = linq(data).where(lt(50)).sum();
+```
+
 You can also modify elements on the fly:
 ```cpp
 int data[] = { 30, 10, 20 };
@@ -32,7 +38,7 @@ There are some things to keep aware of.
 #### Storing queries
 The following code would be invalid:
 ```cpp
-auto q = linq(data).where([](int i) { return i < 50; });
+auto q = linq(data).where(lt(50));
 auto result = q.sum();
 ```
 Because linq returns a iterator that is referenced by the iterator returned by where.
