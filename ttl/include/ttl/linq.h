@@ -40,9 +40,23 @@ namespace thalhammer {
 				return selectiterator<T, Func>(func, *this);
 			}
 
+			template<typename Type, typename U = T, class = std::enable_if<std::is_class<U>::value>::type>
+			auto select(Type U::*ptr) {
+				return select([ptr](const auto& e) {
+					return e.*ptr;
+				});
+			}
+
 			template<typename Func>
 			auto groupby(Func func) {
 				return groupiterator<T, Func>(func, *this);
+			}
+
+			template<typename Type, typename U = T, class = std::enable_if<std::is_class<U>::value>::type>
+			auto groupby(Type U::*ptr) {
+				return groupby([ptr](const auto& e) {
+					return e.*ptr;
+				});
 			}
 
 			template<typename Func>
@@ -54,6 +68,25 @@ namespace thalhammer {
 					}
 				};
 				return orderiterator<T, Func, comparer>(func, *this);
+			}
+
+			template<typename Type, typename U = T, class = std::enable_if<std::is_class<U>::value>::type>
+			auto orderby(Type U::*ptr) {
+				return orderby([ptr](const auto& e) {
+					return e.*ptr;
+				});
+			}
+
+			auto order() {
+				return orderby([](const auto& e) {
+					return e;
+				});
+			}
+
+			auto order_descending() {
+				return orderby_descending([](const auto& e) {
+					return e;
+				});
 			}
 
 			template<typename U>
@@ -72,6 +105,13 @@ namespace thalhammer {
 					}
 				};
 				return orderiterator<T, Func, comparer>(func, *this);
+			}
+
+			template<typename Type, typename U = T, class = std::enable_if<std::is_class<U>::value>::type>
+			auto orderby_descending(Type U::*ptr) {
+				return orderby_descending([ptr](const auto& e) {
+					return e.*ptr;
+				});
 			}
 
 			std::vector<T> to_vector() {
@@ -124,6 +164,16 @@ namespace thalhammer {
 					res.push(this->element());
 				} while (next());
 				return res;
+			}
+
+			template<typename Func>
+			void for_each(Func fn) {
+				if (is_end())
+					return;
+				do {
+					if (!fn(this->element()))
+						break;
+				} while (next());
 			}
 
 			auto single() {

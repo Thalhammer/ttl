@@ -189,6 +189,24 @@ TEST(LINQTest, Select) {
 	ASSERT_EQ("20", res[2]);
 }
 
+TEST(LINQTest, SelectMemberPtr) {
+	struct Employee {
+		std::string name;
+		uint64_t department;
+	};
+
+	std::vector<Employee> data{ { "Max", 1 },{ "Muster", 2 },{ "Mann", 1 } };
+
+	auto res = linq(data)
+		.select(&Employee::name)
+		.to_vector();
+
+	ASSERT_EQ(3, res.size());
+	ASSERT_EQ("Max", res[0]);
+	ASSERT_EQ("Muster", res[1]);
+	ASSERT_EQ("Mann", res[2]);
+}
+
 TEST(LINQTest, GroupBy) {
 	struct Employee {
 		std::string name;
@@ -214,7 +232,32 @@ TEST(LINQTest, GroupBy) {
 	ASSERT_EQ("Muster", res[1].second[0].name);
 }
 
-TEST(LINQTest, Order) {
+TEST(LINQTest, GroupByMemberPtr) {
+	struct Employee {
+		std::string name;
+		uint64_t department;
+	};
+
+	std::vector<Employee> data{ { "Max", 1 },{ "Muster", 2 },{ "Mann", 1 } };
+
+	auto res = linq(data)
+		.groupby(&Employee::department)
+		.to_vector();
+
+	ASSERT_EQ(2, res.size());
+	ASSERT_EQ(1, res[0].first);
+	ASSERT_EQ(2, res[0].second.size());
+	ASSERT_EQ(2, res[1].first);
+	ASSERT_EQ(1, res[1].second.size());
+	ASSERT_EQ(1, res[0].second[0].department);
+	ASSERT_EQ(1, res[0].second[1].department);
+	ASSERT_EQ(2, res[1].second[0].department);
+	ASSERT_EQ("Max", res[0].second[0].name);
+	ASSERT_EQ("Mann", res[0].second[1].name);
+	ASSERT_EQ("Muster", res[1].second[0].name);
+}
+
+TEST(LINQTest, OrderBy) {
 	struct Employee {
 		std::string name;
 		uint64_t department;
@@ -239,6 +282,55 @@ TEST(LINQTest, Order) {
 	ASSERT_EQ("C", res[0].name);
 	ASSERT_EQ("B", res[1].name);
 	ASSERT_EQ("A", res[2].name);
+}
+
+TEST(LINQTest, OrderByMemberPtr) {
+	struct Employee {
+		std::string name;
+		uint64_t department;
+	};
+
+	std::vector<Employee> data{ { "B", 1 },{ "C", 2 },{ "A", 1 } };
+
+	auto res = linq(data)
+		.orderby(&Employee::name)
+		.to_vector();
+
+	ASSERT_EQ(3, res.size());
+	ASSERT_EQ("A", res[0].name);
+	ASSERT_EQ("B", res[1].name);
+	ASSERT_EQ("C", res[2].name);
+
+	res = linq(data)
+		.orderby_descending(&Employee::name)
+		.to_vector();
+
+	ASSERT_EQ(3, res.size());
+	ASSERT_EQ("C", res[0].name);
+	ASSERT_EQ("B", res[1].name);
+	ASSERT_EQ("A", res[2].name);
+}
+
+TEST(LINQTest, Order) {
+	std::vector<std::string> data{ "B", "C", "A" };
+
+	auto res = linq(data)
+		.order()
+		.to_vector();
+
+	ASSERT_EQ(3, res.size());
+	ASSERT_EQ("A", res[0]);
+	ASSERT_EQ("B", res[1]);
+	ASSERT_EQ("C", res[2]);
+
+	res = linq(data)
+		.order_descending()
+		.to_vector();
+
+	ASSERT_EQ(3, res.size());
+	ASSERT_EQ("C", res[0]);
+	ASSERT_EQ("B", res[1]);
+	ASSERT_EQ("A", res[2]);
 }
 
 TEST(LINQTest, AnonStruct) {
@@ -320,3 +412,29 @@ TEST(LINQTest, Result) {
 	ASSERT_EQ(6, stack.size());
 	ASSERT_EQ(6, set.size());
 }
+
+TEST(LINQTest, Foreach) {
+	std::vector<std::string> data{ "Hello", "World", "how", "are", "you", "?" };
+
+	bool how_found = false;
+	bool are_found = false;
+	bool you_found = false;
+	linq(data)
+		.where([](auto& e) { return e.size() == 3; })
+		.for_each([&](auto& e) {
+		if (e == "how") {
+			how_found = true;
+		}
+		else if (e == "are") {
+			are_found = true;
+		}
+		else if (e == "you") {
+			you_found = true;
+		}
+		return true;
+	});
+	ASSERT_TRUE(how_found);
+	ASSERT_TRUE(are_found);
+	ASSERT_TRUE(you_found);
+}
+

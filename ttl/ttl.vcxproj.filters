@@ -16,6 +16,9 @@
     <Filter Include="Headerdateien\ttl">
       <UniqueIdentifier>{a95d3279-c2e5-42b7-94cc-8015ac661f97}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Documentation">
+      <UniqueIdentifier>{c40a898c-6647-4b53-89f2-6bc21cb1c76a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConfigTest.cpp">
@@ -128,5 +131,10 @@
     <ClInclude Include="include\ttl\mmap.h">
       <Filter>Headerdateien\ttl</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\doc\LINQ.md">
+      <Filter>Documentation</Filter>
+    </None>
   </ItemGroup>
 </Project>

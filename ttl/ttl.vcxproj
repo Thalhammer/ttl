@@ -189,6 +189,9 @@
     <ClInclude Include="include\ttl\to_string.h" />
     <ClInclude Include="include\ttl\type.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\doc\LINQ.md" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
