@@ -24,7 +24,8 @@ DEBFOLDER = $(OUTNAME)_$(DEBVERSION)
 release: FLAGS += -O2 -march=native
 release: $(OUTFILE)
 
-debug: FLAGS += -g -O0 -D_LIBCPP_DEBUG=1
+debug: FLAGS += -g -O0 -D_LIBCPP_DEBUG=1 -fprofile-arcs -ftest-coverage
+debug: LINKFLAGS += -lgcov --coverage
 debug: $(OUTFILE)
 
 $(OUTFILE): $(OBJ)
