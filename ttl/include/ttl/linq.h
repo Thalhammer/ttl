@@ -40,7 +40,7 @@ namespace thalhammer {
 				return selectiterator<T, Func>(func, *this);
 			}
 
-			template<typename Type, typename U = T, class = std::enable_if<std::is_class<U>::value>::type>
+			template<typename Type, typename U = T, class = typename std::enable_if<std::is_class<U>::value>::type>
 			auto select(Type U::*ptr) {
 				return select([ptr](const auto& e) {
 					return e.*ptr;
@@ -52,7 +52,7 @@ namespace thalhammer {
 				return groupiterator<T, Func>(func, *this);
 			}
 
-			template<typename Type, typename U = T, class = std::enable_if<std::is_class<U>::value>::type>
+			template<typename Type, typename U = T, class = typename std::enable_if<std::is_class<U>::value>::type>
 			auto groupby(Type U::*ptr) {
 				return groupby([ptr](const auto& e) {
 					return e.*ptr;
@@ -70,7 +70,7 @@ namespace thalhammer {
 				return orderiterator<T, Func, comparer>(func, *this);
 			}
 
-			template<typename Type, typename U = T, class = std::enable_if<std::is_class<U>::value>::type>
+			template<typename Type, typename U = T, class = typename std::enable_if<std::is_class<U>::value>::type>
 			auto orderby(Type U::*ptr) {
 				return orderby([ptr](const auto& e) {
 					return e.*ptr;
@@ -107,7 +107,7 @@ namespace thalhammer {
 				return orderiterator<T, Func, comparer>(func, *this);
 			}
 
-			template<typename Type, typename U = T, class = std::enable_if<std::is_class<U>::value>::type>
+			template<typename Type, typename U = T, class = typename std::enable_if<std::is_class<U>::value>::type>
 			auto orderby_descending(Type U::*ptr) {
 				return orderby_descending([ptr](const auto& e) {
 					return e.*ptr;
