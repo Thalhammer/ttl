@@ -248,6 +248,8 @@ namespace thalhammer {
 			template<class U = T, class = typename std::enable_if<std::is_integral<U>::value>::type>
 			auto sum() {
 				T res = 0;
+				if (is_end())
+					return res;
 				do { res += this->element(); } while (next());
 				return res;
 			}
