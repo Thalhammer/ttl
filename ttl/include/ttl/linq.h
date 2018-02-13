@@ -29,6 +29,7 @@ namespace thalhammer {
 			virtual const T& element() = 0;
 			virtual bool next() = 0;
 			virtual bool is_end() = 0;
+			virtual ~iterator() {}
 
 			template<typename Func>
 			auto where(Func func) {
