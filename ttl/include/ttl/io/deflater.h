@@ -17,13 +17,13 @@ namespace thalhammer {
 				zlib
 			};
 			enum class strategy {
-				default,
+				default_strategy,
 				filtered,
 				huffman_only,
 				run_length_encoding
 			};
 
-			deflater(int level = 9, int windowBits = 15, wrapper w = wrapper::zlib, int memlevel = 8, strategy strat = strategy::default) {
+			deflater(int level = 9, int windowBits = 15, wrapper w = wrapper::zlib, int memlevel = 8, strategy strat = strategy::default_strategy) {
 				if (level < 0 || level > 9)
 					throw std::invalid_argument("level out of range");
 				if (windowBits < 9 || windowBits > 15)
@@ -43,7 +43,7 @@ namespace thalhammer {
 				case strategy::filtered: istrat = Z_FILTERED; break;
 				case strategy::huffman_only: istrat = Z_HUFFMAN_ONLY; break;
 				case strategy::run_length_encoding: istrat = Z_RLE; break;
-				case strategy::default:
+				case strategy::default_strategy:
 				default:
 					istrat = Z_DEFAULT_STRATEGY; break;
 				}

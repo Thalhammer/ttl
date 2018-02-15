@@ -13,7 +13,7 @@ namespace thalhammer {
 
 			deflater compressor;
 		public:
-			deflate_ostreambuf(std::ostream& ostream, int level = 9, int windowBits = 15, deflater::wrapper w = deflater::wrapper::zlib, int memlevel = 8, deflater::strategy strat = deflater::strategy::default, size_t bufsize = 4096)
+			deflate_ostreambuf(std::ostream& ostream, int level = 9, int windowBits = 15, deflater::wrapper w = deflater::wrapper::zlib, int memlevel = 8, deflater::strategy strat = deflater::strategy::default_strategy, size_t bufsize = 4096)
 				: obuf(bufsize), sink(ostream), compressor(level, windowBits, w, memlevel, strat)
 			{
 				if (bufsize <= 1)
@@ -27,7 +27,7 @@ namespace thalhammer {
 
 			int sync(bool flush) {
 				ptrdiff_t n = pptr() - pbase();
-				pbump(-n);
+				pbump((int)-n);
 
 				compressor.set_input((const uint8_t*)pbase(), n);
 				// Compress and write
@@ -45,7 +45,7 @@ namespace thalhammer {
 
 			void finish() {
 				ptrdiff_t n = pptr() - pbase();
-				pbump(-n);
+				pbump((int)-n);
 
 				compressor.finish();
 				compressor.set_input((const uint8_t*)pbase(), n);
@@ -78,8 +78,8 @@ namespace thalhammer {
 		// Write your plain buffer into a compressed stream
 		class deflate_ostream : public std::ostream, private deflate_ostreambuf {
 		public:
-			deflate_ostream(std::ostream& sink, int level = 9, size_t bufsize = 4096)
-				: deflate_ostreambuf(sink, level, bufsize), std::ostream(this)
+			deflate_ostream(std::ostream& sink, int level = 9, int windowBits = 15, deflater::wrapper w = deflater::wrapper::zlib, int memlevel = 8, deflater::strategy strat = deflater::strategy::default_strategy, size_t bufsize = 4096)
+				: deflate_ostreambuf(sink, level, windowBits, w, memlevel, strat, bufsize), std::ostream(this)
 			{
 			}
 
