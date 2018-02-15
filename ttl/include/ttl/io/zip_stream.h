@@ -54,7 +54,11 @@ namespace thalhammer {
 					stream.write(entry.name.data(), entry.name.size());
 					written += sizeof(fheader) + entry.name.size();
 				}
-				write_stream(fstream, gheader.compressed_size, gheader.uncompressed_size, gheader.crc32, entry.is_compressed());
+				uint32_t csize, usize, crc;
+				write_stream(fstream, csize, usize, crc, entry.is_compressed());
+				gheader.compressed_size = csize;
+				gheader.uncompressed_size = usize;
+				gheader.crc32 = crc;
 				{					
 					zip_internals::data_descriptor descriptor(gheader);
 					stream.write((const char*)&descriptor, sizeof(descriptor));
