@@ -78,6 +78,9 @@
     <ClCompile Include="ZipStreamTest.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="DeflaterTest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ttl\config.h">
@@ -150,6 +153,12 @@
       <Filter>Headerdateien\ttl\io</Filter>
     </ClInclude>
     <ClInclude Include="include\ttl\io\zip_entry.h">
+      <Filter>Headerdateien\ttl\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\io\deflater.h">
+      <Filter>Headerdateien\ttl\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\io\deflate_stream.h">
       <Filter>Headerdateien\ttl\io</Filter>
     </ClInclude>
   </ItemGroup>

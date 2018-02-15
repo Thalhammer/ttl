@@ -41,7 +41,7 @@ TEST(ZipStreamTest, WriteZip) {
 	const time_t time = 1518538020;
 
 	std::ostringstream file;
-	zip_stream zip(file);
+	zip_stream<false> zip(file);
 
 	{
 		zip_entry f;
@@ -65,8 +65,48 @@ TEST(ZipStreamTest, WriteZip) {
 		entry.set_last_modified(time);
 		zip.add_entry(entry);
 	}
+	ASSERT_THROW([&]() {
+		zip_entry entry;
+		entry.set_name("test3.txt");
+		entry.set_last_modified(time);
+		entry.set_compressed(true);
+		std::string content = "Hello World";
+		std::istringstream ss(content);
+		zip.add_entry(entry, ss);
+	}(), std::exception);
 	zip.finish();
 
 	std::string check((char*)test_zip, sizeof(test_zip));
 	ASSERT_EQ(check, file.str());
+}
+
+TEST(ZipStreamTest, WriteZipCompressed) {
+	const time_t time = 1518538020;
+
+	std::ofstream file("test.zip", std::ios::binary);
+	//std::ostringstream file;
+	zip_stream<true> zip(file);
+
+	if(0){
+		zip_entry f;
+		f.set_name("test.txt");
+		f.set_last_modified(time);
+		f.set_compressed(false);
+		std::string content = "Hello World";
+		std::istringstream ss(content);
+		zip.add_entry(f, ss);
+	}
+	{
+		zip_entry f;
+		f.set_name("test2.txt");
+		f.set_last_modified(time);
+		f.set_compressed(true);
+		std::string content = "Hello World";
+		std::istringstream ss(content);
+		zip.add_entry(f, ss);
+	}
+	zip.finish();
+
+	//std::string check((char*)test_zip, sizeof(test_zip));
+	//ASSERT_EQ(check, file.str());
 }

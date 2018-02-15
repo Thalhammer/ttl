@@ -14,6 +14,7 @@ namespace thalhammer {
 			std::string comment;
 			std::string extra;
 			
+			template<bool>
 			friend class zip_stream;
 		public:
 			zip_entry() {

@@ -154,6 +154,7 @@
     <ClCompile Include="BinaryReaderWriterTest.cpp" />
     <ClCompile Include="ConfigTest.cpp" />
     <ClCompile Include="CRCTest.cpp" />
+    <ClCompile Include="DeflaterTest.cpp" />
     <ClCompile Include="DynLibTest.cpp" />
     <ClCompile Include="LINQTest.cpp" />
     <ClCompile Include="LoggerTest.cpp" />
@@ -176,6 +177,8 @@
     <ClInclude Include="include\ttl\config.h" />
     <ClInclude Include="include\ttl\crc.h" />
     <ClInclude Include="include\ttl\dynlib.h" />
+    <ClInclude Include="include\ttl\io\deflater.h" />
+    <ClInclude Include="include\ttl\io\deflate_stream.h" />
     <ClInclude Include="include\ttl\io\zip_entry.h" />
     <ClInclude Include="include\ttl\io\zip_internals.h" />
     <ClInclude Include="include\ttl\io\zip_stream.h" />
