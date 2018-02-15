@@ -18,7 +18,7 @@ namespace thalhammer {
 			{
 				if (bufsize <= 1)
 					throw std::invalid_argument("buffer size must be larger than 1");
-				setp(obuf.data(), obuf.data(), obuf.data() + obuf.size() - 1);
+				setp(obuf.data(), obuf.data() + obuf.size() - 1);
 			}
 
 			~deflate_ostreambuf() {
@@ -76,7 +76,7 @@ namespace thalhammer {
 		};
 
 		// Write your plain buffer into a compressed stream
-		class deflate_ostream : public std::ostream, private deflate_ostreambuf {
+		class deflate_ostream : private deflate_ostreambuf, public std::ostream {
 		public:
 			deflate_ostream(std::ostream& sink, int level = 9, int windowBits = 15, deflater::wrapper w = deflater::wrapper::zlib, int memlevel = 8, deflater::strategy strat = deflater::strategy::default_strategy, size_t bufsize = 4096)
 				: deflate_ostreambuf(sink, level, windowBits, w, memlevel, strat, bufsize), std::ostream(this)
