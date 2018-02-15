@@ -19,6 +19,9 @@
     <Filter Include="Documentation">
       <UniqueIdentifier>{c40a898c-6647-4b53-89f2-6bc21cb1c76a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headerdateien\ttl\io">
+      <UniqueIdentifier>{702b9b9b-f816-44d7-95db-f925a28ef0c8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConfigTest.cpp">
@@ -70,6 +73,12 @@
       <Filter>Quelldateien</Filter>
     </ClCompile>
     <ClCompile Include="PredicateTest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipStreamTest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="DeflaterTest.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -136,6 +145,21 @@
     </ClInclude>
     <ClInclude Include="include\ttl\predicate.h">
       <Filter>Headerdateien\ttl</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\io\zip_stream.h">
+      <Filter>Headerdateien\ttl\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\io\zip_internals.h">
+      <Filter>Headerdateien\ttl\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\io\zip_entry.h">
+      <Filter>Headerdateien\ttl\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\io\deflater.h">
+      <Filter>Headerdateien\ttl\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\io\deflate_stream.h">
+      <Filter>Headerdateien\ttl\io</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -11,7 +11,7 @@ GTEST = /usr/src/gtest/src/gtest-all.cc /usr/src/gtest/src/gtest_main.cc
 FLAGS = -fPIC -Wall -Wno-unknown-pragmas -I include
 CXXFLAGS = -std=c++14
 CFLAGS = 
-LINKFLAGS = -I /usr/src/gtest/ $(GTEST) -ldl -pthread
+LINKFLAGS = -I /usr/src/gtest/ $(GTEST) -lz -ldl -pthread
 
 OUTNAME = libttl
 OUTFILE = test
