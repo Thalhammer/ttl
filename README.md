@@ -59,6 +59,16 @@ A class used to write and read binary data into/from a stream oriented on C#'s B
 #### crc ####
 High performance templated CRC generation.
 
+#### deflater ####
+Wrapper around zlib deflate. You need to link against zlib if you use this.
+
+#### deflate_ostream ####
+Streamwrapper around zlib deflate.
+
+#### zip_stream ####
+Allows you to create zip archives in a streaming way. Can be used both with and without compression.
+Both source and sink streams do not need to be seekable and you do not need to know source size/crc values.
+
 ## Building ##
 
 Since ttl is a header only library there is not really something to build.
