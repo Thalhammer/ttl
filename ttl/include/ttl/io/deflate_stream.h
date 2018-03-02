@@ -114,7 +114,6 @@ namespace thalhammer {
 				if (gptr() < egptr())
 					return traits_type::to_int_type(*gptr());
 
-				char *base = buf.data();
 				assert(gptr() == egptr());
 				if (buf.size() == put_back)
 					buf.resize(put_back + readsize * 2);
