@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <ttl/dynlib.h>
+#include "include/ttl/dynlib.h"
 
 using thalhammer::dynlib;
 

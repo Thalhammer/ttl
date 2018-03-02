@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <fstream>
 
-#include <ttl/io/zip_stream.h>
+#include "include/ttl/io/zip_stream.h"
 
 using thalhammer::io::zip_stream;
 using thalhammer::io::zip_entry;

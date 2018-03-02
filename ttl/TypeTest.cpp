@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <ttl/type.h>
+#include "include/ttl/type.h"
 
 using thalhammer::type;
 

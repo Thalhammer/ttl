@@ -3,6 +3,7 @@
 #include <streambuf>
 #include <vector>
 #include <array>
+#include <cassert>
 #include "deflater.h"
 
 namespace thalhammer {
@@ -85,6 +86,70 @@ namespace thalhammer {
 
 			void finish() {
 				deflate_ostreambuf::finish();
+			}
+		};
+
+		class deflate_istreambuf : public std::streambuf {
+			size_t put_back;
+			size_t readsize;
+			std::vector<char> buf;
+			std::istream& source;
+
+			deflater compressor;
+		public:
+			deflate_istreambuf(std::istream& istream, int level = 9, int windowBits = 15, deflater::wrapper w = deflater::wrapper::zlib, int memlevel = 8, deflater::strategy strat = deflater::strategy::default_strategy, size_t preadsize = 4096, size_t pback = 8)
+				: put_back(std::max(pback, size_t(1))), readsize(preadsize), buf(put_back), source(istream), compressor(level, windowBits, w, memlevel, strat)
+			{
+				if (readsize <= 1)
+					throw std::invalid_argument("readsize must be larger than 1");
+				auto end = buf.data() + buf.size();
+				setg(buf.data(), end, end);
+			}
+
+			~deflate_istreambuf() {
+			}
+
+		private:
+			std::streambuf::int_type underflow() override {
+				if (gptr() < egptr())
+					return traits_type::to_int_type(*gptr());
+
+				char *base = buf.data();
+				assert(gptr() == egptr());
+				if (buf.size() == put_back)
+					buf.resize(put_back + readsize * 2);
+
+				std::vector<char> rbuf(readsize);
+				rbuf.resize(source.read(rbuf.data(), rbuf.size()).gcount());
+				if (!source)
+					compressor.finish();
+				compressor.set_input(reinterpret_cast<uint8_t*>(rbuf.data()), rbuf.size());
+				compressor.set_output((uint8_t*)buf.data() + put_back, buf.size() - put_back);
+				size_t twritten = 0;
+				while (!compressor.need_input()) {
+					size_t read, written;
+					compressor.compress(read, written);
+					twritten += written;
+					if (compressor.need_output()) {
+						auto osize = buf.size();
+						buf.resize(osize*1.5);
+						compressor.set_output((uint8_t*)buf.data() + osize, buf.size() - osize);
+					}
+				}
+				buf.resize(twritten + put_back);
+				if (twritten == 0 && compressor.finished())
+					return traits_type::eof();
+				setg(buf.data(), buf.data() + put_back, buf.data() + buf.size());
+				return traits_type::to_int_type(*gptr());
+			}
+		};
+
+		// Read compressed data from a plain istream
+		class deflate_istream : private deflate_istreambuf, public std::istream {
+		public:
+			deflate_istream(std::istream& source, int level = 9, int windowBits = 15, deflater::wrapper w = deflater::wrapper::zlib, int memlevel = 8, deflater::strategy strat = deflater::strategy::default_strategy, size_t bufsize = 4096, size_t pback = 8)
+				: deflate_istreambuf(source, level, windowBits, w, memlevel, strat, bufsize, pback), std::istream(this)
+			{
 			}
 		};
 	}

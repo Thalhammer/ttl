@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <ttl/config.h>
+#include "include/ttl/config.h"
 
 using thalhammer::config;
 

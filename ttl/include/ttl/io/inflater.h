@@ -5,10 +5,9 @@
 
 namespace thalhammer {
 	namespace io {
-		class deflater {
+		class inflater {
 			z_stream zlib_stream;
 
-			bool should_finish = false;
 			bool is_finished = false;
 		public:
 			enum class wrapper {
@@ -23,13 +22,9 @@ namespace thalhammer {
 				run_length_encoding
 			};
 
-			deflater(int level = 9, int windowBits = 15, wrapper w = wrapper::zlib, int memlevel = 8, strategy strat = strategy::default_strategy) {
-				if (level < 0 || level > 9)
-					throw std::invalid_argument("level out of range");
+			inflater(int windowBits = 15, wrapper w = wrapper::zlib) {
 				if (windowBits < 9 || windowBits > 15)
 					throw std::invalid_argument("invalid windowBits");
-				if (memlevel < 1 || memlevel > 9)
-					throw std::invalid_argument("memlevel out of range");
 
 				memset(&zlib_stream, 0x00, sizeof(z_stream));
 
@@ -38,47 +33,37 @@ namespace thalhammer {
 				else if (w == wrapper::gzip)
 					windowBits = windowBits + 16;
 
-				int istrat;
-				switch (strat) {
-				case strategy::filtered: istrat = Z_FILTERED; break;
-				case strategy::huffman_only: istrat = Z_HUFFMAN_ONLY; break;
-				case strategy::run_length_encoding: istrat = Z_RLE; break;
-				case strategy::default_strategy:
-				default:
-					istrat = Z_DEFAULT_STRATEGY; break;
-				}
-
-				auto res = deflateInit2(&zlib_stream, level, Z_DEFLATED, windowBits, memlevel, istrat);
+				auto res = inflateInit2(&zlib_stream, windowBits);
 				if (res == Z_VERSION_ERROR)
 					throw std::logic_error("incompatible zlib versions");
 				if (res != Z_OK)
-					throw std::runtime_error("Failed to init zlib deflate");
+					throw std::runtime_error("Failed to init zlib inflate");
 			}
 
-			deflater(const deflater& other) {
+			inflater(const inflater& other) {
 				memset(&zlib_stream, 0x00, sizeof(z_stream));
 
-				auto res = deflateCopy(&zlib_stream, (z_streamp)&other.zlib_stream);
+				auto res = inflateCopy(&zlib_stream, const_cast<z_stream*>(&other.zlib_stream));
 				if (res != Z_OK)
 					throw std::runtime_error("Failed to copy zlib state");
 			}
 
-			deflater& operator=(const deflater& other) {
+			inflater& operator=(const inflater& other) {
 				if (zlib_stream.state != nullptr) {
-					if (deflateEnd(&zlib_stream) != Z_OK)
+					if (inflateEnd(&zlib_stream) != Z_OK)
 						throw std::runtime_error("Failed to end zlib stream");
 				}
 
 				memset(&zlib_stream, 0x00, sizeof(z_stream));
 
-				auto res = deflateCopy(&zlib_stream, (z_streamp)&other.zlib_stream);
+				auto res = inflateCopy(&zlib_stream, const_cast<z_stream*>(&other.zlib_stream));
 				if (res != Z_OK)
 					throw std::runtime_error("Failed to copy zlib state");
 				return *this;
 			}
 
-			~deflater() {
-				deflateEnd(&zlib_stream);
+			~inflater() {
+				inflateEnd(&zlib_stream);
 			}
 
 			void set_input(const uint8_t* ptr, size_t len) {
@@ -99,14 +84,12 @@ namespace thalhammer {
 				return zlib_stream.avail_out == 0;
 			}
 
-			bool compress(size_t& read, size_t& written, bool pflush = false) {
-				int flush = pflush ? Z_FULL_FLUSH : Z_NO_FLUSH;
-				if (should_finish) flush = Z_FINISH;
-				
+			bool uncompress(size_t& read, size_t& written) {
+
 				auto o_in = zlib_stream.avail_in;
 				auto o_out = zlib_stream.avail_out;
-				
-				auto res = deflate(&zlib_stream, flush);
+
+				auto res = inflate(&zlib_stream, Z_NO_FLUSH);
 				if (res == Z_STREAM_ERROR) throw std::runtime_error("Stream error");
 
 				read = o_in - zlib_stream.avail_in;
@@ -117,10 +100,6 @@ namespace thalhammer {
 					return true;
 				}
 				return res == Z_OK;
-			}
-
-			void finish() {
-				should_finish = true;
 			}
 
 			bool finished() const {

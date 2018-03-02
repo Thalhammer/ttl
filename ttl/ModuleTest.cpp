@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <ttl/module.h>
+#include "include/ttl/module.h"
 
 using thalhammer::module;
 

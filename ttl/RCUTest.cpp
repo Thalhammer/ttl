@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <ttl/rcu.h>
+#include "include/ttl/rcu.h"
 
 using namespace thalhammer;
 
