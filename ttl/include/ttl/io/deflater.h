@@ -126,6 +126,32 @@ namespace thalhammer {
 			bool finished() const {
 				return is_finished;
 			}
+
+			static std::vector<uint8_t> compress(const uint8_t* data, size_t dlen) {
+				deflater def;
+				return compress(data, dlen, def);
+			}
+			static std::vector<uint8_t> compress(const uint8_t* data, size_t dlen, deflater& def) {
+				std::vector<uint8_t> buf(dlen);
+				def.set_input(data, dlen);
+				def.set_output(buf.data(), buf.size());
+				size_t twritten = 0;
+				while (!def.finished()) {
+					size_t read = 0, written = 0;
+					if (!def.compress(read, written))
+						throw std::runtime_error("compress returned false");
+					twritten += written;
+					if (def.need_input()) def.finish();
+					if (def.need_output()) {
+						auto osize = buf.size();
+						buf.resize(osize*1.5);
+						def.set_output(buf.data() + osize, buf.size() - osize);
+					}
+				}
+				buf.resize(twritten);
+				buf.shrink_to_fit();
+				return buf;
+			}
 		};
 	}
 }

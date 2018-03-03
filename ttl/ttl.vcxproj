@@ -169,6 +169,7 @@
     <ClCompile Include="TimerTest.cpp" />
     <ClCompile Include="ContractTest.cpp" />
     <ClCompile Include="TypeTest.cpp" />
+    <ClCompile Include="ZipReaderTest.cpp" />
     <ClCompile Include="ZipStreamTest.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +185,7 @@
     <ClInclude Include="include\ttl\io\inflate_stream.h" />
     <ClInclude Include="include\ttl\io\zip_entry.h" />
     <ClInclude Include="include\ttl\io\zip_internals.h" />
+    <ClInclude Include="include\ttl\io\zip_reader.h" />
     <ClInclude Include="include\ttl\io\zip_stream.h" />
     <ClInclude Include="include\ttl\linq.h" />
     <ClInclude Include="include\ttl\logger.h" />

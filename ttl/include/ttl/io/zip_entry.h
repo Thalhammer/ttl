@@ -16,6 +16,7 @@ namespace thalhammer {
 			
 			template<bool>
 			friend class zip_stream;
+			friend class zip_reader;
 		public:
 			zip_entry() {
 				header.version_made = 20;

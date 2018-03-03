@@ -58,6 +58,12 @@ TEST(DeflaterTest, DeflateSmallOutbuf) {
 	ASSERT_TRUE(def.need_input());
 }
 
+TEST(DeflaterTest, DeflateStatic) {
+	auto buf = deflater::compress(reinterpret_cast<const uint8_t*>(test_in.data()), test_in.size());
+	ASSERT_EQ(sizeof(test_out), buf.size());
+	ASSERT_TRUE(memcmp(buf.data(), test_out, sizeof(test_out)) == 0);
+}
+
 TEST(DeflaterTest, DeflateOStream) {
 	std::ostringstream ss;
 	deflate_ostream strm(ss);

@@ -57,6 +57,13 @@ TEST(InflaterTest, InflateSmallOutbuf) {
 	ASSERT_TRUE(inf.finished());
 }
 
+TEST(InflaterTest, InflateStatic) {
+	auto buf = inflater::uncompress(test_in, sizeof(test_in));
+	std::string test(buf.begin(), buf.end());
+	ASSERT_EQ(test_out.size(), test.size());
+	ASSERT_EQ(test_out, test);
+}
+
 TEST(InflaterTest, InflateOStream) {
 	std::ostringstream ss;
 	inflate_ostream strm(ss);
