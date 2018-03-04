@@ -53,7 +53,7 @@ namespace thalhammer {
 					}
 				}
 
-				inline std::unique_ptr<zip_reader::zip_reader_istream> open_stream();
+				inline std::unique_ptr<zip_reader::zip_reader_istream> open_stream(bool cache = true);
 			};
 		private:
 			class zip_reader_istreambuf;
@@ -117,11 +117,12 @@ namespace thalhammer {
 			std::array<char, 4096> buf;
 			reader_entry& entry;
 			size_t offset;
+			bool cache;
 
 			inflater decompressor;
 		public:
-			zip_reader_istreambuf(reader_entry& en)
-				: entry(en), offset(0), decompressor(15, inflater::wrapper::none)
+			zip_reader_istreambuf(reader_entry& en, bool c)
+				: entry(en), offset(0), cache(c), decompressor(15, inflater::wrapper::none)
 			{
 				// Force call to underflow
 				setg(buf.data(), buf.data(), buf.data());
@@ -138,9 +139,8 @@ namespace thalhammer {
 
 				assert(gptr() == egptr());
 				std::lock_guard<std::mutex> lck(entry.mtx);
-				if (entry.is_compressed() && entry.uncompressed.size() <= offset) {
-					assert(entry.uncompressed.size() == offset); // If cache size is smaller than offset something went wrong...
-																 // Decompress into buffer
+				if (entry.is_compressed() && entry.uncompressed.size() != entry.header.uncompressed_size) {
+					// Decompress into buffer
 					decompressor.set_output(reinterpret_cast<uint8_t*>(buf.data()), buf.size());
 					size_t read, written;
 					decompressor.uncompress(read, written);
@@ -148,8 +148,10 @@ namespace thalhammer {
 					if (written == 0 && decompressor.finished())
 						return traits_type::eof();
 
-					entry.uncompressed.resize(entry.uncompressed.size() + written);
-					memcpy(entry.uncompressed.data() + offset, buf.data(), written);
+					if (cache) { // Update cache
+						entry.uncompressed.resize(std::max(entry.uncompressed.size(), offset + written));
+						memcpy(entry.uncompressed.data() + offset, buf.data(), written);
+					}
 					offset += written;
 					setg(buf.data(), buf.data(), buf.data() + written);
 				}
@@ -178,8 +180,8 @@ namespace thalhammer {
 
 		class zip_reader::zip_reader_istream : private zip_reader_istreambuf, public std::istream {
 		public:
-			zip_reader_istream(reader_entry& entry)
-				: zip_reader_istreambuf(entry), std::istream(this)
+			zip_reader_istream(reader_entry& entry, bool cache)
+				: zip_reader_istreambuf(entry, cache), std::istream(this)
 			{
 			}
 		};
@@ -228,8 +230,8 @@ namespace thalhammer {
 			return result;
 		}
 
-		std::unique_ptr<zip_reader::zip_reader_istream> zip_reader::reader_entry::open_stream() {
-			return std::make_unique<zip_reader::zip_reader_istream>(*this);
+		std::unique_ptr<zip_reader::zip_reader_istream> zip_reader::reader_entry::open_stream(bool cache) {
+			return std::make_unique<zip_reader::zip_reader_istream>(*this, cache);
 		}
 	}
 }
