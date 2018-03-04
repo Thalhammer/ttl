@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <ttl/crc.h>
+#include "include/ttl/crc.h"
 
 using namespace thalhammer;
 

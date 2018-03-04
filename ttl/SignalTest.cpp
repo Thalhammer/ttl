@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <ttl/signal.h>
-#include <ttl/noop_mutex.h>
+#include "include/ttl/signal.h"
+#include "include/ttl/noop_mutex.h"
 
 
 TEST(SignalTest, Executed) {

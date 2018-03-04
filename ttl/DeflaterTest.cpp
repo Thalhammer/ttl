@@ -2,11 +2,12 @@
 #include <fstream>
 #include <array>
 
-#include <ttl/io/deflater.h>
-#include <ttl/io/deflate_stream.h>
+#include "include/ttl/io/deflater.h"
+#include "include/ttl/io/deflate_stream.h"
 
 using thalhammer::io::deflater;
 using thalhammer::io::deflate_ostream;
+using thalhammer::io::deflate_istream;
 
 const std::string test_in = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
 const unsigned char test_out[] = {
@@ -36,6 +37,7 @@ TEST(DeflaterTest, Deflate) {
 	ASSERT_TRUE(def.need_input());
 	ASSERT_FALSE(def.need_output());
 
+	ASSERT_EQ(written, sizeof(test_out));
 	ASSERT_TRUE(memcmp(buf.data(), test_out, sizeof(test_out)) == 0);
 }
 
@@ -56,7 +58,13 @@ TEST(DeflaterTest, DeflateSmallOutbuf) {
 	ASSERT_TRUE(def.need_input());
 }
 
-TEST(DeflaterTest, DeflateStream) {
+TEST(DeflaterTest, DeflateStatic) {
+	auto buf = deflater::compress(reinterpret_cast<const uint8_t*>(test_in.data()), test_in.size());
+	ASSERT_EQ(sizeof(test_out), buf.size());
+	ASSERT_TRUE(memcmp(buf.data(), test_out, sizeof(test_out)) == 0);
+}
+
+TEST(DeflaterTest, DeflateOStream) {
 	std::ostringstream ss;
 	deflate_ostream strm(ss);
 	strm << test_in;
@@ -65,4 +73,18 @@ TEST(DeflaterTest, DeflateStream) {
 	auto buf = ss.str();
 	ASSERT_EQ(sizeof(test_out), buf.size());
 	ASSERT_TRUE(memcmp(buf.data(), test_out, sizeof(test_out)) == 0);
+}
+
+TEST(DeflaterTest, DeflateIStream) {
+	std::istringstream ss(test_in);
+	deflate_istream strm(ss);
+
+	std::string res;
+	while (strm) {
+		std::string b(1024, '\0');
+		b.resize(strm.read((char*)b.data(), b.size()).gcount());
+		res += b;
+	}
+	ASSERT_EQ(sizeof(test_out), res.size());
+	ASSERT_TRUE(memcmp(res.data(), test_out, sizeof(test_out)) == 0);
 }

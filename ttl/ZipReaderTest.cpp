@@ -1,9 +1,8 @@
 #include <gtest/gtest.h>
-#include <fstream>
 
-#include "include/ttl/io/zip_stream.h"
+#include "include/ttl/io/zip_reader.h"
 
-using thalhammer::io::zip_stream;
+using thalhammer::io::zip_reader;
 using thalhammer::io::zip_entry;
 
 static unsigned char test_zip[] = {
@@ -52,66 +51,51 @@ static unsigned char test_zip_2[] = {
 	0x00
 };
 
-TEST(ZipStreamTest, WriteZip) {
-	const time_t time = 1518538020;
+TEST(ZipReaderTest, ReadZip) {
+	const time_t time = 1518538078;
 
-	std::ostringstream file;
-	zip_stream<false> zip(file);
+	zip_reader rdr(test_zip, sizeof(test_zip));
+	ASSERT_EQ(3, rdr.get_num_entries());
 
-	{
-		zip_entry f;
-		f.set_name("test.txt");
-		f.set_last_modified(time);
-		std::string content = "Hello World";
-		std::istringstream ss(content);
-		zip.add_entry(f, ss);
-	}
-	{
-		zip_entry e;
-		e.set_name("Directory");
-		e.set_last_modified(time);
-		e.set_directory(true);
-		zip.add_entry(e);
-	}
-	{
-		zip_entry entry;
-		entry.set_name("test2.txt");
-		entry.set_comment("Comment");
-		entry.set_last_modified(time);
-		zip.add_entry(entry);
-	}
-	ASSERT_THROW([&]() {
-		zip_entry entry;
-		entry.set_name("test3.txt");
-		entry.set_last_modified(time);
-		entry.set_compressed(true);
-		std::string content = "Hello World";
-		std::istringstream ss(content);
-		zip.add_entry(entry, ss);
-	}(), std::exception);
-	zip.finish();
+	auto& f1 = rdr.get_entry("test.txt");
+	ASSERT_EQ("test.txt", f1.get_name());
+	ASSERT_EQ(time, f1.get_last_modified());
+	ASSERT_EQ("", f1.get_comment());
+	ASSERT_FALSE(f1.is_directory());
 
-	std::string check((char*)test_zip, sizeof(test_zip));
-	ASSERT_EQ(check, file.str());
+	auto& f2 = rdr.get_entry("Directory");
+	ASSERT_EQ("Directory", f2.get_name());
+	ASSERT_EQ(time, f2.get_last_modified());
+	ASSERT_EQ("", f2.get_comment());
+	ASSERT_TRUE(f2.is_directory());
+
+	auto& f3 = rdr.get_entry("test2.txt");
+	ASSERT_EQ("test2.txt", f3.get_name());
+	ASSERT_EQ(time, f3.get_last_modified());
+	ASSERT_EQ("Comment", f3.get_comment());
+	ASSERT_FALSE(f3.is_directory());
 }
 
-TEST(ZipStreamTest, WriteZipCompressed) {
-	const time_t time = 1518538020;
+static std::string get_all(std::istream& is) {
+	std::ostringstream ss;
+	ss << is.rdbuf();
+	return ss.str();
+}
 
-	std::ostringstream file;
-	zip_stream<true> zip(file);
+TEST(ZipReaderTest, ReadZipContentUncompressed) {
+	zip_reader rdr(test_zip, sizeof(test_zip));
+	ASSERT_EQ(3, rdr.get_num_entries());
+	
+	auto& ftest = rdr.get_entry("test.txt");
+	auto pstrm = ftest.open_stream();
+	ASSERT_EQ("Hello World", get_all(*pstrm));
+}
 
-	{
-		zip_entry f;
-		f.set_name("test2.txt");
-		f.set_last_modified(time);
-		f.set_compressed(true);
-		std::string content = "Hello World";
-		std::istringstream ss(content);
-		zip.add_entry(f, ss);
-	}
-	zip.finish();
+TEST(ZipReaderTest, ReadZipContentCompressed) {
+	zip_reader rdr(test_zip_2, sizeof(test_zip_2));
+	ASSERT_EQ(1, rdr.get_num_entries());
 
-	std::string check((char*)test_zip_2, sizeof(test_zip_2));
-	ASSERT_EQ(check, file.str());
+	auto& ftest = rdr.get_entry("test2.txt");
+	auto pstrm = ftest.open_stream();
+	ASSERT_EQ("Hello World", get_all(*pstrm));
 }

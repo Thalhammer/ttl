@@ -16,6 +16,7 @@ namespace thalhammer {
 			
 			template<bool>
 			friend class zip_stream;
+			friend class zip_reader;
 		public:
 			zip_entry() {
 				header.version_made = 20;
@@ -33,13 +34,18 @@ namespace thalhammer {
 			bool is_directory() const { return (header.attributes_external & 0x10) != 0; }
 			time_t get_last_modified() const {
 				struct tm time;
+				memset(&time, 0x00, sizeof(struct tm));
 				time.tm_sec = (header.last_modified_time & 0x1F) * 2;
 				time.tm_min = (header.last_modified_time >> 5) & 0x3F;
 				time.tm_hour = (header.last_modified_time >> 11) & 0x1f;
 				time.tm_year = ((header.last_modified_date >> 9) & 0x7f) + 80;
-				time.tm_mon = (header.last_modified_date >> 5) & 0x0f;
+				time.tm_mon = ((header.last_modified_date >> 5) & 0x0f) - 1;
 				time.tm_mday = header.last_modified_date & 0x1f;
-				return mktime(&time);
+#ifdef _WIN32
+				return _mkgmtime(&time);
+#else
+				return timegm(&time);
+#endif
 			}
 
 			void set_name(std::string name) {

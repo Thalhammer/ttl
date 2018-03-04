@@ -81,6 +81,12 @@
     <ClCompile Include="DeflaterTest.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="InflaterTest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="ZipReaderTest.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ttl\config.h">
@@ -159,6 +165,15 @@
       <Filter>Headerdateien\ttl\io</Filter>
     </ClInclude>
     <ClInclude Include="include\ttl\io\deflate_stream.h">
+      <Filter>Headerdateien\ttl\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\io\inflater.h">
+      <Filter>Headerdateien\ttl\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\io\inflate_stream.h">
+      <Filter>Headerdateien\ttl\io</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ttl\io\zip_reader.h">
       <Filter>Headerdateien\ttl\io</Filter>
     </ClInclude>
   </ItemGroup>

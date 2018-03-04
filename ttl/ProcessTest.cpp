@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <ttl/process.h>
+#include "include/ttl/process.h"
 
 using thalhammer::process;
 
