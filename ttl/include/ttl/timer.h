@@ -21,7 +21,7 @@ namespace thalhammer {
 			std::chrono::nanoseconds dur;
 		public:
 			template<typename T>
-			every(T t)
+			explicit every(T t)
 				: dur(std::chrono::duration_cast<std::chrono::nanoseconds>(t))
 			{}
 		};
@@ -107,8 +107,9 @@ namespace thalhammer {
 			}
 		}
 	public:
-		timer() {
-			exit_thread = false;
+		timer()
+			: exit_thread(false)
+		{
 			thread = std::thread(std::bind(&timer::thread_fn, this));
 		}
 

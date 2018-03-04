@@ -28,15 +28,15 @@ namespace thalhammer {
 
 #ifdef _WIN32
 		mmap()
-			: _file(nullptr), _mapped(nullptr), _filesize(0), _view(nullptr)
+			: _file(nullptr), _mapped(nullptr), _filesize(0), _view_size(0), _view(nullptr)
 		{}
 #else
 		mmap()
-			: _file(-1), _filesize(0), _view(nullptr)
+			: _file(-1), _filesize(0), _view_size(0), _view(nullptr)
 		{}
 #endif
 
-		mmap(const std::string& fname)
+		explicit mmap(const std::string& fname)
 			: mmap()
 		{
 			if (!open(fname))

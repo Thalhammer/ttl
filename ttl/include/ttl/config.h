@@ -91,7 +91,7 @@ namespace thalhammer {
 		std::unordered_map<std::string, std::string> tentries;
 		config& cfg;
 		friend class config;
-		transaction(config& pcfg)
+		explicit transaction(config& pcfg)
 			: cfg(pcfg)
 		{
 

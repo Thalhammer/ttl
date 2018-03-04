@@ -22,7 +22,7 @@ struct C : A, B {
 	virtual void test() {
 		std::cout<<"C"<<std::endl;
 	}
-	int y = 1;
+	int k = 1;
 };
 struct D : C {
 	virtual void test2() {

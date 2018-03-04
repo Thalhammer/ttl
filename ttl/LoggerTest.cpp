@@ -28,9 +28,6 @@ TEST(LoggerTest, LogOutput) {
 
 TEST(LoggerTest, LevelCheck) {
 	std::ostringstream logout;
-	logout << std::endl;
-	const std::string endl = logout.str();
-	logout.str("");
 
 	logger log(logout);
 

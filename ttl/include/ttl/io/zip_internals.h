@@ -120,7 +120,7 @@ namespace thalhammer {
 					memset(this, 0x00, sizeof(struct local_file_header));
 					signature = 0x04034B50;
 				}
-				local_file_header(const global_file_header& h) {
+				explicit local_file_header(const global_file_header& h) {
 					memset(this, 0x00, sizeof(struct local_file_header));
 					signature = 0x04034B50;
 					version_needed = h.version_needed;
@@ -159,13 +159,13 @@ namespace thalhammer {
 					memset(this, 0x00, sizeof(struct data_descriptor));
 					signature = 0x08074b50;
 				}
-				data_descriptor(const struct local_file_header& h) {
+				explicit data_descriptor(const struct local_file_header& h) {
 					signature = 0x08074b50;
 					crc32 = h.crc32;
 					compressed_size = h.compressed_size;
 					uncompressed_size = h.uncompressed_size;
 				}
-				data_descriptor(const struct global_file_header& h) {
+				explicit data_descriptor(const struct global_file_header& h) {
 					signature = 0x08074b50;
 					crc32 = h.crc32;
 					compressed_size = h.compressed_size;

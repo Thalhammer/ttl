@@ -6,7 +6,7 @@ namespace thalhammer
 	class binary_writer {
 		std::ostream& _stream;
 	public:
-		binary_writer(std::ostream& stream)
+		explicit binary_writer(std::ostream& stream)
 			: _stream(stream)
 		{}
 

@@ -12,7 +12,7 @@ namespace thalhammer {
 			class delegate_base {
 				std::shared_ptr<signal_data> _signal;
 			public:
-				delegate_base(std::shared_ptr<signal_data> sig)
+				explicit delegate_base(std::shared_ptr<signal_data> sig)
 					:_signal(sig)
 				{
 					_signal->add(this);
@@ -63,9 +63,9 @@ namespace thalhammer {
 		};
 		std::shared_ptr<signal_data> data;
 	public:
-		signal_base() {
-			data = std::make_shared<signal_data>();
-		}
+		signal_base()
+			: data(std::make_shared<signal_data>())
+		{}
 
 		template<typename Func>
 		std::shared_ptr<void> add(Func f) {

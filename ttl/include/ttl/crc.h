@@ -125,7 +125,7 @@ namespace thalhammer
 			crc_t remainder = crc_t(dividend) << (WIDTH - 8);
 			for (uint8_t bit = 8; bit > 0; bit--)
 			{
-				remainder = remainder&TOPBIT ? ((remainder << 1) ^ Polynomial) : (remainder << 1);
+				remainder = (remainder&TOPBIT) ? ((remainder << 1) ^ Polynomial) : (remainder << 1);
 			}
 			return remainder;
 		}

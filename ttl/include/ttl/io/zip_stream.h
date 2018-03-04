@@ -37,7 +37,7 @@ namespace thalhammer {
 
 			inline void write_stream(std::istream& fstream, uint32_t& compressed_size, uint32_t& uncompressed_size, uint32_t& crc, bool compress);
 		public:
-			zip_stream(std::ostream& pstream)
+			explicit zip_stream(std::ostream& pstream)
 				: stream(pstream), written(0)
 			{}
 

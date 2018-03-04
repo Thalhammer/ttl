@@ -21,7 +21,9 @@ namespace thalhammer {
 
 				friend class zip_reader;
 			public:
-				reader_entry() {}
+				reader_entry()
+					: raw_datastart(nullptr)
+				{}
 				reader_entry(const reader_entry& other)
 					: zip_entry(other)
 				{

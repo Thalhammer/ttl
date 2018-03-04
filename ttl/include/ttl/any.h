@@ -52,7 +52,7 @@ namespace thalhammer
 		class data_base {
 			thalhammer::type type_info;
 		protected:
-			data_base(thalhammer::type info)
+			explicit data_base(thalhammer::type info)
 				:type_info(info)
 			{}
 		public:
@@ -69,7 +69,7 @@ namespace thalhammer
 		struct data final : data_base {
 			T val;
 
-			data(T v)
+			explicit data(T v)
 				: data_base(type::create<T>()), val(v)
 			{
 			}
@@ -209,7 +209,6 @@ namespace thalhammer
 			void* ptrin = __RTCastToVoid(ptr);
 			RTTICompleteObjectLocator *pCompleteLocator = (RTTICompleteObjectLocator *)((*((void***)ptrin))[-1]);
 			auto* hierarchy = convertRVA<struct RTTIClassHierarchyDescriptor>(pCompleteLocator->pClassDescriptor);
-			auto* from = (RTTITypeDescriptor*)&sfrom;
 			auto* to = (RTTITypeDescriptor*)&sto;
 
 			auto* base_array = convertRVA<struct RTTIBaseClassArray>(hierarchy->pBaseClassArray);

@@ -24,7 +24,7 @@ namespace thalhammer {
 
 		std::string time_format = "%C";
 	public:
-		logger(std::ostream& stream)
+		explicit logger(std::ostream& stream)
 			: ostream(stream)
 		{
 			set_loglevel(loglevel::INFO);
@@ -87,7 +87,7 @@ namespace thalhammer {
 			logger* log;
 		public:
 			typedef std::shared_ptr<stream> ptr;
-			stream(logger* l) {
+			explicit stream(logger* l) {
 				log = l;
 				level_output = log->get_loglevel(); // Safe loglevel at creation
 			}
@@ -106,7 +106,7 @@ namespace thalhammer {
 
 	struct logmodule {
 		std::string name;
-		logmodule(std::string n) : name(n) {}
+		explicit logmodule(std::string n) : name(n) {}
 	};
 
 	template<typename T>

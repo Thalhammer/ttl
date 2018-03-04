@@ -17,7 +17,7 @@ namespace thalhammer {
 		{}
 
 		template<typename... Args>
-		rcu(Args&&... args)
+		explicit rcu(Args&&... args)
 			: data(std::make_shared<T>(std::forward<Args>(args)...))
 		{}
 

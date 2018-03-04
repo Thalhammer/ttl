@@ -18,7 +18,7 @@ namespace thalhammer
 			return res;
 		}
 	public:
-		binary_reader(std::istream& stream)
+		explicit binary_reader(std::istream& stream)
 			: _stream(stream)
 		{}
 
