@@ -101,15 +101,6 @@ TEST(ZipStreamTest, WriteZipCompressed) {
 	std::ostringstream file;
 	zip_stream<true> zip(file);
 
-	if(0){
-		zip_entry f;
-		f.set_name("test.txt");
-		f.set_last_modified(time);
-		f.set_compressed(false);
-		std::string content = "Hello World";
-		std::istringstream ss(content);
-		zip.add_entry(f, ss);
-	}
 	{
 		zip_entry f;
 		f.set_name("test2.txt");
