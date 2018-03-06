@@ -9,6 +9,7 @@
 #include <elf.h>
 #include <link.h>
 #include <linux/limits.h>
+#include <cstring>
 #endif
 
 namespace thalhammer {
