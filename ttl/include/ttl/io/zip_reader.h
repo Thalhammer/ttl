@@ -6,6 +6,7 @@
 #include "zip_entry.h"
 #include "inflater.h"
 #include <mutex>
+#include <unordered_map>
 #include <memory>
 
 namespace thalhammer {
@@ -52,6 +53,8 @@ namespace thalhammer {
 						uncompressed = inflater::uncompress(raw_datastart, header.compressed_size, inf);
 						if (uncompressed.size() != header.uncompressed_size)
 							throw std::runtime_error("size missmatch");
+						if (header.crc32 != CRC_32::get_crc(uncompressed))
+							throw std::runtime_error("crc missmatch");
 					}
 				}
 
@@ -67,6 +70,7 @@ namespace thalhammer {
 			const zip_internals::end_record* zip_endrecord;
 
 			std::vector<reader_entry> files;
+			std::unordered_multimap<std::string, size_t> filename_lookup;
 
 			inline const zip_internals::end_record* find_endrecord() const;
 			inline std::vector<reader_entry> read_centraldirectory() const;
@@ -96,6 +100,30 @@ namespace thalhammer {
 					throw std::runtime_error("invalid zip file");
 
 				files = read_centraldirectory();
+				for (size_t i = 0; i < files.size(); i++) {
+					if (!files[i].is_compressed()) {
+						if (files[i].header.crc32 != CRC_32::get_crc(files[i].raw_datastart, files[i].header.uncompressed_size))
+							throw std::runtime_error("crc missmatch");
+					}
+					filename_lookup.insert({ files[i].get_name(), i });
+				}
+			}
+
+			void uncompress() {
+				for (auto& e : files) {
+					e.uncompress();
+				}
+			}
+
+			bool has_file(const std::string& path) const {
+				return filename_lookup.find(path) != filename_lookup.end();
+			}
+
+			std::vector<std::string> get_files() const {
+				std::vector<std::string> res;
+				for (auto& e : files)
+					res.push_back(e.get_name());
+				return res;
 			}
 
 			size_t get_num_entries() const { return files.size(); }
@@ -105,13 +133,19 @@ namespace thalhammer {
 				return files.at(idx);
 			}
 
-			reader_entry& get_entry(const std::string& path) {
-				for (auto& e : files) {
-					if (e.get_name() == path) {
-						return e;
-					}
-				}
+			size_t find_by_path(const std::string& path) {
+				auto it = filename_lookup.find(path);
+				if (it != filename_lookup.end())
+					return it->second;
 				throw std::runtime_error("path not found");
+			}
+
+			std::vector<size_t> find_all_by_path(const std::string& path) const {
+				auto it = filename_lookup.find(path);
+				std::vector<size_t> res;
+				for (; it != filename_lookup.end(); it++)
+					res.push_back(it->second);
+				return res;
 			}
 		};
 
