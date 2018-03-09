@@ -205,7 +205,7 @@ namespace thalhammer {
 					}
 					if (size == 0 || data == nullptr)
 						return traits_type::eof();
-					memcpy(buf.data(), data, size);
+					memcpy(buf.data(), data + offset, size);
 					setg(buf.data(), buf.data(), buf.data() + size);
 					offset += size;
 				}
