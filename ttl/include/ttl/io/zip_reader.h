@@ -242,10 +242,11 @@ namespace thalhammer {
 					throw std::runtime_error("invalid zip file");
 
 				auto entry = reinterpret_cast<const zip_internals::global_file_header*>(ptr);
+				auto localentry = reinterpret_cast<const zip_internals::local_file_header*>(zip_start + entry->relative_header_offset);
 				auto filename = reinterpret_cast<const char*>(ptr + sizeof(zip_internals::global_file_header));
 				auto extra = filename + entry->filename_length;
 				auto comment = extra + entry->extra_length;
-				auto dataptr = zip_start + entry->relative_header_offset + sizeof(zip_internals::local_file_header) + entry->filename_length + entry->extra_length;
+				auto dataptr = zip_start + entry->relative_header_offset + sizeof(zip_internals::local_file_header) + localentry->filename_length + localentry->extra_length;
 				ptr = reinterpret_cast<const uint8_t*>(comment + entry->filecomment_length);
 
 				if (!check_pointer(filename, entry->filename_length)
