@@ -5,6 +5,7 @@
 #include <memory>
 #include <iomanip>
 #include <chrono>
+#include <atomic>
 
 namespace thalhammer {
 	// A threadsafe logger implementation replacement for std::cout
@@ -17,18 +18,31 @@ namespace thalhammer {
 		ERR
 	};
 	class logger {
-		loglevel level;
+		std::atomic<loglevel> level;
 		std::ostream& ostream;
-		std::mutex mtx;
+		mutable std::mutex mtx;
 		bool autoflush;
-
-		std::string time_format = "%C";
+		std::string time_format = "%c";
+		std::function<bool(loglevel, const std::string&, const std::string&)> check_fn;
 	public:
+		typedef std::function<bool(loglevel l, const std::string& module, const std::string& message)> check_function_t;
 		explicit logger(std::ostream& stream)
 			: ostream(stream)
 		{
 			set_loglevel(loglevel::INFO);
 			set_autoflush(true);
+		}
+
+		logger(std::ostream& stream, loglevel level)
+			: logger(stream)
+		{
+			set_loglevel(level);
+		}
+
+		logger(std::ostream& stream, loglevel level, check_function_t fn)
+			: logger(stream, level)
+		{
+			set_check_function(fn);
 		}
 
 		void set_loglevel(loglevel l) {
@@ -40,11 +54,33 @@ namespace thalhammer {
 		}
 
 		void set_autoflush(bool b) {
+			std::unique_lock<std::mutex> lck(mtx);
 			autoflush = b;
 		}
 
 		bool get_autoflush() const {
+			std::unique_lock<std::mutex> lck(mtx);
 			return autoflush;
+		}
+
+		void set_timeformat(std::string str) {
+			std::unique_lock<std::mutex> lck(mtx);
+			time_format = std::move(str);
+		}
+
+		std::string get_timeformat() const {
+			std::unique_lock<std::mutex> lck(mtx);
+			return time_format;
+		}
+
+		void set_check_function(check_function_t fn) {
+			std::unique_lock<std::mutex> lck(mtx);
+			check_fn = fn;
+		}
+
+		check_function_t get_check_function() const {
+			std::unique_lock<std::mutex> lck(mtx);
+			return check_fn;
 		}
 
 		std::ostream& get_ostream() {
@@ -72,7 +108,9 @@ namespace thalhammer {
 #endif
 				{
 					std::unique_lock<std::mutex> lck(mtx);
-					ostream << std::put_time(&t, "%c") << " | " << strlevel << " | " << module << " | " << message << std::endl;
+					if(check_fn && !check_fn(l, module, message))
+						return;
+					ostream << std::put_time(&t, time_format.c_str()) << " | " << strlevel << " | " << module << " | " << message << std::endl;
 					if(autoflush)
 						ostream.flush();
 				}

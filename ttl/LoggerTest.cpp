@@ -42,6 +42,40 @@ TEST(LoggerTest, LevelCheck) {
 	}
 }
 
+TEST(LoggerTest, LevelCheckInit) {
+	std::ostringstream logout;
+
+	logger log(logout, loglevel::WARN);
+
+	// Check default loglevel
+	ASSERT_EQ(loglevel::WARN, log.get_loglevel());
+
+	{
+		log << loglevel::INFO << logmodule("test") << "Hello Logger";
+		ASSERT_TRUE(logout.str().empty());
+	}
+}
+
+TEST(LoggerTest, CheckFunction) {
+	std::ostringstream logout;
+
+	logger log(logout);
+	logger::check_function_t fn = [](loglevel l, const std::string& module, const std::string& message) {
+		return module != "test";
+	};
+	// Check default loglevel
+	ASSERT_EQ(loglevel::INFO, log.get_loglevel());
+	ASSERT_FALSE(!(!log.get_check_function()));
+	log.set_check_function(fn);
+	ASSERT_TRUE(!(!log.get_check_function()));
+
+	{
+		log << loglevel::INFO << logmodule("test") << "Hello Logger";
+		ASSERT_TRUE(logout.str().empty());
+		log << loglevel::INFO << logmodule("test2") << "Hello Logger";
+		ASSERT_FALSE(logout.str().empty());
+	}
+}
 
 TEST(LoggerTest, LogOutputShort) {
 	std::ostringstream logout;
