@@ -19,29 +19,25 @@ namespace thalhammer {
 	};
 	class logger {
 		std::atomic<loglevel> level;
-		std::ostream& ostream;
 		mutable std::mutex mtx;
-		bool autoflush;
-		std::string time_format = "%c";
 		std::function<bool(loglevel, const std::string&, const std::string&)> check_fn;
+	protected:
+		virtual void write(loglevel l, const std::string& module, const std::string& msg) = 0;
 	public:
 		typedef std::function<bool(loglevel l, const std::string& module, const std::string& message)> check_function_t;
-		explicit logger(std::ostream& stream)
-			: ostream(stream)
+		logger()
 		{
 			set_loglevel(loglevel::INFO);
-			set_autoflush(true);
 		}
 
-		logger(std::ostream& stream, loglevel level)
-			: logger(stream)
+		explicit logger(loglevel level)
 		{
 			set_loglevel(level);
 		}
 
-		logger(std::ostream& stream, loglevel level, check_function_t fn)
-			: logger(stream, level)
+		logger(loglevel level, check_function_t fn)
 		{
+			set_loglevel(level);
 			set_check_function(fn);
 		}
 
@@ -51,26 +47,6 @@ namespace thalhammer {
 
 		loglevel get_loglevel() {
 			return level;
-		}
-
-		void set_autoflush(bool b) {
-			std::unique_lock<std::mutex> lck(mtx);
-			autoflush = b;
-		}
-
-		bool get_autoflush() const {
-			std::unique_lock<std::mutex> lck(mtx);
-			return autoflush;
-		}
-
-		void set_timeformat(std::string str) {
-			std::unique_lock<std::mutex> lck(mtx);
-			time_format = std::move(str);
-		}
-
-		std::string get_timeformat() const {
-			std::unique_lock<std::mutex> lck(mtx);
-			return time_format;
 		}
 
 		void set_check_function(check_function_t fn) {
@@ -83,37 +59,15 @@ namespace thalhammer {
 			return check_fn;
 		}
 
-		std::ostream& get_ostream() {
-			return ostream;
-		}
-
 		void log(loglevel l, const std::string& module, const std::string& message)
 		{
 			if (l >= level) {
-				std::string strlevel;
-				switch (l) {
-				case loglevel::ERR: strlevel = "ERROR"; break;
-				case loglevel::WARN: strlevel = "WARN "; break;
-				case loglevel::INFO: strlevel = "INFO "; break;
-				case loglevel::DEBUG: strlevel = "DEBUG"; break;
-				case loglevel::TRACE: strlevel = "TRACE"; break;
-				default: strlevel = "?????"; break;
-				}
-				time_t nt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-				struct tm t;
-#ifdef _WIN32
-				localtime_s(&t, &nt);
-#else
-				localtime_r(&nt, &t);
-#endif
 				{
 					std::unique_lock<std::mutex> lck(mtx);
 					if(check_fn && !check_fn(l, module, message))
 						return;
-					ostream << std::put_time(&t, time_format.c_str()) << " | " << strlevel << " | " << module << " | " << message << std::endl;
-					if(autoflush)
-						ostream.flush();
 				}
+				this->write(l,module, message);
 			}
 		}
 
@@ -183,4 +137,77 @@ namespace thalhammer {
 		stream << lvl << logmodule(module);
 		return stream;
 	}
+
+	class streamlogger: public logger {
+		std::ostream& ostream;
+		std::atomic<bool> autoflush;
+		std::string time_format = "%c";
+		mutable std::mutex mtx;
+
+		void write(loglevel l, const std::string& module, const std::string& message) override
+		{
+			std::string strlevel;
+			switch (l) {
+			case loglevel::ERR: strlevel = "ERROR"; break;
+			case loglevel::WARN: strlevel = "WARN "; break;
+			case loglevel::INFO: strlevel = "INFO "; break;
+			case loglevel::DEBUG: strlevel = "DEBUG"; break;
+			case loglevel::TRACE: strlevel = "TRACE"; break;
+			default: strlevel = "?????"; break;
+			}
+			time_t nt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+			struct tm t;
+#ifdef _WIN32
+			localtime_s(&t, &nt);
+#else
+			localtime_r(&nt, &t);
+#endif
+			{
+				std::unique_lock<std::mutex> lck(mtx);
+				ostream << std::put_time(&t, time_format.c_str()) << " | " << strlevel << " | " << module << " | " << message << std::endl;
+				if(autoflush)
+					ostream.flush();
+			}
+			
+		}
+	public:
+		typedef std::function<bool(loglevel l, const std::string& module, const std::string& message)> check_function_t;
+		explicit streamlogger(std::ostream& stream)
+			: logger(loglevel::INFO), ostream(stream)
+		{
+			set_autoflush(true);
+		}
+
+		streamlogger(std::ostream& stream, loglevel level)
+			: logger(level), ostream(stream)
+		{
+		}
+
+		streamlogger(std::ostream& stream, loglevel level, check_function_t fn)
+			: logger(level, fn), ostream(stream)
+		{
+		}
+
+		void set_autoflush(bool b) {
+			autoflush = b;
+		}
+
+		bool get_autoflush() const {
+			return autoflush;
+		}
+
+		std::ostream& get_ostream() {
+			return ostream;
+		}
+
+		void set_timeformat(std::string str) {
+			std::unique_lock<std::mutex> lck(mtx);
+			time_format = std::move(str);
+		}
+
+		std::string get_timeformat() const {
+			std::unique_lock<std::mutex> lck(mtx);
+			return time_format;
+		}
+	};
 }

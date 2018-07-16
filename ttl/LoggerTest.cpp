@@ -5,6 +5,7 @@
 #include "include/ttl/string_util.h"
 
 using thalhammer::logger;
+using thalhammer::streamlogger;
 using thalhammer::loglevel;
 using thalhammer::logmodule;
 namespace string = thalhammer::string;
@@ -15,7 +16,7 @@ TEST(LoggerTest, LogOutput) {
 	const std::string endl = logout.str();
 	logout.str("");
 
-	logger log(logout);
+	streamlogger log(logout);
 
 	// Check default loglevel
 	ASSERT_EQ(loglevel::INFO, log.get_loglevel());
@@ -29,7 +30,7 @@ TEST(LoggerTest, LogOutput) {
 TEST(LoggerTest, LevelCheck) {
 	std::ostringstream logout;
 
-	logger log(logout);
+	streamlogger log(logout);
 
 	// Check default loglevel
 	ASSERT_EQ(loglevel::INFO, log.get_loglevel());
@@ -45,7 +46,7 @@ TEST(LoggerTest, LevelCheck) {
 TEST(LoggerTest, LevelCheckInit) {
 	std::ostringstream logout;
 
-	logger log(logout, loglevel::WARN);
+	streamlogger log(logout, loglevel::WARN);
 
 	// Check default loglevel
 	ASSERT_EQ(loglevel::WARN, log.get_loglevel());
@@ -59,7 +60,7 @@ TEST(LoggerTest, LevelCheckInit) {
 TEST(LoggerTest, CheckFunction) {
 	std::ostringstream logout;
 
-	logger log(logout);
+	streamlogger log(logout);
 	logger::check_function_t fn = [](loglevel l, const std::string& module, const std::string& message) {
 		return module != "test";
 	};
@@ -83,7 +84,7 @@ TEST(LoggerTest, LogOutputShort) {
 	const std::string endl = logout.str();
 	logout.str("");
 
-	logger log(logout);
+	streamlogger log(logout);
 
 	// Check default loglevel
 	ASSERT_EQ(loglevel::INFO, log.get_loglevel());
