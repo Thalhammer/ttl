@@ -103,3 +103,34 @@ TEST(StringTest, CaseConv) {
 		ASSERT_EQ(test_str, in);
 	}
 }
+
+TEST(StringTest, Replace) {
+	const static std::string test_str = "Hello sunny world";
+	{
+		std::string in = test_str;
+		string::replace(in, "sunny", "rainy");
+		ASSERT_EQ("Hello rainy world", in);
+	}
+	{
+		std::string in = test_str;
+		string::replace(in, "sunny", "sunny sunny");
+		ASSERT_EQ("Hello sunny sunny world", in);
+	}
+	{
+		std::string in = test_str;
+		auto out = string::replace_copy(in, "sunny", "rainy");
+		ASSERT_EQ("Hello rainy world", out);
+		ASSERT_EQ(test_str, in);
+	}
+	{
+		std::string in = test_str;
+		auto out = string::replace_copy(in, "sunny", "sunny sunny");
+		ASSERT_EQ("Hello sunny sunny world", out);
+		ASSERT_EQ(test_str, in);
+	}
+}
+
+TEST(StringTest, Length) {
+	ASSERT_EQ(11, string::length("Hello World"));
+	ASSERT_EQ(11, string::length(std::string("Hello World")));
+}
