@@ -1,7 +1,7 @@
 #pragma once
 #include <ostream>
 
-namespace thalhammer
+namespace ttl
 {
 	class binary_writer {
 		std::ostream& _stream;
@@ -94,3 +94,5 @@ namespace thalhammer
 		}
 	};
 }
+
+namespace thalhammer = ttl;

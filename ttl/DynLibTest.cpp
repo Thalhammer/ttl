@@ -2,7 +2,7 @@
 
 #include "include/ttl/dynlib.h"
 
-using thalhammer::dynlib;
+using ttl::dynlib;
 
 #ifdef _WIN32
 TEST(DynLibTest, LoadLib) {

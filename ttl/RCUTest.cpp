@@ -2,7 +2,7 @@
 
 #include "include/ttl/rcu.h"
 
-using namespace thalhammer;
+using namespace ttl;
 
 TEST(RCUTest, RCUValueConstruct) {
     rcu<std::string> test("Test");

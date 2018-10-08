@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <stdexcept>
 #ifdef _WIN32
 #include <Windows.h>
 #include <intrin.h>
@@ -10,9 +11,10 @@
 #include <link.h>
 #include <linux/limits.h>
 #include <cstring>
+#include <unistd.h>
 #endif
 
-namespace thalhammer {
+namespace ttl {
 	class module {
 	public:
 		const std::string& get_filename() const { return filename; }
@@ -102,3 +104,5 @@ namespace thalhammer {
 		std::string filename;
 	};
 }
+
+namespace thalhammer = ttl;

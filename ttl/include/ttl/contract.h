@@ -1,7 +1,7 @@
 #pragma once
 #include <stdexcept>
 
-namespace thalhammer
+namespace ttl
 {
     class contract_failed : public std::logic_error {
     public:
@@ -81,3 +81,5 @@ namespace thalhammer
         }
     };
 }
+
+namespace thalhammer = ttl;

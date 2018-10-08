@@ -1,5 +1,5 @@
 # ttl
-Thalhammer Template Library
+Tiny Template Library
 
 This is a header only library containing usable classes for developing apps in C++.
 Major goals are:

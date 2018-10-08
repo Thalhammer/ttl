@@ -2,7 +2,7 @@
 
 #include "include/ttl/config.h"
 
-using thalhammer::config;
+using ttl::config;
 
 TEST(ConfigTest, ReadConfig) {
 	std::istringstream data(R"(

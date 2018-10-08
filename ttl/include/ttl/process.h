@@ -20,7 +20,7 @@
 #include <ext/stdio_filebuf.h>
 #endif
 
-namespace thalhammer {
+namespace ttl {
 	class process : public noncopyable {
 	public:
 		typedef std::vector<std::string> args_t;
@@ -468,3 +468,5 @@ namespace thalhammer {
 	}
 #endif
 }
+
+namespace thalhammer = ttl;

@@ -5,7 +5,7 @@
 #include "include/ttl/linq.h"
 
 
-using thalhammer::linq;
+using ttl::linq;
 
 TEST(LINQTest, IteratorMembers) {
 	std::vector<std::string> data{ "Hello", "World", "how", "are", "you", "?" };

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace thalhammer {
+namespace ttl {
 	// A type that complies to Lockable concept but does nothing (i.e. no overhead if no synchronization is needed)
 	// http://www.cplusplus.com/reference/concept/Lockable/
 	class noop_mutex {
@@ -10,3 +10,5 @@ namespace thalhammer {
 		bool try_lock() { return true; }
 	};
 }
+
+namespace thalhammer = ttl;

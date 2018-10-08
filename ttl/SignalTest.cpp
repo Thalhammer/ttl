@@ -7,7 +7,7 @@
 TEST(SignalTest, Executed) {
 	bool executed = false;
 	
-	thalhammer::signal<> sig;
+	ttl::signal<> sig;
 	auto token = sig.add([&executed]() {
 		executed = true;
 	});
@@ -19,7 +19,7 @@ TEST(SignalTest, Executed) {
 TEST(SignalTest, MutexCustom) {
 	bool executed = false;
 	
-	thalhammer::signal_base<thalhammer::noop_mutex> sig;
+	ttl::signal_base<ttl::noop_mutex> sig;
 	auto token = sig.add([&executed]() {
 		executed = true;
 	});
@@ -31,7 +31,7 @@ TEST(SignalTest, MutexCustom) {
 TEST(SignalTest, OperatorPlus) {
 	bool executed = false;
 
-	thalhammer::signal<> sig;
+	ttl::signal<> sig;
 	auto token = sig += [&executed]() {
 		executed = true;
 	};
@@ -43,7 +43,7 @@ TEST(SignalTest, OperatorPlus) {
 TEST(SignalTest, Params) {
 	bool executed = false;
 
-	thalhammer::signal<const std::string&> sig;
+	ttl::signal<const std::string&> sig;
 	auto token = sig.add([&executed](auto& str) {
 		executed = true;
 		ASSERT_EQ("Hello", str);
@@ -56,7 +56,7 @@ TEST(SignalTest, Params) {
 TEST(SignalTest, TokenCleared) {
 	bool executed = false;
 
-	thalhammer::signal<> sig;
+	ttl::signal<> sig;
 	auto token = sig.add([&executed]() {
 		executed = true;
 	});

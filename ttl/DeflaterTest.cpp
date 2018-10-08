@@ -5,9 +5,9 @@
 #include "include/ttl/io/deflater.h"
 #include "include/ttl/io/deflate_stream.h"
 
-using thalhammer::io::deflater;
-using thalhammer::io::deflate_ostream;
-using thalhammer::io::deflate_istream;
+using ttl::io::deflater;
+using ttl::io::deflate_ostream;
+using ttl::io::deflate_istream;
 
 const std::string test_in = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
 const unsigned char test_out[] = {

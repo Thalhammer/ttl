@@ -5,7 +5,7 @@
 #include <cxxabi.h>
 #endif
 
-namespace thalhammer
+namespace ttl
 {
 	class type final {
 		struct data_base {
@@ -667,3 +667,5 @@ namespace thalhammer
 		}
 	};
 }
+
+namespace thalhammer = ttl;

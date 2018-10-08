@@ -6,9 +6,21 @@
 #include <vector>
 #include <sstream>
 
-namespace thalhammer
+namespace ttl
 {
 	namespace string {
+		// String length overload for good old char arrays
+		template<size_t Len>
+		constexpr inline size_t length(const char (&data)[Len]) noexcept {
+			return Len - 1;
+		}
+
+		// String length overload for std::basic_string
+		template<typename CharT, typename Traits, typename Alloc>
+		inline size_t length(const std::basic_string<CharT, Traits, Alloc>& str) noexcept {
+			return str.length();
+		}
+
 		// trim from start (in place)
 		template<typename StringType = std::string>
 		inline void ltrim(StringType &s) {
@@ -131,5 +143,29 @@ namespace thalhammer
 			ss >> res;
 			return res;
 		}
+
+		// Replace all occurrences of one string with a other (in place)
+		template<typename T, typename TFind, typename TReplace>
+		inline void replace(T& str, const TFind& find, const TReplace& replace) {
+			auto flen = length(find);
+			auto rlen = length(replace);
+			if(flen == 0)
+				throw std::invalid_argument("Find string can not be empty");
+			auto pos = str.find(find);
+			while(pos != T::npos) {
+				str.replace(pos, flen, replace);
+				pos = str.find(find, pos + rlen);
+			}
+		}
+
+		// Replace all occurrences of one string with a other (copying)
+		template<typename T, typename TFind, typename TReplace>
+		inline T replace_copy(const T& str, const TFind& find, const TReplace& replace) {
+			T copy = str;
+			string::replace(copy, find, replace);
+			return copy;
+		}
 	}
 }
+
+namespace thalhammer = ttl;

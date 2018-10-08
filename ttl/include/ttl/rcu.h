@@ -2,7 +2,7 @@
 #include <mutex>
 #include <memory>
 
-namespace thalhammer {
+namespace ttl {
 	// A type to allow for easy rcu (read,copy,update)
 	template<typename T>
 	class rcu {
@@ -43,3 +43,5 @@ namespace thalhammer {
 		}
 	};
 }
+
+namespace thalhammer = ttl;

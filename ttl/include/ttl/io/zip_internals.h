@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
+#include <cstring>
 
-namespace thalhammer {
+namespace ttl {
 	namespace io {
 		namespace zip_internals {
 #ifdef _MSC_VER
@@ -193,3 +194,5 @@ namespace thalhammer {
 		}
 	}
 }
+
+namespace thalhammer = ttl;

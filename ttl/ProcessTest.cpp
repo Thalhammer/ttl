@@ -2,7 +2,7 @@
 
 #include "include/ttl/process.h"
 
-using thalhammer::process;
+using ttl::process;
 
 TEST(ProcessTest, ExecuteProcess) {
 

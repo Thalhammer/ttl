@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <cstring>
 
-namespace thalhammer {
+namespace ttl {
 	namespace io {
 		class inflater {
 			z_stream zlib_stream;
@@ -134,3 +134,5 @@ namespace thalhammer {
 		};
 	}
 }
+
+namespace thalhammer = ttl;

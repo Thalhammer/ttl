@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <array>
 
-namespace thalhammer
+namespace ttl
 {
 	template<typename crc_val, crc_val WIDTH, crc_val Polynomial, crc_val InitialRemainder, crc_val FinalXorValue, bool TReflectData, bool TReflectRemainder>
 	class crc
@@ -188,3 +188,5 @@ namespace thalhammer
 	typedef CRC_16_XMODEM CRC_16_CCIT_ZERO;
 	typedef CRC_8_DALLAS CRC_8_MAXIM;
 }
+
+namespace thalhammer = ttl;

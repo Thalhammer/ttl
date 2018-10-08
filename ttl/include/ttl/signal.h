@@ -4,7 +4,7 @@
 #include <mutex>
 #include <set>
 
-namespace thalhammer {
+namespace ttl {
 	template<typename MutexType, typename... Args>
 	class signal_base {
 		class signal_data : public std::enable_shared_from_this<signal_data>, public noncopyable {
@@ -89,3 +89,5 @@ namespace thalhammer {
 	template<typename... Args>
 	using signal = signal_base<std::mutex, Args...>;
 }
+
+namespace thalhammer = ttl;

@@ -4,9 +4,9 @@
 #include "include/ttl/binary_writer.h"
 #include <sstream>
 
-using namespace thalhammer;
+using namespace ttl;
 
-TEST(BinaryReaderWriterTest, WriteThanRead) {
+TEST(BinaryReaderWriterTest, WriteThenRead) {
 	{
 		std::stringstream sstream;
 		binary_writer wrt(sstream);

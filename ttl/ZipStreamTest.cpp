@@ -3,8 +3,8 @@
 
 #include "include/ttl/io/zip_stream.h"
 
-using thalhammer::io::zip_stream;
-using thalhammer::io::zip_entry;
+using ttl::io::zip_stream;
+using ttl::io::zip_entry;
 
 static unsigned char test_zip[] = {
 	0x50, 0x4b, 0x03, 0x04, 0x14, 0x00, 0x08, 0x08, 0x00, 0x00, 0xfd, 0x80,

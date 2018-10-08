@@ -5,9 +5,9 @@
 #include "include/ttl/io/inflater.h"
 #include "include/ttl/io/inflate_stream.h"
 
-using thalhammer::io::inflater;
-using thalhammer::io::inflate_ostream;
-using thalhammer::io::inflate_istream;
+using ttl::io::inflater;
+using ttl::io::inflate_ostream;
+using ttl::io::inflate_istream;
 
 const std::string test_out = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.";
 const unsigned char test_in[] = {
