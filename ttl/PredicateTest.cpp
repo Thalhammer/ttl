@@ -3,8 +3,8 @@
 #include "include/ttl/predicate.h"
 #include "include/ttl/linq.h"
 
-using namespace thalhammer::predicate;
-using thalhammer::linq;
+using namespace ttl::predicate;
+using ttl::linq;
 
 TEST(PredicateTest, BasicPredicates) {
 	auto peq = equals(10);

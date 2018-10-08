@@ -2,7 +2,7 @@
 
 #include "include/ttl/string_util.h"
 
-using namespace thalhammer;
+using namespace ttl;
 
 TEST(StringTest, Trim) {
 	const static std::string test_str = "   test  ";

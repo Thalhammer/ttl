@@ -6,7 +6,7 @@
 #include <vector>
 #include <sstream>
 
-namespace thalhammer
+namespace ttl
 {
 	namespace string {
 		// String length overload for good old char arrays
@@ -167,3 +167,5 @@ namespace thalhammer
 		}
 	}
 }
+
+namespace thalhammer = ttl;

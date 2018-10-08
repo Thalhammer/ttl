@@ -7,7 +7,7 @@
 #include <chrono>
 #include <atomic>
 
-namespace thalhammer {
+namespace ttl {
 	// A threadsafe logger implementation replacement for std::cout
 	// https://stackoverflow.com/questions/7839565/logging-levels-logback-rule-of-thumb-to-assign-log-levels
 	enum class loglevel {
@@ -211,3 +211,5 @@ namespace thalhammer {
 		}
 	};
 }
+
+namespace thalhammer = ttl;

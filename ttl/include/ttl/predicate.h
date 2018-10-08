@@ -9,7 +9,7 @@
 #include <stack>
 #include <algorithm>
 
-namespace thalhammer {
+namespace ttl {
 	namespace predicate {
 		namespace detail {
 			template<typename T1>
@@ -187,3 +187,5 @@ namespace thalhammer {
 		}
 	}
 }
+
+namespace thalhammer = ttl;

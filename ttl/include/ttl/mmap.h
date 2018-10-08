@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <stdexcept>
 #ifdef _WIN32
 #include <Windows.h>
 #else
@@ -11,7 +12,7 @@
 #include <dlfcn.h>
 #endif
 
-namespace thalhammer {
+namespace ttl {
 	class mmap {
 #ifdef _WIN32
 		HANDLE _file;
@@ -205,3 +206,5 @@ namespace thalhammer {
 		}
 	};
 }
+
+namespace thalhammer = ttl;

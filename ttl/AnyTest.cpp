@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "include/ttl/any.h"
 
-using thalhammer::any;
+using ttl::any;
 
 
 struct A {

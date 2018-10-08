@@ -2,12 +2,12 @@
 
 #include "include/ttl/mmap.h"
 
-using namespace thalhammer;
+using namespace ttl;
 
 TEST(MMAPTest, MapFile) {
 	const std::string data = "Hello World, how are you ?";
 
-	thalhammer::mmap map;
+	ttl::mmap map;
 
 	ASSERT_EQ(nullptr, map.data());
 	ASSERT_FALSE(map.is_valid());
@@ -21,7 +21,7 @@ TEST(MMAPTest, MapFile) {
 }
 
 TEST(MMAPTest, MapFileFailed) {
-	thalhammer::mmap map;
+	ttl::mmap map;
 
 	ASSERT_EQ(nullptr, map.data());
 	ASSERT_FALSE(map.is_valid());
@@ -34,10 +34,10 @@ TEST(MMAPTest, MapFileConstructor) {
 	const std::string data = "Hello World, how are you ?";
 
 	ASSERT_THROW([]() {
-		thalhammer::mmap map("test_data/mmap_test_not_existent.txt");
+		ttl::mmap map("test_data/mmap_test_not_existent.txt");
 	}(), std::runtime_error);
 
-	thalhammer::mmap map("test_data/mmap_test.txt");
+	ttl::mmap map("test_data/mmap_test.txt");
 	ASSERT_TRUE(map.is_valid());
 	ASSERT_NE(nullptr, map.data());
 	ASSERT_EQ(map.data(), &map[0]);

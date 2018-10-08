@@ -8,7 +8,7 @@
 #include <atomic>
 #include <functional>
 
-namespace thalhammer {
+namespace ttl {
 	class timer {
 	public:
 		typedef std::shared_ptr<void> token_t;
@@ -188,3 +188,5 @@ namespace thalhammer {
 		}
 	};
 }
+
+namespace thalhammer = ttl;

@@ -11,3 +11,4 @@ TestResults
 *.user
 ttl/test
 libttl_*
+.vscode

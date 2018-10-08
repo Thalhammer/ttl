@@ -2,7 +2,7 @@
 
 #include "include/ttl/contract.h"
 
-using namespace thalhammer;
+using namespace ttl;
 
 TEST(ContractTest, CheckedValue) {
     auto eq1 = [](){

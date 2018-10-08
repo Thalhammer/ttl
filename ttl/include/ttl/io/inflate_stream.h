@@ -3,9 +3,12 @@
 #include <streambuf>
 #include <vector>
 #include <array>
+#include <istream>
+#include <cassert>
+#include <cstddef>
 #include "inflater.h"
 
-namespace thalhammer {
+namespace ttl {
 	namespace io {
 		class inflate_ostreambuf : public std::streambuf {
 			std::vector<char> obuf;
@@ -153,3 +156,5 @@ namespace thalhammer {
 		};
 	}
 }
+
+namespace thalhammer = ttl;

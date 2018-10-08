@@ -15,7 +15,7 @@ extern "C" __declspec(dllimport) void* __stdcall GetModuleHandleA(const char* lp
 #endif
 #endif
 
-namespace thalhammer
+namespace ttl
 {
 	namespace detail {
 		template<typename T>
@@ -50,14 +50,14 @@ namespace thalhammer
 	}
 	class any {
 		class data_base {
-			thalhammer::type type_info;
+			ttl::type type_info;
 		protected:
-			explicit data_base(thalhammer::type info)
+			explicit data_base(ttl::type info)
 				:type_info(info)
 			{}
 		public:
 			virtual ~data_base() noexcept {}
-			const thalhammer::type& type() const noexcept { return type_info; }
+			const ttl::type& type() const noexcept { return type_info; }
 			virtual void* data_ptr() noexcept = 0;
 			virtual std::unique_ptr<data_base> clone() const = 0;
 #ifdef __cpp_lib_any
@@ -265,7 +265,7 @@ namespace thalhammer
 			return val->type().std_type();
 		}
 
-		const thalhammer::type& type() const noexcept {
+		const ttl::type& type() const noexcept {
 			return val->type();
 		}
 
@@ -359,3 +359,5 @@ namespace thalhammer
 		}
 	};
 }
+
+namespace thalhammer = ttl;

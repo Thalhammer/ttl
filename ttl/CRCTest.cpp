@@ -2,7 +2,7 @@
 
 #include "include/ttl/crc.h"
 
-using namespace thalhammer;
+using namespace ttl;
 
 TEST(CRCTest, CalcCRC) {
 	/* Its templated so we only check one of each bitsize */

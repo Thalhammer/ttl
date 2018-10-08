@@ -2,12 +2,13 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <istream>
 #include "zip_internals.h"
 #include "../crc.h"
 #include "zip_entry.h"
 #include "deflater.h"
 
-namespace thalhammer {
+namespace ttl {
 	namespace io {
 		template<bool SupportCompression = true>
 		class zip_stream {
@@ -173,3 +174,5 @@ namespace thalhammer {
 		}
 	}
 }
+
+namespace thalhammer = ttl;

@@ -6,7 +6,7 @@
 #include "../crc.h"
 #include <chrono>
 
-namespace thalhammer {
+namespace ttl {
 	namespace io {
 		class zip_entry {
 			zip_internals::global_file_header header;
@@ -126,3 +126,5 @@ namespace thalhammer {
 		};
 	}
 }
+
+namespace thalhammer = ttl;

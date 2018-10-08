@@ -4,11 +4,11 @@
 #include "include/ttl/logger.h"
 #include "include/ttl/string_util.h"
 
-using thalhammer::logger;
-using thalhammer::streamlogger;
-using thalhammer::loglevel;
-using thalhammer::logmodule;
-namespace string = thalhammer::string;
+using ttl::logger;
+using ttl::streamlogger;
+using ttl::loglevel;
+using ttl::logmodule;
+namespace string = ttl::string;
 
 TEST(LoggerTest, LogOutput) {
 	std::ostringstream logout;

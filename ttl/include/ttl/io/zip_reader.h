@@ -8,8 +8,10 @@
 #include <mutex>
 #include <unordered_map>
 #include <memory>
+#include <cassert>
+#include <istream>
 
-namespace thalhammer {
+namespace ttl {
 	namespace io {
 		class zip_reader {
 		public:
@@ -272,3 +274,5 @@ namespace thalhammer {
 		}
 	}
 }
+
+namespace thalhammer = ttl;

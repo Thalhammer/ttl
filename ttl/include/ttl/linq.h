@@ -9,7 +9,7 @@
 #include <stack>
 #include <algorithm>
 
-namespace thalhammer {
+namespace ttl {
 	namespace linq_detail {
 		template<typename T, typename Func>
 		class whereiterator;
@@ -505,3 +505,5 @@ namespace thalhammer {
 		return linq<T>(std::cbegin(data), std::cend(data));
 	}
 }
+
+namespace thalhammer = ttl;

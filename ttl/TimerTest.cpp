@@ -2,7 +2,7 @@
 
 #include "include/ttl/timer.h"
 
-using thalhammer::timer;
+using ttl::timer;
 
 TEST(TimerTest, TimedExecute) {
 	bool executed = false;

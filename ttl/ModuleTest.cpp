@@ -2,7 +2,7 @@
 
 #include "include/ttl/module.h"
 
-using thalhammer::module;
+using ttl::module;
 
 void testfn(){}
 

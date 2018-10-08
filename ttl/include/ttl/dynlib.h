@@ -12,7 +12,7 @@
 #endif
 
 
-namespace thalhammer {
+namespace ttl {
 	class dynlib : public noncopyable {
 	public:
 #ifdef _WIN32
@@ -199,3 +199,5 @@ namespace thalhammer {
 	}
 #endif
 }
+
+namespace thalhammer = ttl;

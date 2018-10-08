@@ -3,10 +3,13 @@
 #include <streambuf>
 #include <vector>
 #include <array>
+#include <ostream>
+#include <istream>
 #include <cassert>
+#include <cstddef>
 #include "deflater.h"
 
-namespace thalhammer {
+namespace ttl {
 	namespace io {
 		class deflate_ostreambuf : public std::streambuf {
 			std::vector<char> obuf;
@@ -153,3 +156,5 @@ namespace thalhammer {
 		};
 	}
 }
+
+namespace thalhammer = ttl;

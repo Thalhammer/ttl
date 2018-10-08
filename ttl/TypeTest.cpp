@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "include/ttl/type.h"
 
-using thalhammer::type;
+using ttl::type;
 
 TEST(TypeTest, Types) {
 	auto type = type::create<int* const>();

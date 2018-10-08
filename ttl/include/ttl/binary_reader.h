@@ -1,7 +1,7 @@
 #pragma once
 #include <istream>
 
-namespace thalhammer
+namespace ttl
 {
 	class binary_reader {
 		std::istream& _stream;
@@ -59,3 +59,5 @@ namespace thalhammer
 		}
 	};
 }
+
+namespace thalhammer = ttl;

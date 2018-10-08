@@ -6,7 +6,7 @@
 #include <memory>
 #include "string_util.h"
 
-namespace thalhammer {
+namespace ttl {
 	/* A very simple configuration parser */
 	class config {
 	public:
@@ -194,3 +194,5 @@ namespace thalhammer {
 		return transaction(*this);
 	}
 }
+
+namespace thalhammer = ttl;

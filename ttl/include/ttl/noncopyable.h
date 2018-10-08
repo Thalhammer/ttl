@@ -1,6 +1,6 @@
 #pragma once
 
-namespace thalhammer
+namespace ttl
 {
 	struct noncopyable {
 		noncopyable & operator=(const noncopyable&) = delete;
@@ -8,3 +8,5 @@ namespace thalhammer
 		noncopyable() = default;
 	};
 }
+
+namespace thalhammer = ttl;
