@@ -13,4 +13,6 @@ namespace ttl
 	// namespace to make them available for any::to_string.
 }
 
+#ifdef TTL_OLD_NAMESPACE
 namespace thalhammer = ttl;
+#endif

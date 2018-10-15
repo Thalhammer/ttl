@@ -200,4 +200,6 @@ namespace ttl {
 #endif
 }
 
+#ifdef TTL_OLD_NAMESPACE
 namespace thalhammer = ttl;
+#endif

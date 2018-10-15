@@ -11,4 +11,6 @@ namespace ttl {
 	};
 }
 
+#ifdef TTL_OLD_NAMESPACE
 namespace thalhammer = ttl;
+#endif

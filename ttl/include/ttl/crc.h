@@ -189,4 +189,6 @@ namespace ttl
 	typedef CRC_8_DALLAS CRC_8_MAXIM;
 }
 
+#ifdef TTL_OLD_NAMESPACE
 namespace thalhammer = ttl;
+#endif

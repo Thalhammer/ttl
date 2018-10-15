@@ -90,4 +90,6 @@ namespace ttl {
 	using signal = signal_base<std::mutex, Args...>;
 }
 
+#ifdef TTL_OLD_NAMESPACE
 namespace thalhammer = ttl;
+#endif
