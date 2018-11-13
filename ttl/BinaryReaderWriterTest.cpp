@@ -37,4 +37,22 @@ TEST(BinaryReaderWriterTest, WriteThenRead) {
 		auto read = rdr.read_string();
 		ASSERT_EQ(orig, read);
 	}
+
+	{
+		std::stringstream sstream;
+		binary_writer wrt(sstream);
+		binary_reader rdr(sstream);
+
+		const int64_t orig = 132;
+
+		wrt.writeLEB(orig);
+		auto str = sstream.str();
+
+		ASSERT_EQ(2, str.size());
+		ASSERT_EQ((char)0x84, str[0]);
+		ASSERT_EQ((char)0x01, str[1]);
+
+		auto read = rdr.read_LEB();
+		ASSERT_EQ(orig, read);
+	}
 }

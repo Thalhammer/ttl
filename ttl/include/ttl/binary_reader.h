@@ -39,11 +39,13 @@ namespace ttl
 		uint64_t read_unsigned_LEB() {
 			uint64_t res = 0;
 			uint8_t t = read_uint8();
+			int shift = 0;
 			while (t & 0x80) {
-				res = (res << 7) | (t & 0x7f);
+				res |= uint64_t(t & 0x7f) << shift;
 				t = read_uint8();
+				shift += 7;
 			}
-			res = (res << 7) | t;
+			res |= uint64_t(t) << shift;
 			return res;
 		}
 		int64_t read_LEB() {
