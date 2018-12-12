@@ -45,7 +45,7 @@ namespace ttl {
 			table = _symbols;
 			return true;
 		}
-		std::string get_native_extension() const {
+		static std::string get_native_extension() {
 #ifdef _WIN32
 			return ".dll";
 #else
