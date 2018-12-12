@@ -45,6 +45,13 @@ namespace ttl {
 			table = _symbols;
 			return true;
 		}
+		std::string get_native_extension() const {
+#ifdef _WIN32
+			return ".dll";
+#else
+			return ".so";
+#endif
+		}
 	private:
 		bool _symbols_loaded = false;
 		std::set<std::string> _symbols;
