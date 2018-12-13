@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <chrono>
 #include <atomic>
+#include <functional>
 
 namespace ttl {
 	// A threadsafe logger implementation replacement for std::cout
@@ -16,6 +17,10 @@ namespace ttl {
 		INFO,
 		WARN,
 		ERR
+	};
+	struct logmodule {
+		std::string name;
+		explicit logmodule(std::string n) : name(n) {}
 	};
 	class logger {
 		std::atomic<loglevel> level;
@@ -91,14 +96,11 @@ namespace ttl {
 			}
 			template<typename T>
 			friend ptr operator<<(ptr lhs, T const& rhs);
+			friend ptr operator<<(ptr lhs, const loglevel& ll);
+			friend ptr operator<<(ptr lhs, const logmodule& ll);
 		};
 
 		stream::ptr operator()(loglevel lvl, const std::string& module);
-	};
-
-	struct logmodule {
-		std::string name;
-		explicit logmodule(std::string n) : name(n) {}
 	};
 
 	template<typename T>
@@ -109,22 +111,28 @@ namespace ttl {
 		return stream;
 	}
 
-	template<>
-	inline logger::stream::ptr operator<<(logger::stream::ptr lhs, logmodule const& rhs)
+	template<typename T>
+	inline logger::stream::ptr operator<<(logger& lhs, loglevel ll)
+	{
+		auto stream = std::make_shared<logger::stream>(&lhs);
+		stream->level = ll;
+		return stream;
+	}
+
+	inline logger::stream::ptr operator<<(logger::stream::ptr lhs, const logmodule& rhs)
 	{
 		lhs->module = rhs.name;
 		return lhs;
 	}
 
-	template<>
-	inline logger::stream::ptr operator<<(logger::stream::ptr lhs, loglevel const& rhs)
+	inline logger::stream::ptr operator<<(logger::stream::ptr lhs, const loglevel& rhs)
 	{
 		lhs->level = rhs;
 		return lhs;
 	}
 
 	template<typename T>
-	inline logger::stream::ptr operator<<(logger::stream::ptr lhs, T const& rhs)
+	inline logger::stream::ptr operator<<(logger::stream::ptr lhs, const T& rhs)
 	{
 		if (lhs->level >= lhs->level_output) {
 			lhs->str << rhs;
