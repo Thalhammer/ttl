@@ -291,12 +291,36 @@ namespace ttl
 				return std::is_trivially_constructible<T>::value;
 			}
 			
+			template<typename U = T>
+			static typename std::enable_if<std::is_same<U, void>::value, bool>::type
+				is_trivially_copy_assignable_impl() {
+				return false;
+			}
+
+			template<typename U = T>
+			static typename std::enable_if<!std::is_same<U, void>::value, bool>::type
+				is_trivially_copy_assignable_impl() {
+				return std::is_trivially_copy_assignable<U>::value;
+			}
+			
 			bool is_trivially_copy_assignable() const noexcept {
-				return std::is_trivially_copy_assignable<T>::value;
+				return is_trivially_copy_assignable_impl<T>();
+			}
+
+			template<typename U = T>
+			static typename std::enable_if<std::is_same<U, void>::value, bool>::type
+				is_trivially_copy_constructible_impl() {
+				return false;
+			}
+
+			template<typename U = T>
+			static typename std::enable_if<!std::is_same<U, void>::value, bool>::type
+				is_trivially_copy_constructible_impl() {
+				return std::is_trivially_copy_constructible<U>::value;
 			}
 
 			bool is_trivially_copy_constructible() const noexcept {
-				return std::is_trivially_copy_constructible<T>::value;
+				return is_trivially_copy_constructible_impl<T>();
 			}
 					
 			bool is_trivially_default_constructible() const noexcept {
@@ -306,13 +330,37 @@ namespace ttl
 			bool is_trivially_destructible() const noexcept {
 				return std::is_trivially_destructible<T>::value;
 			}
+
+			template<typename U = T>
+			static typename std::enable_if<std::is_same<U, void>::value, bool>::type
+				is_trivially_move_assignable_impl() {
+				return false;
+			}
+
+			template<typename U = T>
+			static typename std::enable_if<!std::is_same<U, void>::value, bool>::type
+				is_trivially_move_assignable_impl() {
+				return std::is_trivially_move_assignable<U>::value;
+			}
 			
 			bool is_trivially_move_assignable() const noexcept {
-				return std::is_trivially_move_assignable<T>::value;
+				return is_trivially_move_assignable_impl<T>();
+			}
+
+			template<typename U = T>
+			static typename std::enable_if<std::is_same<U, void>::value, bool>::type
+				is_trivially_move_constructible_impl() {
+				return false;
+			}
+
+			template<typename U = T>
+			static typename std::enable_if<!std::is_same<U, void>::value, bool>::type
+				is_trivially_move_constructible_impl() {
+				return std::is_trivially_move_constructible<U>::value;
 			}
 
 			bool is_trivially_move_constructible() const noexcept {
-				return std::is_trivially_move_constructible<T>::value;
+				return is_trivially_move_constructible_impl<T>();
 			}
 
 			bool is_union() const noexcept {
@@ -347,8 +395,20 @@ namespace ttl
 				return std::alignment_of<T>::value;
 			}
 
+			template<typename U = T>
+			static typename std::enable_if<std::is_same<U, void>::value, size_t>::type
+				size_impl() {
+				return 0;
+			}
+
+			template<typename U = T>
+			static typename std::enable_if<!std::is_same<U, void>::value, size_t>::type
+				size_impl() {
+				return sizeof(U);
+			}
+
 			size_t size() const noexcept {
-				return sizeof(T);
+				return size_impl<T>();
 			}
 
 			std::shared_ptr<void> create_object() const {
@@ -666,6 +726,14 @@ namespace ttl
 			return val->std_type();
 		}
 	};
+
+	inline bool operator==(const type& a, const type& b) noexcept {
+		return a.std_type() == b.std_type();
+	}
+
+	inline bool operator!=(const type& a, const type& b) noexcept {
+		return a.std_type() != b.std_type();
+	}
 }
 
 #ifdef TTL_OLD_NAMESPACE

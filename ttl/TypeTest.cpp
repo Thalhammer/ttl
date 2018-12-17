@@ -42,3 +42,10 @@ TEST(TypeTest, DefaultConstruct) {
 	auto ptr = type.create_object();
 	ASSERT_FALSE(ptr == nullptr);
 }
+
+TEST(TypeTest, Void) {
+	auto type = type::create<void>();
+
+	ASSERT_EQ("void", type.pretty_name());
+	ASSERT_TRUE(type.is_fundamental());
+}

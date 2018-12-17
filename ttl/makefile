@@ -56,6 +56,9 @@ clean:
 	@rm -f $(OUTFILE)
 	@echo Removing objects
 	@rm -f $(OBJ)
+	@echo Removing trace files
+	@rm -f $(OBJ:%.o=%.gcda)
+	@rm -f $(OBJ:%.o=%.gcno)
 	@echo Removing dependency files
 	@rm -rf $(DEP_DIR)
 	@echo Removing package folders

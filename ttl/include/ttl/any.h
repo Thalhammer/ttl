@@ -93,7 +93,7 @@ namespace ttl
 			template<typename U = T>
 			typename std::enable_if<detail::has_global_to_string<U>::value, std::string>::type
 				to_string_impl() const {
-				return std::to_string(val);
+				return ttl::to_string(val);
 			}
 
 			template<typename U = T>
@@ -110,10 +110,6 @@ namespace ttl
 		};
 
 		std::unique_ptr<data_base> val;
-
-		// Create empty
-		any()
-		{}
 
 #ifdef __GLIBCXX__
 		static void* upcast(const std::type_info& from, const std::type_info& to, void* ptr) {
@@ -253,23 +249,49 @@ namespace ttl
 		{
 		}
 
-		const std::string& pretty_name() const noexcept {
+		any(const any& other)
+			: val(other.val == nullptr ? nullptr : other.val->clone())
+		{}
+
+		// Create empty
+		any()
+		{}
+
+		any& operator=(const any& other) {
+			val = other.val == nullptr ? nullptr : other.val->clone();
+			return *this;
+		}
+
+		bool valid() const noexcept {
+			return !empty();
+		}
+
+		bool empty() const noexcept {
+			return !val;
+		}
+
+		const std::string& pretty_name() const {
+			if(empty()) throw std::logic_error("invalid any");
 			return val->type().pretty_name();
 		}
 
-		bool is_type(const std::type_info& type) const noexcept {
+		bool is_type(const std::type_info& type) const {
+			if(empty()) throw std::logic_error("invalid any");
 			return val->type().std_type() == type;
 		}
 
-		const std::type_info& std_type() const noexcept {
+		const std::type_info& std_type() const {
+			if(empty()) throw std::logic_error("invalid any");
 			return val->type().std_type();
 		}
 
-		const ttl::type& type() const noexcept {
+		const ttl::type& type() const {
+			if(empty()) throw std::logic_error("invalid any");
 			return val->type();
 		}
 
 		any clone() const {
+			if(empty()) throw std::logic_error("invalid any");
 			any a;
 			a.val = val->clone();
 			return a;
@@ -277,16 +299,19 @@ namespace ttl
 
 #ifdef __cpp_lib_any
 		std::any to_std_any() const {
+			if(empty()) return std::any();
 			return val->to_std_any();
 		}
 #endif
 
 		std::string to_string() const {
+			if(empty()) throw std::logic_error("invalid any");
 			return val->to_string();
 		}
 
 #ifdef _WIN32
 		const void* upcast(const std::type_info& to) const {
+			if(empty()) throw std::logic_error("invalid any");
 			auto& from = this->std_type();
 			auto* ptr = this->val->data_ptr();
 			if (!type().is_polymorphic())
@@ -295,6 +320,7 @@ namespace ttl
 		}
 
 		void* upcast(const std::type_info& to) {
+			if(empty()) throw std::logic_error("invalid any");
 			auto& from = this->std_type();
 			auto* ptr = this->val->data_ptr();
 			if (!type().is_polymorphic())
@@ -303,6 +329,7 @@ namespace ttl
 		}
 #else
 		const void* upcast(const std::type_info& to) const {
+			if(empty()) throw std::logic_error("invalid any");
 			auto& from = this->std_type();
 			auto* ptr = this->val->data_ptr();
 			if (!type().is_class())
@@ -311,6 +338,7 @@ namespace ttl
 		}
 
 		void* upcast(const std::type_info& to) {
+			if(empty()) throw std::logic_error("invalid any");
 			auto& from = this->std_type();
 			auto* ptr = this->val->data_ptr();
 			if (!type().is_class())
@@ -330,12 +358,48 @@ namespace ttl
 			return (T*)this->upcast(typeid(T));
 		}
 
+		/**
+		 * Returns a pointer to the contained object.
+		 * If the contained object is a reference, a pointer to the referenced object is returned.
+		 * \return Pointer to object
+		 */
 		template<typename T>
-		T* get_pointer() noexcept {
+		typename std::enable_if<std::is_reference<T>::value, typename std::remove_reference<T>::type*>::type
+			get_pointer() {
+			if(empty()) throw std::logic_error("invalid any");
+			return (typename std::remove_reference<T>::type*)val->data_ptr();
+		}
+		/**
+		 * Returns a pointer to the contained object.
+		 * If the contained object is a reference, a pointer to the referenced object is returned.
+		 * \return Pointer to object
+		 */
+		template<typename T>
+		typename std::enable_if<!std::is_reference<T>::value, T*>::type
+			get_pointer() {
+			if(empty()) throw std::logic_error("invalid any");
 			return (T*)val->data_ptr();
 		}
+		/**
+		 * Returns a pointer to the contained object.
+		 * If the contained object is a reference, a pointer to the referenced object is returned.
+		 * \return Pointer to object
+		 */
 		template<typename T>
-		const T* get_pointer() const {
+		typename std::enable_if<std::is_reference<T>::value, const typename std::remove_reference<T>::type*>::type
+			get_pointer() const {
+			if(empty()) throw std::logic_error("invalid any");
+			return (const typename std::remove_reference<T>::type*)val->data_ptr();
+		}
+		/**
+		 * Returns a pointer to the contained object.
+		 * If the contained object is a reference, a pointer to the referenced object is returned.
+		 * \return Pointer to object
+		 */
+		template<typename T>
+		typename std::enable_if<!std::is_reference<T>::value, const T*>::type
+			get_pointer() const {
+			if(empty()) throw std::logic_error("invalid any");
 			return (const T*)val->data_ptr();
 		}
 
