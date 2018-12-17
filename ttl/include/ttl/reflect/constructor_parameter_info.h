@@ -5,11 +5,9 @@ namespace ttl
 {
     namespace reflect
     {
-        template<typename T>
-        class builder;
         class constructor_info;
         class constructor_parameter_info {
-            template<typename T> friend class builder;
+            friend class constructor_info;
             const constructor_info& constructor;
             size_t index;
             std::string name;

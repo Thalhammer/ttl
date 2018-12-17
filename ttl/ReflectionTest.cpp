@@ -14,6 +14,7 @@ TTL_REFLECT(
         .constructor<>()
         .method("add", &test::add, {"a","b"}, {10, 20})
         .field("test_val", &test::test_val);
+    registration::method("std::to_string", select_overload<std::string(int)>(&std::to_string), { "value" });
 )
 
 std::shared_ptr<const ttl::reflect::class_info> get_info() {
@@ -104,4 +105,27 @@ TEST(ReflectionTest, Constructor) {
     auto instance = constructors[0].invoke({});
     ASSERT_TRUE(instance.has_value());
     ASSERT_TRUE(instance.value().is_type<test>());
+}
+
+
+TEST(ReflectionTest, GlobalMethod) {
+	auto info = ttl::reflect::registration::get_method("std::to_string");
+
+    ASSERT_EQ(info.size(), 1);
+    auto method = info[0];
+    ASSERT_EQ(method->get_name(), "std::to_string");
+    ASSERT_EQ(method->get_declaring_class(), nullptr);
+    ASSERT_TRUE(method->is_static());
+    auto params = method->get_parameters();
+    ASSERT_EQ(params.size(), 1);
+    ASSERT_EQ(&params[0].get_declaring_method(), method.get());
+    ASSERT_EQ(params[0].get_index(), 0);
+    ASSERT_EQ(params[0].get_name(), "value");
+    ASSERT_EQ(params[0].get_type(), ttl::type::create<int>());
+    ASSERT_FALSE(params[0].has_default_value());
+
+    auto res = method->invoke({ 10 });
+    ASSERT_TRUE(res.has_value());
+    ASSERT_TRUE(res.value().is_type<std::string>());
+    ASSERT_EQ(res->get<std::string>(), "10");
 }

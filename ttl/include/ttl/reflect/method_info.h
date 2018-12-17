@@ -16,12 +16,25 @@ namespace ttl
             std::vector<parameter_info> params;
             function fn;
             template<typename T> friend class builder;
-            method_info(const class_info* parent, function fnptr)
-                : pclass(parent), fn(fnptr)
+            friend class registration;
+            method_info(const class_info* parent, const std::string& pname, function fnptr, const std::vector<std::string>& paramnames = {}, const std::vector<any>& defaultvals = {})
+                : pclass(parent), name(pname), fn(fnptr)
             {
                 size_t idx = 0;
                 for(auto& p : fn.get_parameter_types())
                     params.push_back(parameter_info(*this, idx++, "", p));
+
+                if(paramnames.size() > params.size())
+                    throw std::logic_error("Number of parameter names exceeds number of parameters");
+                if(defaultvals.size() > params.size())
+                    throw std::logic_error("Number of default values exceeds number of parameters");
+                for(size_t i=0; i<paramnames.size(); i++) {
+                    params[i].name = paramnames[i];
+                }
+                size_t offset = params.size() - defaultvals.size();
+                for(size_t i=0; i<defaultvals.size(); i++) {
+                    params[i + offset].default_val = defaultvals[i];
+                }
             }
         public:
             const class_info* get_declaring_class() const noexcept {

@@ -1,5 +1,6 @@
 #pragma once
 #include "builder.h"
+#include "helper.h"
 #include <map>
 
 namespace ttl
@@ -7,10 +8,12 @@ namespace ttl
     namespace reflect
     {
         class registration {
-            static std::map<std::string, std::shared_ptr<class_info>>& get_classmap();
+            std::map<std::string, std::shared_ptr<class_info>> classmap;
+            std::map<std::string, std::vector<std::shared_ptr<method_info>>> methodmap;
+            static registration& get_instance();
             static void register_class(std::unique_ptr<class_info> ptr) {
                 auto name = ptr->get_name();
-                get_classmap()[name] = std::shared_ptr<class_info>(ptr.release());
+                get_instance().classmap[name] = std::shared_ptr<class_info>(ptr.release());
             }
         public:
             template<typename T>
@@ -50,20 +53,31 @@ namespace ttl
                     return *this;
                 }
             };
+            
             template<typename T>
             static registration::builder<T> class_(const std::string& name="") {
                 return std::move(builder<T>(name));
             }
 
+            static void method(const std::string& name, function fn, const std::vector<std::string>& paramnames = {}, const std::vector<any>& defaultvals = {}) {
+                get_instance().methodmap[name].push_back(std::shared_ptr<method_info>(new method_info(nullptr, name, fn, paramnames, defaultvals)));
+            }
+            
             static std::shared_ptr<class_info> get_class(const std::string& name) {
-                auto it = get_classmap().find(name);
-                if(it == get_classmap().cend()) return nullptr;
+                auto it = get_instance().classmap.find(name);
+                if(it == get_instance().classmap.cend()) return nullptr;
                 return it->second;
             }
 
             template<typename T>
             static std::shared_ptr<class_info> get_class() {
                 return get_class(type::create<T>().pretty_name());
+            }
+
+            static std::vector<std::shared_ptr<method_info>> get_method(const std::string& name) {
+                auto it = get_instance().methodmap.find(name);
+                if(it == get_instance().methodmap.cend()) return {};
+                return it->second;
             }
         };
     }
@@ -79,7 +93,7 @@ struct ttl_reflect_init { \
 static struct ttl_reflect_init ttl_reflect_init_constructor;
 
 #define TTL_REFLECT_REGISTRATION_IMPL() \
-std::map<std::string, std::shared_ptr<ttl::reflect::class_info>>& ttl::reflect::registration::get_classmap() { \
-    static std::map<std::string, std::shared_ptr<ttl::reflect::class_info>> classes; \
-    return classes; \
+ttl::reflect::registration& ttl::reflect::registration::get_instance() { \
+    static ttl::reflect::registration instance; \
+    return instance; \
 };
