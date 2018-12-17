@@ -15,5 +15,5 @@ TEST(OptionalTest, Value) {
     ASSERT_TRUE(e.has_value());
     ASSERT_EQ(e.value(), "Hello");
 
-    static_assert(std::is_same<decltype(e)::value_type, std::string>::value);
+    static_assert(std::is_same<decltype(e)::value_type, std::string>::value, "type missmatch");
 }

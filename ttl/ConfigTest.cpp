@@ -49,7 +49,7 @@ values=    get trimmed
 
 	ASSERT_EQ(5, cfg.size());
 	// Just check compile
-	for (auto& entry : cfg) {}
+	for (auto& entry : cfg) { (void)entry; }
 }
 
 TEST(ConfigTest, ManualSet) {
