@@ -2,6 +2,7 @@
 #include "constructor_info.h"
 #include "method_info.h"
 #include "field_info.h"
+#include "base_info.h"
 
 namespace ttl
 {
@@ -15,6 +16,7 @@ namespace ttl
             std::vector<constructor_info> constructors;
             std::vector<method_info> methods;
             std::vector<field_info> fields;
+            std::vector<base_info> base_classes;
             class_info() {}
         public:
             const std::string& get_name() const noexcept {
@@ -28,6 +30,9 @@ namespace ttl
             }
             const std::vector<field_info>& get_fields() const noexcept {
                 return fields;
+            }
+            const std::vector<base_info>& get_base_classes() const noexcept {
+                return base_classes;
             }
         };
     }

@@ -34,6 +34,12 @@ namespace ttl
                 return *this;
             }
 
+            template<typename TBase>
+            builder& base() {
+                res->base_classes.push_back(base_info(base_info::deduction_helper<TBase>(), base_info::deduction_helper<T>()));
+                return *this;
+            }
+
             std::unique_ptr<class_info> build() {
                 return std::move(res);
             }

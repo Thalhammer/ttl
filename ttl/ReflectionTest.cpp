@@ -3,14 +3,22 @@
 
 TTL_REFLECT_REGISTRATION_IMPL()
 
-struct test {
+struct testbase {
+    int test_val2;
+};
+
+struct test : testbase {
     int add(int a = 10, int b = 20) { return a + b; }
 
     int test_val;
 };
 
 TTL_REFLECT(
+    registration::class_<testbase>()
+        .constructor<>()
+        .field("test_val2", &testbase::test_val2);
     registration::class_<test>()
+        .base<testbase>()
         .constructor<>()
         .method("add", &test::add, {"a","b"}, {10, 20})
         .field("test_val", &test::test_val);
@@ -89,7 +97,9 @@ TEST(ReflectionTest, ExamineFields) {
     ASSERT_FALSE(fields[0].is_static());
     ASSERT_EQ(fields[0].get_type(), ttl::type::create<int>());
 
-    ttl::any instance(test { 10 });
+    test t;
+    t.test_val = 10;
+    ttl::any instance(t);
     auto val = fields[0].get(instance);
     ASSERT_EQ(val.get<int>(), 10);
     fields[0].set(instance, 20);
@@ -128,4 +138,17 @@ TEST(ReflectionTest, GlobalMethod) {
     ASSERT_TRUE(res.has_value());
     ASSERT_TRUE(res.value().is_type<std::string>());
     ASSERT_EQ(res->get<std::string>(), "10");
+}
+
+TEST(ReflectionTest, Bases) {
+	auto info = get_info();
+
+    auto bases = info->get_base_classes();
+    ASSERT_EQ(bases.size(), 1);
+    test t;
+    test* instance = &t;
+    ttl::any a = bases[0].convert(instance);
+    ASSERT_TRUE(!a.empty());
+    ASSERT_TRUE(a.is_type<testbase*>());
+    ASSERT_EQ(a.get<testbase*>(), static_cast<testbase*>(instance));
 }

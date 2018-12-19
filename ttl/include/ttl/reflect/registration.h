@@ -52,6 +52,13 @@ namespace ttl
                         mbuilder->field(name, ptr);
                     return *this;
                 }
+
+                template<typename TBase>
+                builder& base() {
+                    if(mbuilder)
+                        mbuilder->template base<TBase>();
+                    return *this;
+                }
             };
             
             template<typename T>
