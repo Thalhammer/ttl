@@ -15,10 +15,11 @@ namespace ttl
             std::string name;
             std::vector<parameter_info> params;
             function fn;
+            std::vector<any> attributes;
             template<typename T> friend class builder;
             friend class registration;
-            method_info(const class_info* parent, const std::string& pname, function fnptr, const std::vector<std::string>& paramnames = {}, const std::vector<any>& defaultvals = {})
-                : pclass(parent), name(pname), fn(fnptr)
+            method_info(const class_info* parent, const std::string& pname, function fnptr, const std::vector<std::string>& paramnames = {}, const std::vector<any>& defaultvals = {}, const std::vector<any>& pattributes = {})
+                : pclass(parent), name(pname), fn(fnptr), attributes(pattributes)
             {
                 size_t idx = 0;
                 for(auto& p : fn.get_parameter_types())
@@ -51,6 +52,10 @@ namespace ttl
 
             bool is_static() const noexcept {
                 return !fn.requires_instance();
+            }
+
+            const std::vector<any> get_attributes() const noexcept {
+                return attributes;
             }
 
             optional<any> invoke(std::vector<any> params) const {

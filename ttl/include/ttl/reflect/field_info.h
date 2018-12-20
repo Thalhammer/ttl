@@ -16,10 +16,11 @@ namespace ttl
             bool _static;
             std::function<void(any&, any)> setter;
             std::function<any(any&)> getter;
+            std::vector<any> attributes;
             template<typename T> friend class builder;
             template<typename T>
-            field_info(const class_info* parent, std::string pname, T* field)
-                : pclass(parent), name(pname), ftype(type::create<T>())
+            field_info(const class_info* parent, std::string pname, T* field, const std::vector<any>& pattributes = {})
+                : pclass(parent), name(pname), ftype(type::create<T>()), attributes(pattributes)
             {
                 _static = true;
                 setter = [field](any&, any val) {
@@ -30,8 +31,8 @@ namespace ttl
                 };
             }
             template<typename T, typename Class>
-            field_info(const class_info* parent, std::string pname, T Class::*field)
-                : pclass(parent), name(pname), ftype(type::create<T>())
+            field_info(const class_info* parent, std::string pname, T Class::*field, const std::vector<any>& pattributes = {})
+                : pclass(parent), name(pname), ftype(type::create<T>()), attributes(pattributes)
             {
                 _static = false;
                 setter = [field](any& instance, any val) {
@@ -56,6 +57,10 @@ namespace ttl
 
             bool is_static() const noexcept {
                 return _static;
+            }
+
+            const std::vector<any> get_attributes() const noexcept {
+                return attributes;
             }
 
             any get() const {

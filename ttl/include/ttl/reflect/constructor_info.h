@@ -13,9 +13,10 @@ namespace ttl
             const class_info& pclass;
             std::vector<constructor_parameter_info> params;
             function fn;
+            std::vector<any> attributes;
             template<typename T> friend class builder;
-            constructor_info(const class_info& parent, function fnptr, const std::vector<std::string>& paramnames = {}, const std::vector<any>& defaultvals = {})
-                : pclass(parent), fn(fnptr)
+            constructor_info(const class_info& parent, function fnptr, const std::vector<std::string>& paramnames = {}, const std::vector<any>& defaultvals = {}, const std::vector<any>& pattributes = {})
+                : pclass(parent), fn(fnptr), attributes(pattributes)
             {
                 size_t idx = 0;
                 for(auto& p : fn.get_parameter_types())
@@ -40,6 +41,10 @@ namespace ttl
 
             const std::vector<constructor_parameter_info>& get_parameters() const noexcept {
                 return params;
+            }
+
+            const std::vector<any> get_attributes() const noexcept {
+                return attributes;
             }
 
             optional<any> invoke(std::vector<any> params) const {

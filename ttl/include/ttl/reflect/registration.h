@@ -21,8 +21,8 @@ namespace ttl
                 friend class registration;
                 std::unique_ptr<reflect::builder<T>> mbuilder;
             public:
-                builder(const std::string& name)
-                    : mbuilder(std::make_unique<reflect::builder<T>>(name.empty()?type::create<T>().pretty_name():name))
+                builder(const std::string& name, const std::vector<any>& attributes = {})
+                    : mbuilder(std::make_unique<reflect::builder<T>>(name.empty()?type::create<T>().pretty_name():name, attributes))
                 {}
                 builder(builder&& other)
                     : mbuilder(std::move(other.mbuilder))
@@ -34,22 +34,22 @@ namespace ttl
                 }
 
                 template<typename... Args>
-                builder& constructor(const std::vector<std::string>& paramnames = {}, const std::vector<any>& defaultvals = {}) {
+                builder& constructor(const std::vector<std::string>& paramnames = {}, const std::vector<any>& defaultvals = {}, const std::vector<any>& attributes = {}) {
                     if(mbuilder)
-                        mbuilder->template constructor<Args...>();
+                        mbuilder->template constructor<Args...>(paramnames, defaultvals, attributes);
                     return *this;
                 }
 
-                builder& method(const std::string& name, function fn, const std::vector<std::string>& paramnames = {}, const std::vector<any>& defaultvals = {}) {
+                builder& method(const std::string& name, function fn, const std::vector<std::string>& paramnames = {}, const std::vector<any>& defaultvals = {}, const std::vector<any>& attributes = {}) {
                     if(mbuilder)
-                        mbuilder->method(name, fn, paramnames, defaultvals);
+                        mbuilder->method(name, fn, paramnames, defaultvals, attributes);
                     return *this;
                 }
 
                 template<typename TPtr>
-                builder& field(const std::string& name, TPtr ptr) {
+                builder& field(const std::string& name, TPtr ptr, const std::vector<any>& attributes = {}) {
                     if(mbuilder)
-                        mbuilder->field(name, ptr);
+                        mbuilder->field(name, ptr, attributes);
                     return *this;
                 }
 
@@ -66,8 +66,8 @@ namespace ttl
                 return std::move(builder<T>(name));
             }
 
-            static void method(const std::string& name, function fn, const std::vector<std::string>& paramnames = {}, const std::vector<any>& defaultvals = {}) {
-                get_instance().methodmap[name].push_back(std::shared_ptr<method_info>(new method_info(nullptr, name, fn, paramnames, defaultvals)));
+            static void method(const std::string& name, function fn, const std::vector<std::string>& paramnames = {}, const std::vector<any>& defaultvals = {}, const std::vector<any>& attributes = {}) {
+                get_instance().methodmap[name].push_back(std::shared_ptr<method_info>(new method_info(nullptr, name, fn, paramnames, defaultvals, attributes)));
             }
             
             static std::shared_ptr<class_info> get_class(const std::string& name) {

@@ -17,6 +17,7 @@ namespace ttl
             std::vector<method_info> methods;
             std::vector<field_info> fields;
             std::vector<base_info> base_classes;
+            std::vector<any> attributes;
             class_info() {}
         public:
             const std::string& get_name() const noexcept {
@@ -33,6 +34,9 @@ namespace ttl
             }
             const std::vector<base_info>& get_base_classes() const noexcept {
                 return base_classes;
+            }
+            const std::vector<any>& get_attributes() const noexcept {
+                return attributes;
             }
         };
     }
