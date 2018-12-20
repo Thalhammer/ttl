@@ -245,8 +245,8 @@ namespace ttl
 		// Create with implicit type
 		template<typename T>
 		any(T arg)
-			: val(std::make_unique<data<T>>(std::move(arg)))
 		{
+			val = std::make_unique<data<T>>(arg);
 		}
 
 		any(const any& other)

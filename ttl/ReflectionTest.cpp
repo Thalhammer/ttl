@@ -3,17 +3,20 @@
 
 TTL_REFLECT_REGISTRATION_IMPL()
 
-struct testbase {
-    int test_val2;
-};
+namespace ReflectionTest {
+    struct testbase {
+        int test_val2;
+    };
 
-struct test : testbase {
-    int add(int a = 10, int b = 20) { return a + b; }
+    struct test : testbase {
+        int add(int a = 10, int b = 20) { return a + b; }
 
-    int test_val;
-};
+        int test_val;
+    };
+}
 
 TTL_REFLECT(
+    using namespace ReflectionTest;
     registration::class_<testbase>()
         .constructor<>()
         .field("test_val2", &testbase::test_val2);
@@ -26,6 +29,7 @@ TTL_REFLECT(
 )
 
 std::shared_ptr<const ttl::reflect::class_info> get_info() {
+    using namespace ReflectionTest;
     return ttl::reflect::registration::get_class<test>();
 }
 
@@ -61,6 +65,7 @@ TEST(ReflectionTest, ExamineMethods) {
 }
 
 TEST(ReflectionTest, InvokeMember) {
+    using namespace ReflectionTest;
 	auto info = get_info();
 
     auto meths = info->get_methods();
@@ -74,6 +79,7 @@ TEST(ReflectionTest, InvokeMember) {
 }
 
 TEST(ReflectionTest, InvokeMemberDefaultArgs) {
+    using namespace ReflectionTest;
 	auto info = get_info();
 
     auto meths = info->get_methods();
@@ -87,6 +93,7 @@ TEST(ReflectionTest, InvokeMemberDefaultArgs) {
 }
 
 TEST(ReflectionTest, ExamineFields) {
+    using namespace ReflectionTest;
 	auto info = get_info();
 
     auto fields = info->get_fields();
@@ -101,6 +108,8 @@ TEST(ReflectionTest, ExamineFields) {
     t.test_val = 10;
     ttl::any instance(t);
     auto val = fields[0].get(instance);
+    ASSERT_TRUE(val.valid());
+    ASSERT_TRUE(instance.is_type<test>());
     ASSERT_EQ(val.get<int>(), 10);
     fields[0].set(instance, 20);
     val = fields[0].get(instance);
@@ -108,6 +117,7 @@ TEST(ReflectionTest, ExamineFields) {
 }
 
 TEST(ReflectionTest, Constructor) {
+    using namespace ReflectionTest;
 	auto info = get_info();
 
     auto constructors = info->get_constructors();
@@ -141,14 +151,14 @@ TEST(ReflectionTest, GlobalMethod) {
 }
 
 TEST(ReflectionTest, Bases) {
+    using namespace ReflectionTest;
 	auto info = get_info();
 
     auto bases = info->get_base_classes();
     ASSERT_EQ(bases.size(), 1);
     test t;
-    test* instance = &t;
-    ttl::any a = bases[0].convert(instance);
+    ttl::any a = bases[0].convert(&t);
     ASSERT_TRUE(!a.empty());
     ASSERT_TRUE(a.is_type<testbase*>());
-    ASSERT_EQ(a.get<testbase*>(), static_cast<testbase*>(instance));
+    ASSERT_EQ(a.get<testbase*>(), static_cast<testbase*>(&t));
 }

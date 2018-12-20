@@ -24,13 +24,13 @@ DEBFOLDER = $(OUTNAME)_$(DEBVERSION)
 release: FLAGS += -O2 -march=native
 release: $(OUTFILE)
 
-debug: FLAGS += -g -O0 -D_LIBCPP_DEBUG=1 -fprofile-arcs -ftest-coverage
-debug: LINKFLAGS += -lgcov --coverage
+debug: FLAGS += -g -O0 -D_LIBCPP_DEBUG=1 -fprofile-arcs -ftest-coverage -fsanitize=address -fsanitize=leak -fsanitize=undefined
+debug: LINKFLAGS += -lgcov --coverage -fsanitize=address -fsanitize=leak -fsanitize=undefined
 debug: $(OUTFILE)
 
 $(OUTFILE): $(OBJ)
 	@echo Generating binary
-	@$(CXX) -o $@ $^ $(LINKFLAGS)
+	@$(CXX) -o $@ -lasan $^ $(LINKFLAGS)
 	@echo Build done
 
 %.cc.o: %.cc

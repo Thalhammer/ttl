@@ -3,7 +3,7 @@
 
 using ttl::any;
 
-
+namespace AnyTest {
 struct A {
 	A(){}
 	virtual ~A() {}
@@ -42,6 +42,7 @@ struct G {
 struct H : G {
 
 };
+}
 
 TEST(AnyTest, AnyInt) {
 	int i = 1;
@@ -60,6 +61,7 @@ TEST(AnyTest, AnyInt) {
 }
 
 TEST(AnyTest, UpCast) {
+	using namespace AnyTest;
 	any test(D{});
 	ASSERT_EQ(typeid(D), test.std_type());
 
@@ -105,6 +107,7 @@ struct strTest {
 };
 
 TEST(AnyTest, ToString) {
+	using namespace AnyTest;
 	any test(10);
 	ASSERT_EQ("10", test.to_string());
 	any test2(A{});
