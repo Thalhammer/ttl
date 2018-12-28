@@ -59,6 +59,7 @@ namespace ttl
         {
             virtual ~data_base() {}
             virtual bool requires_instance() const noexcept = 0;
+            virtual bool requires_modifiable_instance() const noexcept = 0;
             virtual optional<type> get_instance_type() const = 0;
             virtual type get_return_type() const = 0;
             virtual std::vector<type> get_parameter_types() const = 0;
@@ -74,6 +75,11 @@ namespace ttl
             }
 
             bool requires_instance() const noexcept override
+            {
+                return false;
+            }
+
+            bool requires_modifiable_instance() const noexcept override
             {
                 return false;
             }
@@ -146,6 +152,96 @@ namespace ttl
                 return true;
             }
 
+            bool requires_modifiable_instance() const noexcept override
+            {
+                return true;
+            }
+
+            optional<type> get_instance_type() const override
+            {
+                return type::create<Class>();
+            }
+
+            type get_return_type() const override
+            {
+                return type::create<Ret>();
+            }
+
+            std::vector<type> get_parameter_types() const override
+            {
+                std::vector<type> types;
+                detail::get_types_impl<Args...>::get_types(types);
+                return types;
+            }
+
+            template <typename U = Ret>
+            typename std::enable_if<std::is_same<U, void>::value, optional<any>>::type
+            invoke_dynamic_impl(Class *instance, const std::vector<any> &params) const
+            {
+                detail::call_detail<Ret, Args...>(std::function<U(Args...)>([instance, this](Args... args) -> U {
+                    return (instance->*fn_ptr)(args...);
+                }), params, 0);
+                return {};
+            }
+
+            template <typename U = Ret>
+            typename std::enable_if<!std::is_same<U, void>::value, optional<any>>::type
+            invoke_dynamic_impl(Class *instance, const std::vector<any> &params) const
+            {
+                auto res = detail::call_detail<Ret, Args...>(std::function<U(Args...)>([instance, this](Args... args) -> U {
+                    return (instance->*fn_ptr)(args...);
+                }), params, 0);
+                return optional<any>(any(res));
+            }
+
+            optional<any> invoke_dynamic(any &instance, const std::vector<any> &params) const override
+            {
+                auto types = this->get_parameter_types();
+                if (params.size() != types.size())
+                    throw std::logic_error("wrong parameter count");
+                if (instance.empty())
+                    throw std::logic_error("method requires instance");
+                if (!instance.is_type<Class>())
+                    throw std::logic_error("instance type missmatch " + instance.type().pretty_name() + " != " + type::create<Class>().pretty_name());
+                if (instance.type().is_const())
+                    throw std::logic_error("trying to call nonconst function on const instance");
+                for (size_t i = 0; i < params.size(); i++)
+                {
+                    if (params[i].type() != types[i])
+                    {
+                        throw std::runtime_error("invalid type for arg " + std::to_string(i) + " expected: " + types[i].pretty_name() + " got: " + params[i].type().pretty_name());
+                    }
+                }
+                return invoke_dynamic_impl(instance.get_pointer<Class>(), params);
+                return {};
+            }
+
+            std::unique_ptr<data_base> clone() const override
+            {
+                return std::make_unique<data_memberfn>(*this);
+            }
+
+        private:
+            Ret (Class::*fn_ptr)(Args...);
+        };
+        template <typename Class, typename Ret, typename... Args>
+        struct data_constmemberfn : data_base
+        {
+            data_constmemberfn(Ret (Class::*fn)(Args...) const)
+                : fn_ptr(fn)
+            {
+            }
+
+            bool requires_instance() const noexcept override
+            {
+                return true;
+            }
+
+            bool requires_modifiable_instance() const noexcept override
+            {
+                return false;
+            }
+
             optional<type> get_instance_type() const override
             {
                 return type::create<Class>();
@@ -205,11 +301,11 @@ namespace ttl
 
             std::unique_ptr<data_base> clone() const override
             {
-                return std::make_unique<data_memberfn>(*this);
+                return std::make_unique<data_constmemberfn>(*this);
             }
 
         private:
-            Ret (Class::*fn_ptr)(Args...);
+            Ret (Class::*fn_ptr)(Args...) const;
         };
         std::unique_ptr<data_base> fn;
 
@@ -232,6 +328,12 @@ namespace ttl
         {
         }
 
+        template <typename Class, typename Ret, typename... Args>
+        function(Ret (Class::*ptr)(Args...) const)
+            : fn(std::make_unique<data_constmemberfn<Class, Ret, Args...>>(ptr))
+        {
+        }
+
         function(const function &other)
             : fn(other.fn->clone())
         {}
@@ -244,6 +346,11 @@ namespace ttl
         bool requires_instance() const noexcept
         {
             return fn->requires_instance();
+        }
+
+        bool requires_modifiable_instance() const noexcept
+        {
+            return fn->requires_modifiable_instance();
         }
 
         optional<type> get_instance_type() const

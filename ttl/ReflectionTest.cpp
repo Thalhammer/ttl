@@ -10,6 +10,7 @@ namespace ReflectionTest {
 
     struct test : testbase {
         int add(int a = 10, int b = 20) { return a + b; }
+        int addconst(int a = 10, int b = 20) const { return a + b; }
 
         int test_val;
     };
@@ -24,6 +25,7 @@ TTL_REFLECT(
         .base<testbase>()
         .constructor<>()
         .method("add", &test::add, {"a","b"}, {10, 20})
+        .method("addconst", &test::addconst, {"a","b"}, {10, 20})
         .field("test_val", &test::test_val);
     registration::method("std::to_string", select_overload<std::string(int)>(&std::to_string), { "value" });
 )
@@ -41,7 +43,7 @@ TEST(ReflectionTest, ExamineMethods) {
 	auto info = get_info();
 
     auto meths = info->get_methods();
-    ASSERT_EQ(meths.size(), 1);
+    ASSERT_EQ(meths.size(), 2);
 
     ASSERT_EQ(meths[0].get_name(), "add");
     ASSERT_EQ(meths[0].get_declaring_class(), info.get());
@@ -69,7 +71,7 @@ TEST(ReflectionTest, InvokeMember) {
 	auto info = get_info();
 
     auto meths = info->get_methods();
-    ASSERT_EQ(meths.size(), 1);
+    ASSERT_EQ(meths.size(), 2);
 
     ttl::any instance(test{});
     auto res = meths[0].invoke(instance, {30, 30});
@@ -83,7 +85,7 @@ TEST(ReflectionTest, InvokeMemberDefaultArgs) {
 	auto info = get_info();
 
     auto meths = info->get_methods();
-    ASSERT_EQ(meths.size(), 1);
+    ASSERT_EQ(meths.size(), 2);
 
     ttl::any instance(test{});
     auto res = meths[0].invoke(instance, {});
