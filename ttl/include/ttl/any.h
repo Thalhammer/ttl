@@ -389,6 +389,11 @@ namespace ttl
 		typename std::enable_if<std::is_reference<T>::value, const typename std::remove_reference<T>::type*>::type
 			get_pointer() const {
 			if(empty()) throw std::logic_error("invalid any");
+			if(typeid(typename std::remove_reference<T>::type) != val->type().std_type()) {
+				throw std::logic_error(std::string("bad any cast:")
+					+ ttl::type::create<typename std::remove_reference<T>::type>().pretty_name()
+					+ " != " + val->type().pretty_name());
+			}
 			return (const typename std::remove_reference<T>::type*)val->data_ptr();
 		}
 		/**
@@ -400,6 +405,11 @@ namespace ttl
 		typename std::enable_if<!std::is_reference<T>::value, const T*>::type
 			get_pointer() const {
 			if(empty()) throw std::logic_error("invalid any");
+			if(typeid(T) != val->type().std_type()) {
+				throw std::logic_error(std::string("bad any cast:")
+					+ ttl::type::create<T>().pretty_name()
+					+ " != " + val->type().pretty_name());
+			}
 			return (const T*)val->data_ptr();
 		}
 
