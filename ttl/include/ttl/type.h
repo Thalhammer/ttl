@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <type_traits>
+#include "traits.h"
 #ifndef _MSC_VER
 #include <cxxabi.h>
 #endif
@@ -78,6 +79,8 @@ namespace ttl
 			virtual type base_type() const = 0;
 			virtual const std::type_info& std_type() const noexcept = 0;
 			virtual std::unique_ptr<data_base> clone() const = 0;
+
+			virtual bool is_iterable() const noexcept = 0;
 		};
 		template<typename T>
 		struct data final : data_base {
@@ -452,6 +455,10 @@ namespace ttl
 			std::unique_ptr<data_base> clone() const {
 				return std::make_unique<data<T>>();
 			}
+
+			bool is_iterable() const noexcept override {
+				return traits::is_iterable<T>::value;
+			}
 		};
 
 		std::unique_ptr<data_base> val;
@@ -724,6 +731,10 @@ namespace ttl
 
 		const std::type_info& std_type() const noexcept {
 			return val->std_type();
+		}
+		
+		bool is_iterable() const noexcept {
+			return val->is_iterable();
 		}
 	};
 

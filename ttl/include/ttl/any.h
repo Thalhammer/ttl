@@ -2,6 +2,7 @@
 #include <memory>
 #include "type.h"
 #include "to_string.h"
+#include <functional>
 #ifdef __cpp_lib_any
 #include <any>
 #endif
@@ -64,6 +65,8 @@ namespace ttl
 			virtual std::any to_std_any() const = 0;
 #endif
 			virtual std::string to_string() const = 0;
+			virtual std::function<bool(ttl::any&)> iterate() const = 0;
+			//virtual std::function<void(ttl::any)> push_back() const noexcept = 0;
 		};
 		template<typename T>
 		struct data final : data_base {
@@ -76,7 +79,7 @@ namespace ttl
 
 			virtual ~data() noexcept {}
 			void* data_ptr() noexcept {
-				return &val;
+				return const_cast<void*>(static_cast<const void*>(&val));
 			}
 			std::unique_ptr<data_base> clone() const {
 				return std::make_unique<data<T>>(val);
@@ -88,6 +91,10 @@ namespace ttl
 #endif
 			std::string to_string() const {
 				return to_string_impl();
+			}
+
+			std::function<bool(ttl::any&)> iterate() const {
+				return iterate_impl();
 			}
 
 			template<typename U = T>
@@ -106,6 +113,23 @@ namespace ttl
 			typename std::enable_if<!detail::has_global_to_string<U>::value && !detail::has_member_to_string<U>::value, std::string>::type
 				to_string_impl() const {
 				throw std::logic_error("to_string not implemented");
+			}
+
+			template<typename U = typename std::remove_reference<T>::type>
+			typename std::enable_if<traits::is_iterable<U>::value, std::function<bool(ttl::any&)>>::type
+				iterate_impl() const {
+				return [it=val.begin(), end=val.end()](ttl::any& out) mutable -> bool {
+					if(it == end) return false;
+					out = ttl::any::create<decltype(*it)>(*it);
+					it++;
+					return true;
+				};
+			}
+
+			template<typename U = typename std::remove_reference<T>::type>
+			typename std::enable_if<!traits::is_iterable<U>::value, std::function<bool(ttl::any&)>>::type
+				iterate_impl() const {
+				throw std::logic_error("value is not iterable");
 			}
 		};
 
@@ -307,6 +331,11 @@ namespace ttl
 		std::string to_string() const {
 			if(empty()) throw std::logic_error("invalid any");
 			return val->to_string();
+		}
+
+		std::function<bool(ttl::any&)> iterate() const {
+			if(empty()) throw std::logic_error("invalid any");
+			return val->iterate();
 		}
 
 #ifdef _WIN32

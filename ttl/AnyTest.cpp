@@ -115,3 +115,39 @@ TEST(AnyTest, ToString) {
 	any test3(strTest{});
 	ASSERT_EQ("Test", test3.to_string());
 }
+
+TEST(AnyTest, Iterate) {
+	std::vector<int> vec = { 10, 20, 30, 40 };
+	{
+		any test = ttl::any::create<std::vector<int>&>(vec);
+		auto it = test.iterate();
+		ASSERT_TRUE(it);
+		any val;
+		ASSERT_TRUE(it(val));
+		ASSERT_EQ(10, val.get<int>());
+		ASSERT_TRUE(it(val));
+		ASSERT_EQ(20, val.get<int>());
+		ASSERT_TRUE(it(val));
+		ASSERT_EQ(30, val.get<int>());
+		ASSERT_TRUE(it(val));
+		ASSERT_EQ(40, val.get<int>());
+		ASSERT_FALSE(it(val));
+		ASSERT_FALSE(it(val));
+	}
+	{
+		any test = ttl::any(vec);
+		auto it = test.iterate();
+		ASSERT_TRUE(it);
+		any val;
+		ASSERT_TRUE(it(val));
+		ASSERT_EQ(10, val.get<int>());
+		ASSERT_TRUE(it(val));
+		ASSERT_EQ(20, val.get<int>());
+		ASSERT_TRUE(it(val));
+		ASSERT_EQ(30, val.get<int>());
+		ASSERT_TRUE(it(val));
+		ASSERT_EQ(40, val.get<int>());
+		ASSERT_FALSE(it(val));
+		ASSERT_FALSE(it(val));
+	}
+}

@@ -66,6 +66,9 @@ clean:
 
 package: $(DEBFOLDER).deb
 
+install: $(DEBFOLDER).deb
+	@sudo dpkg -i $(DEBFOLDER).deb
+
 $(DEBFOLDER).deb: $(HEADERS)
 	@rm -r -f $(DEBFOLDER)
 	@echo Creating package
