@@ -199,8 +199,10 @@ namespace ttl {
 		for (ElfW(Word) i = 0; i < nchains; i++) {
 			auto* entry = &symtab[i];
 			auto type = entry->st_info & 0x0f;
-			if ((type == STT_FUNC || type == STT_LOOS) && ((entry->st_info >> 4) == STB_GLOBAL || (entry->st_info >> 4) == STB_WEAK))
-				tab.insert(&strtab[entry->st_name]);
+			if ((type == STT_FUNC || type == STT_LOOS) && ((entry->st_info >> 4) == STB_GLOBAL || (entry->st_info >> 4) == STB_WEAK)) {
+				if(dlsym(_native_handle, &strtab[entry->st_name]) != nullptr)
+					tab.insert(&strtab[entry->st_name]);
+			}
 		}
 		return true;
 	}

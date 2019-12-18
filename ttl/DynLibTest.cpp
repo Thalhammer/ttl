@@ -97,6 +97,7 @@ TEST(DynLibTest, LoadLibSymbolTable) {
 
 	std::set<std::string> symbols;
 	ASSERT_TRUE(lib.get_symbols(symbols));
+	ASSERT_NE(0, symbols.size());
 	for (auto& e : symbols) {
 		auto ptr = lib.get_function(e);
 		ASSERT_TRUE(ptr != nullptr);
