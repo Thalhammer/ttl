@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "include/ttl/io/zip_reader.h"
+#include "ttl/io/zip_reader.h"
 
 using ttl::io::zip_reader;
 using ttl::io::zip_entry;

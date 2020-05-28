@@ -379,7 +379,7 @@ namespace ttl
 			}
 
 			template<size_t Rank>
-			static typename std::enable_if<Rank == 0, unsigned long int>::type extent_impl(size_t i) noexcept {
+			static typename std::enable_if<Rank == 0, unsigned long int>::type extent_impl(size_t) noexcept {
 				return std::extent<T, 0>::value;
 			}
 

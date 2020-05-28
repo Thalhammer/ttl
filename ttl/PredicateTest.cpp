@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "include/ttl/predicate.h"
-#include "include/ttl/linq.h"
+#include "ttl/predicate.h"
+#include "ttl/linq.h"
 
 using namespace ttl::predicate;
 using ttl::linq;

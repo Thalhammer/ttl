@@ -2,8 +2,8 @@
 #include <fstream>
 #include <array>
 
-#include "include/ttl/io/inflater.h"
-#include "include/ttl/io/inflate_stream.h"
+#include "ttl/io/inflater.h"
+#include "ttl/io/inflate_stream.h"
 
 using ttl::io::inflater;
 using ttl::io::inflate_ostream;

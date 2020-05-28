@@ -12,3 +12,4 @@ TestResults
 ttl/test
 libttl_*
 .vscode
+build

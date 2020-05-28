@@ -2,8 +2,8 @@
 #include <fstream>
 #include <array>
 
-#include "include/ttl/io/deflater.h"
-#include "include/ttl/io/deflate_stream.h"
+#include "ttl/io/deflater.h"
+#include "ttl/io/deflate_stream.h"
 
 using ttl::io::deflater;
 using ttl::io::deflate_ostream;

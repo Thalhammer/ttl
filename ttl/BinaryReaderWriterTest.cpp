@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "include/ttl/binary_reader.h"
-#include "include/ttl/binary_writer.h"
+#include "ttl/binary_reader.h"
+#include "ttl/binary_writer.h"
 #include <sstream>
 
 using namespace ttl;

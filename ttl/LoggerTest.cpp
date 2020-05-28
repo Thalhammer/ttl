@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <sstream>
 
-#include "include/ttl/logger.h"
-#include "include/ttl/string_util.h"
+#include "ttl/logger.h"
+#include "ttl/string_util.h"
 
 using ttl::logger;
 using ttl::streamlogger;
