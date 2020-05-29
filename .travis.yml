@@ -17,4 +17,4 @@ script:
   - cd build
   - cmake ../ttl
   - make
-  - ./ttl-test
+  - ./ttl-test-cxx14
