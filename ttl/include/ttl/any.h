@@ -2,6 +2,7 @@
 #include <memory>
 #include "type.h"
 #include "to_string.h"
+#include "cxx11_helpers.h"
 #ifdef __cpp_lib_any
 #include <any>
 #endif
@@ -23,7 +24,7 @@ namespace ttl
 		{
 			template<typename U>
 			static constexpr auto check(U*)
-				-> typename std::is_same<std::decay_t<decltype(to_string(std::declval<U>()))>, std::string>::type;
+				-> typename std::is_same<ttl::decay_t<decltype(to_string(std::declval<U>()))>, std::string>::type;
 
 			template<typename> static constexpr std::false_type check(...);
 
@@ -38,7 +39,7 @@ namespace ttl
 		{
 			template<typename U>
 			static constexpr auto check(U*)
-				-> typename std::is_same<std::decay_t<decltype(std::declval<U>().to_string())>, std::string>::type;
+				-> typename std::is_same<ttl::decay_t<decltype(std::declval<U>().to_string())>, std::string>::type;
 
 			template<typename> static constexpr std::false_type check(...);
 
@@ -79,7 +80,7 @@ namespace ttl
 				return &val;
 			}
 			std::unique_ptr<data_base> clone() const {
-				return std::make_unique<data<T>>(val);
+				return ttl::make_unique<data<T>>(val);
 			}
 #ifdef __cpp_lib_any
 			std::any to_std_any() const {
@@ -243,13 +244,13 @@ namespace ttl
 		template<typename T>
 		static any create(T&& arg) {
 			any res;
-			res.val = std::make_unique<data<T>>(std::forward<T>(arg));
+			res.val = ttl::make_unique<data<T>>(std::forward<T>(arg));
 			return res;
 		}
 		// Create with implicit type
 		template<typename T>
 		any(T arg)
-			: val(std::make_unique<data<T>>(std::move(arg)))
+			: val(ttl::make_unique<data<T>>(std::move(arg)))
 		{
 		}
 

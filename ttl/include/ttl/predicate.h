@@ -107,82 +107,82 @@ namespace ttl {
 		}
 
 		template<typename T>
-		inline auto equals(T val) {
+		inline auto equals(T val) -> detail::cmp_eq<T> {
 			return detail::cmp_eq<T>{ val };
 		}
 		
 		template<typename T>
-		inline auto not_equals(T val) {
+		inline auto not_equals(T val) -> detail::cmp_ne<T> {
 			return detail::cmp_ne<T>{ val };
 		}
 
 		template<typename T>
-		inline auto greater(T val) {
+		inline auto greater(T val) -> detail::cmp_gt<T> {
 			return detail::cmp_gt<T>{ val };
 		}
 
 		template<typename T>
-		inline auto greater_equals(T val) {
+		inline auto greater_equals(T val) -> detail::cmp_ge<T> {
 			return detail::cmp_ge<T>{ val };
 		}
 
 		template<typename T>
-		inline auto less(T val) {
+		inline auto less(T val) -> detail::cmp_lt<T> {
 			return detail::cmp_lt<T>{ val };
 		}
 
 		template<typename T>
-		inline auto less_equals(T val) {
+		inline auto less_equals(T val) -> detail::cmp_le<T> {
 			return detail::cmp_le<T>{ val };
 		}
 
 		template<typename T>
-		inline auto eq(T val) {
+		inline auto eq(T val) -> detail::cmp_eq<T> {
 			return detail::cmp_eq<T>{ val };
 		}
 
 		template<typename T>
-		inline auto ne(T val) {
+		inline auto ne(T val) -> detail::cmp_ne<T> {
 			return detail::cmp_ne<T>{ val };
 		}
 
 		template<typename T>
-		inline auto gt(T val) {
+		inline auto gt(T val) -> detail::cmp_gt<T> {
 			return detail::cmp_gt<T>{ val };
 		}
 
 		template<typename T>
-		inline auto ge(T val) {
+		inline auto ge(T val) -> detail::cmp_ge<T> {
 			return detail::cmp_ge<T>{ val };
 		}
 
 		template<typename T>
-		inline auto lt(T val) {
+		inline auto lt(T val) -> detail::cmp_lt<T> {
 			return detail::cmp_lt<T>{ val };
 		}
 
 		template<typename T>
-		inline auto le(T val) {
+		inline auto le(T val) -> detail::cmp_le<T> {
 			return detail::cmp_le<T>{ val };
 		}
 
 		template<typename CMP1, typename CMP2>
-		inline auto either(CMP1 cmp1, CMP2 cmp2) {
+		inline auto either(CMP1 cmp1, CMP2 cmp2) -> detail::cmp_or<CMP1, CMP2> {
 			return detail::cmp_or<CMP1, CMP2>{ cmp1, cmp2 };
 		}
 
 		template<typename CMP1, typename CMP2>
-		inline auto both(CMP1 cmp1, CMP2 cmp2) {
+		inline auto both(CMP1 cmp1, CMP2 cmp2) -> detail::cmp_and<CMP1, CMP2> {
 			return detail::cmp_and<CMP1, CMP2>{ cmp1, cmp2 };
 		}
 
 		template<typename CMP1, typename CMP2>
-		inline auto oneof(CMP1 cmp1, CMP2 cmp2) {
+		inline auto oneof(CMP1 cmp1, CMP2 cmp2) -> detail::cmp_xor<CMP1, CMP2> {
 			return detail::cmp_xor<CMP1, CMP2>{ cmp1, cmp2 };
 		}
 
 		template<typename CMP>
-		inline auto invert(CMP cmp) {
+		inline auto invert(CMP cmp) -> detail::cmp_not<CMP> {
 			return detail::cmp_not<CMP>{ cmp };
 		}
 	}

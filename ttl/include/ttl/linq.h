@@ -9,6 +9,10 @@
 #include <stack>
 #include <algorithm>
 
+#if __cplusplus < 201402L
+#error This header requires C++14 or higher. If you figure out how to make this mess of auto return types compatible with C++11, feel free to do a pull reques.
+#else
+
 namespace ttl {
 	namespace linq_detail {
 		template<typename T, typename Func>
@@ -32,12 +36,12 @@ namespace ttl {
 			virtual ~iterator() {}
 
 			template<typename Func>
-			auto where(Func func) {
+			whereiterator<T, Func> where(Func func) {
 				return whereiterator<T, Func>(func, *this);
 			}
 
 			template<typename Func>
-			auto select(Func func) {
+			selectiterator<T, Func> select(Func func) {
 				return selectiterator<T, Func>(func, *this);
 			}
 
@@ -49,7 +53,7 @@ namespace ttl {
 			}
 
 			template<typename Func>
-			auto groupby(Func func) {
+			groupiterator<T, Func> groupby(Func func) {
 				return groupiterator<T, Func>(func, *this);
 			}
 
@@ -64,7 +68,7 @@ namespace ttl {
 			auto orderby(Func func) {
 				struct comparer {
 					Func fn;
-					bool operator()(const T& lhs, const T& rhs) {
+					bool operator()(const T& lhs, const T& rhs) const {
 						return fn(lhs) < fn(rhs);
 					}
 				};
@@ -101,7 +105,7 @@ namespace ttl {
 			auto orderby_descending(Func func) {
 				struct comparer {
 					Func fn;
-					bool operator()(const T& lhs, const T& rhs) {
+					bool operator()(const T& lhs, const T& rhs) const {
 						return fn(lhs) > fn(rhs);
 					}
 				};
@@ -509,3 +513,5 @@ namespace ttl {
 #ifdef TTL_OLD_NAMESPACE
 namespace thalhammer = ttl;
 #endif
+
+#endif // C++14 guard

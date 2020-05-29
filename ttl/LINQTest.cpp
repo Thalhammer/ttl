@@ -1,3 +1,5 @@
+#if __cplusplus >= 201402L
+
 #include <gtest/gtest.h>
 #include <vector>
 #include <string>
@@ -438,3 +440,4 @@ TEST(LINQTest, Foreach) {
 	ASSERT_TRUE(you_found);
 }
 
+#endif

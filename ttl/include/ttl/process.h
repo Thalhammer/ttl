@@ -2,10 +2,11 @@
 #include <string>
 #include <vector>
 #include <map>
-#include "string_util.h"
-#include "noncopyable.h"
 #include <fstream>
 #include <memory>
+#include "string_util.h"
+#include "noncopyable.h"
+#include "cxx11_helpers.h"
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -381,9 +382,9 @@ namespace ttl {
 				_stdout_buf = __gnu_cxx::stdio_filebuf<char>(child_stdout[0], std::ios_base::in | std::ios_base::binary);
 				_stderr_buf = __gnu_cxx::stdio_filebuf<char>(child_stderr[0], std::ios_base::in | std::ios_base::binary);
 
-				_stdin = std::make_unique<std::ostream>(&_stdin_buf);
-				_stdout = std::make_unique<std::istream>(&_stdout_buf);
-				_stderr = std::make_unique<std::istream>(&_stderr_buf);
+				_stdin = ttl::make_unique<std::ostream>(&_stdin_buf);
+				_stdout = ttl::make_unique<std::istream>(&_stdout_buf);
+				_stderr = ttl::make_unique<std::istream>(&_stderr_buf);
 
 				return true;
 			}

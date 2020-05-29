@@ -3,7 +3,6 @@ project(ttl)
 
 add_library(ttl INTERFACE)
 add_library(ttl::ttl ALIAS ttl)
-target_compile_features(ttl INTERFACE cxx_std_14)
 target_include_directories(ttl INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>)
@@ -57,13 +56,13 @@ set(TEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/ZipReaderTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ZipStreamTest.cpp)
 
-#add_executable(ttl-test-cxx11 ${TEST_SOURCES})
-#set_property(TARGET ttl-test-cxx11 PROPERTY CXX_STANDARD 11)
-#target_compile_options(ttl-test-cxx11 PRIVATE 
-#    $<$<CXX_COMPILER_ID:MSVC>:/W4>
-#    $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic>
-#    $<$<CXX_COMPILER_ID:Clang>:-Weverything>)
-#target_link_libraries(ttl-test-cxx11 PRIVATE ttl gtest gtest_main pthread ZLIB::ZLIB ${CMAKE_DL_LIBS})
+add_executable(ttl-test-cxx11 ${TEST_SOURCES})
+set_property(TARGET ttl-test-cxx11 PROPERTY CXX_STANDARD 11)
+target_compile_options(ttl-test-cxx11 PRIVATE 
+    $<$<CXX_COMPILER_ID:MSVC>:/W4>
+    $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic>
+    $<$<CXX_COMPILER_ID:Clang>:-Weverything>)
+target_link_libraries(ttl-test-cxx11 PRIVATE ttl gtest gtest_main pthread ZLIB::ZLIB ${CMAKE_DL_LIBS})
 
 add_executable(ttl-test-cxx14 ${TEST_SOURCES})
 set_property(TARGET ttl-test-cxx14 PROPERTY CXX_STANDARD 14)
@@ -73,6 +72,14 @@ target_compile_options(ttl-test-cxx14 PRIVATE
     $<$<CXX_COMPILER_ID:Clang>:-Weverything>)
 target_link_libraries(ttl-test-cxx14 PRIVATE ttl gtest gtest_main pthread ZLIB::ZLIB ${CMAKE_DL_LIBS})
 gtest_add_tests(TARGET ttl-test-cxx14)
+
+add_executable(ttl-test-cxx17 ${TEST_SOURCES})
+set_property(TARGET ttl-test-cxx17 PROPERTY CXX_STANDARD 17)
+target_compile_options(ttl-test-cxx17 PRIVATE 
+    $<$<CXX_COMPILER_ID:MSVC>:/W4>
+    $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic>
+    $<$<CXX_COMPILER_ID:Clang>:-Weverything>)
+target_link_libraries(ttl-test-cxx17 PRIVATE ttl gtest gtest_main pthread ZLIB::ZLIB ${CMAKE_DL_LIBS})
 
 install(
     DIRECTORY ${CMAKE_SOURCE_DIR}/include/

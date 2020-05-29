@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "ttl/string_util.h"
+#include "ttl/cxx11_helpers.h"
 
 using namespace ttl;
 
@@ -65,7 +66,7 @@ TEST(StringTest, Split) {
 TEST(StringTest, Join) {
 	const static std::vector<std::string> parts = { "Hello", "World,", "how", "are", "you", "?" };
 
-	auto str = string::join(std::cbegin(parts), std::cend(parts), " ");
+	auto str = string::join(ttl::cbegin(parts), ttl::cend(parts), " ");
 	ASSERT_EQ("Hello World, how are you ?", str);
 }
 

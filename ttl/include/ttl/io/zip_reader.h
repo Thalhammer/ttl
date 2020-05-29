@@ -1,15 +1,16 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "zip_internals.h"
-#include "../crc.h"
-#include "zip_entry.h"
-#include "inflater.h"
 #include <mutex>
 #include <unordered_map>
 #include <memory>
 #include <cassert>
 #include <istream>
+#include "zip_internals.h"
+#include "zip_entry.h"
+#include "inflater.h"
+#include "../cxx11_helpers.h"
+#include "../crc.h"
 
 namespace ttl {
 	namespace io {
@@ -270,7 +271,7 @@ namespace ttl {
 		}
 
 		std::unique_ptr<zip_reader::zip_reader_istream> zip_reader::reader_entry::open_stream(bool cache) {
-			return std::make_unique<zip_reader::zip_reader_istream>(*this, cache);
+			return ttl::make_unique<zip_reader::zip_reader_istream>(*this, cache);
 		}
 	}
 }
