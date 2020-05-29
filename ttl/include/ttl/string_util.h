@@ -11,7 +11,7 @@ namespace ttl
 	namespace string {
 		// String length overload for good old char arrays
 		template<size_t Len>
-		constexpr inline size_t length(const char (&data)[Len]) noexcept {
+		constexpr inline size_t length(const char (&)[Len]) noexcept {
 			return Len - 1;
 		}
 

@@ -34,7 +34,7 @@ TEST(RCUTest, RCUUpdateThrow) {
 	auto old = test.get();
 
 	bool called = false;
-	ASSERT_THROW(test.update([&called](std::string& str){
+	ASSERT_THROW(test.update([&called](std::string&){
 		called = true;
 		throw std::runtime_error("");
 	}), std::runtime_error);

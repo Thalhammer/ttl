@@ -28,7 +28,7 @@ namespace ttl {
 				finish();
 			}
 
-			int sync(bool flush) {
+			int sync(bool) {
 				ptrdiff_t n = pptr() - pbase();
 				pbump((int)-n);
 

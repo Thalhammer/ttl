@@ -358,6 +358,7 @@ namespace ttl {
 			execve(path.c_str(), argv, envp);
 			int terrno = errno;
 			int res = write(4, &terrno, sizeof(terrno));
+			(void)res;
 			_exit(-1);
 		} else {
 			// Parent flow

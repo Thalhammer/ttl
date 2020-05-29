@@ -61,7 +61,7 @@ TEST(LoggerTest, CheckFunction) {
 	std::ostringstream logout;
 
 	streamlogger log(logout);
-	logger::check_function_t fn = [](loglevel l, const std::string& module, const std::string& message) {
+	logger::check_function_t fn = [](loglevel, const std::string& module, const std::string&) {
 		return module != "test";
 	};
 	// Check default loglevel
