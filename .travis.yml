@@ -18,7 +18,7 @@ matrix:
 install:
   - sudo apt update
   - sudo apt install libgtest-dev
-  - (cd /usr/src/gtest && sudo -i `which cmake` .)
+  - (cd /usr/src/gtest && sudo env "PATH=$PATH" `which cmake` .)
   - sudo make -C /usr/src/gtest
   - sudo ln -s /usr/src/gtest/libgtest.a /usr/lib/libgtest.a
   - sudo ln -s /usr/src/gtest/libgtest_main.a /usr/lib/libgtest_main.a
