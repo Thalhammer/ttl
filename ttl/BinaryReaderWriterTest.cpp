@@ -49,8 +49,8 @@ TEST(BinaryReaderWriterTest, WriteThenRead) {
 		auto str = sstream.str();
 
 		ASSERT_EQ(2, str.size());
-		ASSERT_EQ((char)0x84, str[0]);
-		ASSERT_EQ((char)0x01, str[1]);
+		ASSERT_EQ(static_cast<char>(0x84), str[0]);
+		ASSERT_EQ(static_cast<char>(0x01), str[1]);
 
 		auto read = rdr.read_LEB();
 		ASSERT_EQ(orig, read);

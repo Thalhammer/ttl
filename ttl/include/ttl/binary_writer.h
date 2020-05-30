@@ -13,7 +13,7 @@ namespace ttl
 		std::ostream& get_stream() { return _stream; }
 
 		void write(const uint8_t* value, size_t len) {
-			_stream.write(reinterpret_cast<const char*>(value), len);
+			_stream.write(reinterpret_cast<const char*>(value), static_cast<std::streamsize>(len));
 		}
 
 		void write(const uint8_t* value, size_t start, size_t len) {
@@ -21,7 +21,7 @@ namespace ttl
 		}
 
 		void write(const char* value, size_t len) {
-			_stream.write(value, len);
+			_stream.write(value, static_cast<std::streamsize>(len));
 		}
 
 		void write(const char* value, size_t start, size_t len) {
@@ -75,17 +75,17 @@ namespace ttl
 		void writeLEB(uint64_t value) {
 			do {
 				if (value < 128) {
-					write((uint8_t)value);
+					write(static_cast<uint8_t>(value));
 				}
 				else {
-					write((uint8_t)(value | 0x80));
+					write(static_cast<uint8_t>(value | 0x80));
 				}
 				value = value >> 7;
 			} while (value != 0);
 		}
 
 		void writeLEB(int64_t value) {
-			writeLEB((uint64_t)value);
+			writeLEB(static_cast<uint64_t>(value));
 		}
 
 		void write(const std::string& value) {

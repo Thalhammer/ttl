@@ -28,7 +28,7 @@ TEST(DeflaterTest, Deflate) {
 	deflater def;
 	std::array<uint8_t, 4096> buf;
 
-	def.set_input((const uint8_t*)test_in.data(), test_in.size());
+	def.set_input(reinterpret_cast<const uint8_t*>(test_in.data()), test_in.size());
 	def.set_output(buf.data(), buf.size());
 	size_t read = 0, written = 0;
 	def.finish();
@@ -45,7 +45,7 @@ TEST(DeflaterTest, DeflateSmallOutbuf) {
 	deflater def;
 	std::array<uint8_t, 64> buf;
 
-	def.set_input((const uint8_t*)test_in.data(), test_in.size());
+	def.set_input(reinterpret_cast<const uint8_t*>(test_in.data()), test_in.size());
 	def.set_output(buf.data(), buf.size());
 	size_t read = 0, written = 0;
 	while (!def.finished()) {

@@ -49,7 +49,7 @@ namespace ttl
 			return res;
 		}
 		int64_t read_LEB() {
-			return (int64_t)read_unsigned_LEB();
+			return static_cast<int64_t>(read_unsigned_LEB());
 		}
 
 		std::string read_string() {
