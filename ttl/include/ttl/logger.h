@@ -121,7 +121,7 @@ namespace ttl {
 	inline logger::stream::ptr operator<<(logger& lhs, loglevel ll)
 	{
 		auto stream = std::make_shared<logger::stream>(&lhs);
-		stream->level = ll;
+		stream << ll;
 		return stream;
 	}
 
