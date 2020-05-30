@@ -323,21 +323,21 @@ namespace ttl
 
 		template<typename T>
 		const T* upcast() const {
-			return (const T*)this->upcast(typeid(T));
+			return reinterpret_cast<const T*>(this->upcast(typeid(T)));
 		}
 
 		template<typename T>
 		T* upcast() {
-			return (T*)this->upcast(typeid(T));
+			return reinterpret_cast<T*>(this->upcast(typeid(T)));
 		}
 
 		template<typename T>
 		T* get_pointer() noexcept {
-			return (T*)val->data_ptr();
+			return reinterpret_cast<T*>(val->data_ptr());
 		}
 		template<typename T>
 		const T* get_pointer() const {
-			return (const T*)val->data_ptr();
+			return reinterpret_cast<const T*>(val->data_ptr());
 		}
 
 		template<typename T>

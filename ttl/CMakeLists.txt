@@ -61,7 +61,7 @@ set_property(TARGET ttl-test-cxx11 PROPERTY CXX_STANDARD 11)
 target_compile_options(ttl-test-cxx11 PRIVATE 
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
     $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic>
-    $<$<CXX_COMPILER_ID:Clang>:-Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic>)
+    $<$<CXX_COMPILER_ID:Clang>:-Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded -Wno-exit-time-destructors -Wno-global-constructors>)
 target_link_libraries(ttl-test-cxx11 PRIVATE ttl gtest gtest_main pthread ZLIB::ZLIB ${CMAKE_DL_LIBS})
 
 add_executable(ttl-test-cxx14 ${TEST_SOURCES})
@@ -69,7 +69,7 @@ set_property(TARGET ttl-test-cxx14 PROPERTY CXX_STANDARD 14)
 target_compile_options(ttl-test-cxx14 PRIVATE 
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
     $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic>
-    $<$<CXX_COMPILER_ID:Clang>:-Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic>)
+    $<$<CXX_COMPILER_ID:Clang>:-Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded -Wno-exit-time-destructors -Wno-global-constructors>)
 target_link_libraries(ttl-test-cxx14 PRIVATE ttl gtest gtest_main pthread ZLIB::ZLIB ${CMAKE_DL_LIBS})
 gtest_add_tests(TARGET ttl-test-cxx14)
 
@@ -78,7 +78,7 @@ set_property(TARGET ttl-test-cxx17 PROPERTY CXX_STANDARD 17)
 target_compile_options(ttl-test-cxx17 PRIVATE 
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
     $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -Wpedantic>
-    $<$<CXX_COMPILER_ID:Clang>:-Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic>)
+    $<$<CXX_COMPILER_ID:Clang>:-Weverything -Wno-c++98-compat -Wno-c++98-compat-pedantic -Wno-padded -Wno-exit-time-destructors -Wno-global-constructors>)
 target_link_libraries(ttl-test-cxx17 PRIVATE ttl gtest gtest_main pthread ZLIB::ZLIB ${CMAKE_DL_LIBS})
 
 install(

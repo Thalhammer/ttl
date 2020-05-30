@@ -13,6 +13,7 @@ struct A {
 	int x = 0;
 };
 struct B {
+	virtual ~B() {}
 	int y;
 	virtual void test2() {
 
@@ -31,6 +32,7 @@ struct D : C {
 };
 
 struct E {
+	virtual ~E() {}
 	virtual void x() {}
 };
 struct F : E {
