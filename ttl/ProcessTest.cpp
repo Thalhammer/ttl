@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "include/ttl/process.h"
+#include "ttl/process.h"
 
 using ttl::process;
 

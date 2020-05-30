@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include <sstream>
 
-#include "include/ttl/logger.h"
-#include "include/ttl/string_util.h"
+#include "ttl/logger.h"
+#include "ttl/string_util.h"
 
 using ttl::logger;
 using ttl::streamlogger;
@@ -61,7 +61,7 @@ TEST(LoggerTest, CheckFunction) {
 	std::ostringstream logout;
 
 	streamlogger log(logout);
-	logger::check_function_t fn = [](loglevel l, const std::string& module, const std::string& message) {
+	logger::check_function_t fn = [](loglevel, const std::string& module, const std::string&) {
 		return module != "test";
 	};
 	// Check default loglevel

@@ -1,8 +1,10 @@
+#if __cplusplus >= 201402L
+
 #include <gtest/gtest.h>
 #include <vector>
 #include <string>
 #include <array>
-#include "include/ttl/linq.h"
+#include "ttl/linq.h"
 
 
 using ttl::linq;
@@ -438,3 +440,4 @@ TEST(LINQTest, Foreach) {
 	ASSERT_TRUE(you_found);
 }
 
+#endif

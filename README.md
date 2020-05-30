@@ -1,6 +1,9 @@
 # ttl
 Tiny Template Library
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/546e8566d4d04ba7b4fb54acffcad591)](https://www.codacy.com/manual/Thalhammer/ttl)
+[![Build Status](https://travis-ci.com/Thalhammer/ttl.svg?branch=master)](https://travis-ci.com/Thalhammer/ttl)
+
 This is a header only library containing usable classes for developing apps in C++.
 Major goals are:
 * Header only

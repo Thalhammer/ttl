@@ -71,11 +71,11 @@ namespace ttl {
 			entries[key]=value;
 		}
 
-		auto cbegin() const { return entries.cbegin(); }
-		auto cend() const { return entries.cend(); }
-		auto begin() const { return cbegin(); }
-		auto end() const { return cend(); }
-		auto size() const { return entries.size(); }
+		auto cbegin() const -> decltype(entries.cbegin()) { return entries.cbegin(); }
+		auto cend() const -> decltype(entries.cend()) { return entries.cend(); }
+		auto begin() const -> decltype(cbegin()) { return cbegin(); }
+		auto end() const -> decltype(cend()) { return cend(); }
+		auto size() const -> decltype(entries.size()) { return entries.size(); }
 
 		/* Start a transaction. */
 		inline transaction begin_transaction();
@@ -118,7 +118,7 @@ namespace ttl {
 		}
 
 		/* Number of changes in this transaction. */
-		auto changes() const { return tentries.size(); }
+		auto changes() const -> decltype(tentries.size()) { return tentries.size(); }
 		/* changes() != 0 */
 		bool changed() const { return changes() != 0; }
 

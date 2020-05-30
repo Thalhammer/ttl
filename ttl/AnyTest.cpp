@@ -1,11 +1,13 @@
 #include <gtest/gtest.h>
-#include "include/ttl/any.h"
+#include "ttl/any.h"
 
 using ttl::any;
 
 namespace AnyTest {
 struct A {
-	A(){}
+	A() = default;
+	A(const A&) = default;
+	A(A&&) = default;
 	virtual ~A() {}
 	virtual void test() {
 		std::cout<<"A"<<std::endl;
@@ -13,28 +15,41 @@ struct A {
 	int x = 0;
 };
 struct B {
+	B() = default;
+	B(const B&) = default;
+	B(B&&) = default;
+	virtual ~B() {}
 	int y;
 	virtual void test2() {
 
 	}
 };
 struct C : A, B {
+	C() = default;
+	C(const C&) = default;
+	C(C&&) = default;
 	virtual void test() {
 		std::cout<<"C"<<std::endl;
 	}
 	int k = 1;
 };
 struct D : C {
+	D() = default;
+	D(const D&) = default;
+	D(D&&) = default;
 	virtual void test2() {
 
 	}
 };
 
 struct E {
+	E() = default;
+	E(const E&) = default;
+	E(E&&) = default;
+	virtual ~E() {}
 	virtual void x() {}
 };
 struct F : E {
-
 };
 
 struct G {

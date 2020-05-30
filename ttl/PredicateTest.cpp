@@ -1,10 +1,12 @@
 #include <gtest/gtest.h>
 
-#include "include/ttl/predicate.h"
-#include "include/ttl/linq.h"
+#include "ttl/predicate.h"
+#if __cplusplus >= 201402L
+#include "ttl/linq.h"
+using ttl::linq;
+#endif
 
 using namespace ttl::predicate;
-using ttl::linq;
 
 TEST(PredicateTest, BasicPredicates) {
 	auto peq = equals(10);
@@ -60,6 +62,7 @@ TEST(PredicateTest, Compound) {
 	ASSERT_FALSE(pxor(11)); // 1 1
 }
 
+#if __cplusplus >= 201402L
 TEST(PredicateTest, LINQPredicate) {
 	int data[] = { 10, 20, 30, 40 };
 
@@ -71,3 +74,4 @@ TEST(PredicateTest, LINQPredicate) {
 	ASSERT_EQ(30, res[1]);
 	ASSERT_EQ(40, res[2]);
 }
+#endif

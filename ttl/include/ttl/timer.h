@@ -150,7 +150,8 @@ namespace ttl {
 		{
 			auto task = std::make_shared<task_t>();
 			auto weaktask = std::weak_ptr<task_t>(task);
-			task->fn = [fn, dur = t.dur, weaktask, this](){
+			auto dur = t.dur;
+			task->fn = [fn, dur, weaktask, this](){
 				auto task = weaktask.lock();
 				if(task) {
 					task->tp = std::chrono::steady_clock::now() + dur;

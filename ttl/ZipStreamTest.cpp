@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <fstream>
 
-#include "include/ttl/io/zip_stream.h"
+#include "ttl/io/zip_stream.h"
 
 using ttl::io::zip_stream;
 using ttl::io::zip_entry;

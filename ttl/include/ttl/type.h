@@ -5,6 +5,7 @@
 #ifndef _MSC_VER
 #include <cxxabi.h>
 #endif
+#include "cxx11_helpers.h"
 
 namespace ttl
 {
@@ -442,7 +443,7 @@ namespace ttl
 			}
 
 			template<size_t Rank>
-			static typename std::enable_if<Rank == 0, unsigned long int>::type extent_impl(size_t i) noexcept {
+			static typename std::enable_if<Rank == 0, unsigned long int>::type extent_impl(size_t) noexcept {
 				return std::extent<T, 0>::value;
 			}
 
@@ -453,7 +454,7 @@ namespace ttl
 				return typeid(T);
 			}
 			std::unique_ptr<data_base> clone() const {
-				return std::make_unique<data<T>>();
+				return ttl::make_unique<data<T>>();
 			}
 
 			bool is_iterable() const noexcept override {
@@ -477,7 +478,7 @@ namespace ttl
 		template<typename T>
 		static type create() {
 			type res;
-			res.val = std::make_unique<data<T>>();
+			res.val = ttl::make_unique<data<T>>();
 			return res;
 		}
 

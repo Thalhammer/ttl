@@ -1,15 +1,16 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "zip_internals.h"
-#include "../crc.h"
-#include "zip_entry.h"
-#include "inflater.h"
 #include <mutex>
 #include <unordered_map>
 #include <memory>
 #include <cassert>
 #include <istream>
+#include "zip_internals.h"
+#include "zip_entry.h"
+#include "inflater.h"
+#include "../cxx11_helpers.h"
+#include "../crc.h"
 
 namespace ttl {
 	namespace io {
@@ -37,14 +38,14 @@ namespace ttl {
 					uncompressed = other.uncompressed;
 				}
 
-				const zip_internals::global_file_header& get_header() const { return zip_entry::get_header(); }
-				const std::string& get_name() const { return zip_entry::get_name(); }
-				const std::string& get_comment() const { return zip_entry::get_comment(); }
-				const std::string& get_extra() const { return zip_entry::get_extra(); }
-				bool is_compressed() const { return zip_entry::is_compressed(); }
-				uint16_t get_compression_method() const { return zip_entry::get_compression_method(); }
-				bool is_directory() const { return zip_entry::is_directory(); }
-				time_t get_last_modified() const { return zip_entry::get_last_modified(); }
+				using zip_entry::get_header;
+				using zip_entry::get_name;
+				using zip_entry::get_comment;
+				using zip_entry::get_extra;
+				using zip_entry::is_compressed;
+				using zip_entry::get_compression_method;
+				using zip_entry::is_directory;
+				using zip_entry::get_last_modified;
 
 				void uncompress() {
 					if (zip_entry::is_compressed() && uncompressed.size() != header.uncompressed_size) {
@@ -270,7 +271,7 @@ namespace ttl {
 		}
 
 		std::unique_ptr<zip_reader::zip_reader_istream> zip_reader::reader_entry::open_stream(bool cache) {
-			return std::make_unique<zip_reader::zip_reader_istream>(*this, cache);
+			return ttl::make_unique<zip_reader::zip_reader_istream>(*this, cache);
 		}
 	}
 }

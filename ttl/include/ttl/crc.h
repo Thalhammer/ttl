@@ -34,7 +34,7 @@ namespace ttl
 			: _table(get_table())
 		{
 			static_assert(WIDTH >= 8, "Width needs to be at least 8, 5bit crc is not supported.");
-			_remainder = (crc_t)InitialRemainder;
+			_remainder = reinterpret_cast<crc_t>(InitialRemainder);
 		}
 
 		void update(const std::vector<uint8_t>& data)
@@ -44,7 +44,7 @@ namespace ttl
 
 		void update(const std::string& data)
 		{
-			this->update((const uint8_t*)data.data(), data.size());
+			this->update(reinterpret_cast<const uint8_t*>(data.data()), data.size());
 		}
 
 		void update(const uint8_t* idata, size_t dlen)
@@ -61,7 +61,7 @@ namespace ttl
 			finalize()
 		{
 			crc_t res = (reflect_remainder(_remainder) ^ FinalXorValue);
-			_remainder = (crc_t)InitialRemainder;
+			_remainder = reinterpret_cast<crc_t>(InitialRemainder);
 			return res;
 		}
 		
@@ -70,7 +70,7 @@ namespace ttl
 			finalize()
 		{
 			crc_t res = (reflect_remainder(_remainder) ^ FinalXorValue);
-			_remainder = (crc_t)InitialRemainder;
+			_remainder = reinterpret_cast<crc_t>(InitialRemainder);
 			return res & ((1 << WIDTH) - 1);
 		}
 
@@ -82,7 +82,7 @@ namespace ttl
 		template <bool M = TReflectData, typename std::enable_if<M>::type* = nullptr>
 		static inline uint8_t reflect_data(uint8_t data)
 		{
-			return (uint8_t)reflect(data, 8);
+			return static_cast<uint8_t>(reflect(data, 8));
 		}
 
 		template <bool M = TReflectData, typename std::enable_if<!M>::type* = nullptr>
@@ -122,7 +122,7 @@ namespace ttl
 
 		static inline crc_t table_calc_remainder(int32_t dividend)
 		{
-			crc_t remainder = crc_t(dividend) << (WIDTH - 8);
+			crc_t remainder = crc_t(crc_t(dividend) << (WIDTH - 8));
 			for (uint8_t bit = 8; bit > 0; bit--)
 			{
 				remainder = (remainder&TOPBIT) ? ((remainder << 1) ^ Polynomial) : (remainder << 1);

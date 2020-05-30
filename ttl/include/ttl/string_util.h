@@ -5,13 +5,14 @@
 #include <limits>
 #include <vector>
 #include <sstream>
+#include "cxx11_helpers.h"
 
 namespace ttl
 {
 	namespace string {
 		// String length overload for good old char arrays
 		template<size_t Len>
-		constexpr inline size_t length(const char (&data)[Len]) noexcept {
+		constexpr inline size_t length(const char (&)[Len]) noexcept {
 			return Len - 1;
 		}
 
@@ -98,7 +99,7 @@ namespace ttl
 		// Shorthand for joining vector of strings
 		template<typename Delim = std::string, typename StringType = std::string>
 		inline StringType join(const std::vector<StringType>& vect, const Delim& delim) {
-			return join(std::cbegin(vect), std::cend(vect), delim);
+			return join(ttl::cbegin(vect), ttl::cend(vect), delim);
 		}
 
 		// Check if string starts with a given string

@@ -157,7 +157,7 @@ namespace ttl {
 		}
 
 		template<>
-		inline void zip_stream<false>::write_stream(std::istream& fstream, uint32_t& compressed_size, uint32_t& uncompressed_size, uint32_t& crc, bool compress) {
+		inline void zip_stream<false>::write_stream(std::istream& fstream, uint32_t& compressed_size, uint32_t& uncompressed_size, uint32_t& crc, bool) {
 			std::array<char, 4096> readbuf;
 			CRC_32 gen_crc;
 

@@ -12,7 +12,10 @@ namespace ttl
 	class contract_value {
         T value;
     public:
-        constexpr contract_value(T val)
+#if defined(__cpp_constexpr) && __cpp_constexpr > 201304
+        constexpr
+#endif
+        contract_value(T val)
 			: value(val)
 		{
             if(val < vmin || val > vmax) {
@@ -37,7 +40,7 @@ namespace ttl
             return value;
         }
 
-        auto& operator=(T val) {
+        contract_value<T, vmin, vmax>& operator=(T val) {
             if(val < vmin || val > vmax) {
                 throw contract_failed(std::to_string(val) + " is not in range [" + std::to_string(vmin) + ";" + std::to_string(vmax)+"]");
             }
@@ -50,7 +53,10 @@ namespace ttl
 	class contract_not_null {
         T* value;
     public:
-        constexpr contract_not_null(T* val)
+#if defined(__cpp_constexpr) && __cpp_constexpr > 201304
+        constexpr
+#endif
+        contract_not_null(T* val)
 			: value(val)
 		{
             if(val == nullptr)
@@ -73,7 +79,7 @@ namespace ttl
             return *value;
 		}
 
-        auto& operator=(T* val) {
+        contract_not_null<T>& operator=(T* val) {
             if(val == nullptr)
 				throw contract_failed("value is null");
             value = val;

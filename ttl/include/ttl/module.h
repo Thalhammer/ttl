@@ -64,7 +64,7 @@ namespace ttl {
 #else
 		typedef void* native_handle_t;
 
-		static module from_handle(native_handle_t hdl) {
+		static module from_handle(native_handle_t) {
 			throw std::logic_error("Not implemented");
 		}
 

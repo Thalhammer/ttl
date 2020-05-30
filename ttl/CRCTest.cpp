@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "include/ttl/crc.h"
+#include "ttl/crc.h"
 
 using namespace ttl;
 

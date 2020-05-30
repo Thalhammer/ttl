@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "include/ttl/config.h"
+#include "ttl/config.h"
 
 using ttl::config;
 
@@ -49,7 +49,9 @@ values=    get trimmed
 
 	ASSERT_EQ(5, cfg.size());
 	// Just check compile
-	for (auto& entry : cfg) { (void)entry; }
+	for (auto& entry : cfg) {
+		(void)entry;
+	}
 }
 
 TEST(ConfigTest, ManualSet) {

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "include/ttl/timer.h"
+#include "ttl/timer.h"
 
 using ttl::timer;
 
@@ -29,7 +29,7 @@ TEST(TimerTest, CatchException) {
 
 	{
 		timer t;
-		t.set_exception_handler([&](auto ex) {
+		t.set_exception_handler([&](std::exception_ptr ex) {
 			ASSERT_TRUE(!(!ex));
 			std::unique_lock<std::mutex> lck(mtx);
 			executed = true;

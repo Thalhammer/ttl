@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 
-#include "include/ttl/dynlib.h"
+#include "ttl/dynlib.h"
 
 using ttl::dynlib;
 
 #ifdef _WIN32
-TEST(DynLibTest, LoadLib) {
+TEST(DynLibTest, WindowsLoadLib) {
 	dynlib lib;
 	ASSERT_TRUE(lib.errormsg().empty());
 	ASSERT_TRUE(lib.open("kernel32.dll"));
@@ -19,7 +19,7 @@ TEST(DynLibTest, LoadLib) {
 	ASSERT_EQ(GetCurrentProcessId(), res);
 }
 
-TEST(DynLibTest, LoadLibFailedLib) {
+TEST(DynLibTest, WindowsLoadLibFailedLib) {
 	dynlib lib;
 	ASSERT_TRUE(lib.errormsg().empty());
 	ASSERT_FALSE(lib.open("nonexistent.dll"));
@@ -29,7 +29,7 @@ TEST(DynLibTest, LoadLibFailedLib) {
 	ASSERT_EQ(nullptr, ptr);
 }
 
-TEST(DynLibTest, LoadLibFailedFunction) {
+TEST(DynLibTest, WindowsLoadLibFailedFunction) {
 	dynlib lib;
 	ASSERT_TRUE(lib.errormsg().empty());
 	ASSERT_TRUE(lib.open("kernel32.dll"));
@@ -40,7 +40,7 @@ TEST(DynLibTest, LoadLibFailedFunction) {
 	ASSERT_EQ(nullptr, ptr);
 }
 
-TEST(DynLibTest, LoadLibSymbolTable) {
+TEST(DynLibTest, WindowsLoadLibSymbolTable) {
 	dynlib lib;
 	ASSERT_TRUE(lib.errormsg().empty());
 	ASSERT_TRUE(lib.open("kernel32.dll"));
@@ -54,7 +54,7 @@ TEST(DynLibTest, LoadLibSymbolTable) {
 }
 
 #else
-TEST(DynLibTest, LoadLib) {
+TEST(DynLibTest, LinuxLoadLib) {
 	dynlib lib;
 	ASSERT_TRUE(lib.errormsg().empty());
 	ASSERT_TRUE(lib.open("libm.so.6"));
@@ -68,7 +68,7 @@ TEST(DynLibTest, LoadLib) {
 	ASSERT_FLOAT_EQ(0, res);
 }
 
-TEST(DynLibTest, LoadLibFailedLib) {
+TEST(DynLibTest, LinuxLoadLibFailedLib) {
 	dynlib lib;
 	ASSERT_TRUE(lib.errormsg().empty());
 	ASSERT_FALSE(lib.open("nonexistent.so"));
@@ -78,7 +78,7 @@ TEST(DynLibTest, LoadLibFailedLib) {
 	ASSERT_EQ(nullptr, ptr);
 }
 
-TEST(DynLibTest, LoadLibFailedFunction) {
+TEST(DynLibTest, LinuxLoadLibFailedFunction) {
 	dynlib lib;
 	ASSERT_TRUE(lib.errormsg().empty());
 	ASSERT_TRUE(lib.open("libm.so.6"));
@@ -89,7 +89,7 @@ TEST(DynLibTest, LoadLibFailedFunction) {
 	ASSERT_EQ(nullptr, ptr);
 }
 
-TEST(DynLibTest, LoadLibSymbolTable) {
+TEST(DynLibTest, LinuxLoadLibSymbolTable) {
 	dynlib lib;
 	ASSERT_TRUE(lib.errormsg().empty());
 	ASSERT_TRUE(lib.open("libm.so.6"));
@@ -106,4 +106,3 @@ TEST(DynLibTest, LoadLibSymbolTable) {
 	ASSERT_TRUE(symbols.count("sin"));
 }
 #endif
-

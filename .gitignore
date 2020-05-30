@@ -12,5 +12,4 @@ TestResults
 ttl/test
 libttl_*
 .vscode
-*.gcno
-*.gcda
+build

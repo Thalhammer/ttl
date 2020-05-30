@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "include/ttl/contract.h"
+#include "ttl/contract.h"
 
 using namespace ttl;
 

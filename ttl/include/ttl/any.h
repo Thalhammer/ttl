@@ -3,6 +3,7 @@
 #include "type.h"
 #include "to_string.h"
 #include <functional>
+#include "cxx11_helpers.h"
 #ifdef __cpp_lib_any
 #include <any>
 #endif
@@ -24,11 +25,11 @@ namespace ttl
 		{
 			template<typename U>
 			static constexpr auto check(U*)
-				-> typename std::is_same<std::decay_t<decltype(to_string(std::declval<U>()))>, std::string>::type;
+				-> typename std::is_same<ttl::decay_t<decltype(to_string(std::declval<U>()))>, std::string>::type;
 
 			template<typename> static constexpr std::false_type check(...);
 
-			typedef decltype(check<T>(0)) type;
+			typedef decltype(check<T>(nullptr)) type;
 
 		public:
 			static constexpr bool value = type::value;
@@ -39,11 +40,11 @@ namespace ttl
 		{
 			template<typename U>
 			static constexpr auto check(U*)
-				-> typename std::is_same<std::decay_t<decltype(std::declval<U>().to_string())>, std::string>::type;
+				-> typename std::is_same<ttl::decay_t<decltype(std::declval<U>().to_string())>, std::string>::type;
 
 			template<typename> static constexpr std::false_type check(...);
 
-			typedef decltype(check<T>(0)) type;
+			typedef decltype(check<T>(nullptr)) type;
 
 		public:
 			static constexpr bool value = type::value;
@@ -82,7 +83,7 @@ namespace ttl
 				return const_cast<void*>(static_cast<const void*>(&val));
 			}
 			std::unique_ptr<data_base> clone() const {
-				return std::make_unique<data<T>>(val);
+				return ttl::make_unique<data<T>>(val);
 			}
 #ifdef __cpp_lib_any
 			std::any to_std_any() const {
@@ -263,15 +264,14 @@ namespace ttl
 		template<typename T>
 		static any create(T&& arg) {
 			any res;
-			res.val = std::make_unique<data<T>>(std::forward<T>(arg));
+			res.val = ttl::make_unique<data<T>>(std::forward<T>(arg));
 			return res;
 		}
 		// Create with implicit type
 		template<typename T>
 		any(T arg)
-		{
-			val = std::make_unique<data<T>>(arg);
-		}
+			: val(ttl::make_unique<data<T>>(std::move(arg)))
+		{}
 
 		any(const any& other)
 			: val(other.val == nullptr ? nullptr : other.val->clone())
@@ -379,12 +379,12 @@ namespace ttl
 
 		template<typename T>
 		const T* upcast() const {
-			return (const T*)this->upcast(typeid(T));
+			return reinterpret_cast<const T*>(this->upcast(typeid(T)));
 		}
 
 		template<typename T>
 		T* upcast() {
-			return (T*)this->upcast(typeid(T));
+			return reinterpret_cast<T*>(this->upcast(typeid(T)));
 		}
 
 		/**
@@ -407,7 +407,7 @@ namespace ttl
 		typename std::enable_if<!std::is_reference<T>::value, T*>::type
 			get_pointer() {
 			if(empty()) throw std::logic_error("invalid any");
-			return (T*)val->data_ptr();
+			return reinterpret_cast<T*>(val->data_ptr());
 		}
 		/**
 		 * Returns a pointer to the contained object.
@@ -423,7 +423,7 @@ namespace ttl
 					+ ttl::type::create<typename std::remove_reference<T>::type>().pretty_name()
 					+ " != " + val->type().pretty_name());
 			}
-			return (const typename std::remove_reference<T>::type*)val->data_ptr();
+			return reinterpret_cast<const typename std::remove_reference<T>::type*>(val->data_ptr());
 		}
 		/**
 		 * Returns a pointer to the contained object.
@@ -439,7 +439,7 @@ namespace ttl
 					+ ttl::type::create<T>().pretty_name()
 					+ " != " + val->type().pretty_name());
 			}
-			return (const T*)val->data_ptr();
+			return reinterpret_cast<const T*>(val->data_ptr());
 		}
 
 		template<typename T>

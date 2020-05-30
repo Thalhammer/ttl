@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "include/ttl/signal.h"
-#include "include/ttl/noop_mutex.h"
+#include "ttl/signal.h"
+#include "ttl/noop_mutex.h"
 
 
 TEST(SignalTest, Executed) {
@@ -44,7 +44,7 @@ TEST(SignalTest, Params) {
 	bool executed = false;
 
 	ttl::signal<const std::string&> sig;
-	auto token = sig.add([&executed](auto& str) {
+	auto token = sig.add([&executed](const std::string& str) {
 		executed = true;
 		ASSERT_EQ("Hello", str);
 	});
