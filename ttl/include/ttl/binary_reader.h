@@ -7,7 +7,7 @@ namespace ttl
 		std::istream& _stream;
 
 		void read_block(uint8_t* ptr, size_t len) {
-			_stream.read(reinterpret_cast<char*>(ptr), len);
+			_stream.read(reinterpret_cast<char*>(ptr), static_cast<std::streamsize>(len));
 			if (!_stream) throw std::runtime_error("unexpected end of file");
 		}
 

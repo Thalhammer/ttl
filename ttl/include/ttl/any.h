@@ -28,7 +28,7 @@ namespace ttl
 
 			template<typename> static constexpr std::false_type check(...);
 
-			typedef decltype(check<T>(0)) type;
+			typedef decltype(check<T>(nullptr)) type;
 
 		public:
 			static constexpr bool value = type::value;
@@ -43,7 +43,7 @@ namespace ttl
 
 			template<typename> static constexpr std::false_type check(...);
 
-			typedef decltype(check<T>(0)) type;
+			typedef decltype(check<T>(nullptr)) type;
 
 		public:
 			static constexpr bool value = type::value;

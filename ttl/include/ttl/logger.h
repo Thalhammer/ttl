@@ -93,63 +93,90 @@ namespace ttl {
 			explicit stream(logger* l) {
 				log = l;
 				level_output = log->get_loglevel(); // Safe loglevel at creation
+				level = level_output;
 			}
+			template<typename T>
+			stream(logger* l, T const& e) {
+				log = l;
+				level_output = log->get_loglevel(); // Safe loglevel at creation
+				level = level_output;
+				if (level >= level_output) {
+					str << e;
+				}
+			}
+			stream(logger* l, const logmodule& e) {
+				log = l;
+				level_output = log->get_loglevel(); // Safe loglevel at creation
+				level = level_output;
+				module = e.name;
+			}
+			stream(logger* l, const loglevel& e) {
+				log = l;
+				level_output = log->get_loglevel(); // Safe loglevel at creation
+				level = e;
+			}
+			stream(logger* l, const logmodule& e, const loglevel& lvl) {
+				log = l;
+				level_output = log->get_loglevel(); // Safe loglevel at creation
+				level = lvl;
+				module = e.name;
+			}
+			stream(const stream&) = delete;
+			stream(stream&&) = delete;
 			~stream() {
 				log->log(level, module, str.str());
 			}
 			loglevel get_loglevel() {
 				return level;
 			}
+			// NOTE: We would want to have those functions take a non const reference as first arg,
+			// but C++11 does not allow for that.
 			template<typename T>
-			friend ptr operator<<(ptr lhs, T const& rhs);
-			friend ptr operator<<(ptr lhs, const loglevel& ll);
-			friend ptr operator<<(ptr lhs, const logmodule& ll);
+			friend const stream& operator<<(const stream& lhs, T const& rhs);
+			friend const stream& operator<<(const stream& lhs, const loglevel& ll);
+			friend const stream& operator<<(const stream& lhs, const logmodule& ll);
 		};
 
-		stream::ptr operator()(loglevel lvl, const std::string& module);
+		stream operator()(loglevel lvl, const std::string& module);
 	};
 
 	template<typename T>
-	inline logger::stream::ptr operator<<(logger& lhs, T const& rhs)
+	inline logger::stream operator<<(logger& lhs, T const& rhs)
 	{
-		auto stream = std::make_shared<logger::stream>(&lhs);
-		stream << rhs;
-		return stream;
+		return {&lhs, rhs};
+	}
+
+	inline logger::stream operator<<(logger& lhs, loglevel ll)
+	{
+		return {&lhs, ll};
+	}
+
+	inline logger::stream logger::operator()(loglevel lvl, const std::string& module) {
+		return {this, logmodule(module), lvl};
 	}
 
 	template<typename T>
-	inline logger::stream::ptr operator<<(logger& lhs, loglevel ll)
+	inline const logger::stream& operator<<(const logger::stream& lhs, const T& rhs)
 	{
-		auto stream = std::make_shared<logger::stream>(&lhs);
-		stream << ll;
-		return stream;
-	}
-
-	inline logger::stream::ptr operator<<(logger::stream::ptr lhs, const logmodule& rhs)
-	{
-		lhs->module = rhs.name;
-		return lhs;
-	}
-
-	inline logger::stream::ptr operator<<(logger::stream::ptr lhs, const loglevel& rhs)
-	{
-		lhs->level = rhs;
-		return lhs;
-	}
-
-	template<typename T>
-	inline logger::stream::ptr operator<<(logger::stream::ptr lhs, const T& rhs)
-	{
-		if (lhs->level >= lhs->level_output) {
-			lhs->str << rhs;
+		auto& e = const_cast<logger::stream&>(lhs);
+		if (e.level >= e.level_output) {
+			e.str << rhs;
 		}
 		return lhs;
 	}
 
-	inline logger::stream::ptr logger::operator()(loglevel lvl, const std::string& module) {
-		auto stream = std::make_shared<logger::stream>(this);
-		stream << lvl << logmodule(module);
-		return stream;
+	inline const logger::stream& operator<<(const logger::stream& lhs, const logmodule& rhs)
+	{
+		auto& e = const_cast<logger::stream&>(lhs);
+		e.module = rhs.name;
+		return lhs;
+	}
+
+	inline const logger::stream& operator<<(const logger::stream& lhs, const loglevel& rhs)
+	{
+		auto& e = const_cast<logger::stream&>(lhs);
+		e.level = rhs;
+		return lhs;
 	}
 
 	class streamlogger: public logger {

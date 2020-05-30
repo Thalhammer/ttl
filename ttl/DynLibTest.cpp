@@ -106,4 +106,3 @@ TEST(DynLibTest, LinuxLoadLibSymbolTable) {
 	ASSERT_TRUE(symbols.count("sin"));
 }
 #endif
-
