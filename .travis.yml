@@ -6,16 +6,12 @@ matrix:
       dist: xenial
       compiler: gcc
     - os: linux
-      dist: xenial
-      compiler: clang
-    - os: linux
       dist: bionic
       compiler: gcc
-    - os: linux
-      dist: bionic
-      compiler: clang
 
 install:
+  - env
+  - sudo env
   - sudo apt update
   - sudo apt install libgtest-dev
   - (cd /usr/src/gtest && sudo `which cmake` .)
