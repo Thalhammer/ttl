@@ -16,5 +16,7 @@ script:
   - mkdir build
   - cd build
   - cmake ../ttl
-  - make
+  - make -j2
+  - ./ttl-test-cxx11
   - ./ttl-test-cxx14
+  - ./ttl-test-cxx17

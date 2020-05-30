@@ -76,6 +76,12 @@ namespace ttl {
 			}
 		}
 
+		void trace(const std::string& module, const std::string& message) { log(loglevel::TRACE, module, message); }
+		void debug(const std::string& module, const std::string& message) { log(loglevel::DEBUG, module, message); }
+		void info(const std::string& module, const std::string& message) { log(loglevel::INFO, module, message); }
+		void warn(const std::string& module, const std::string& message) { log(loglevel::WARN, module, message); }
+		void error(const std::string& module, const std::string& message) { log(loglevel::ERR, module, message); }
+
 		class stream {
 			loglevel level = loglevel::INFO;
 			loglevel level_output;
