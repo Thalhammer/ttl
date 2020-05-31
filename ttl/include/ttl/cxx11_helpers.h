@@ -15,6 +15,9 @@ namespace ttl
     template< class T >
     using decay_t = typename std::decay<T>::type;
 
+    template<bool Cond, typename IfTrue, typename IfFalse>
+    using conditional_t = typename std::conditional<Cond, IfTrue, IfFalse>::type;
+
     template<typename C>
     inline constexpr auto cbegin(const C& cont) noexcept(noexcept(std::begin(cont)))
         -> decltype(std::begin(cont))

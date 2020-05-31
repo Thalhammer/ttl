@@ -1,6 +1,7 @@
 #pragma once
 #include "builder.h"
 #include "helper.h"
+#include "../cxx11_helpers.h"
 #include <map>
 
 namespace ttl
@@ -22,7 +23,7 @@ namespace ttl
                 std::unique_ptr<reflect::builder<T>> mbuilder;
             public:
                 builder(const std::string& name, const std::vector<any>& attributes = {})
-                    : mbuilder(std::make_unique<reflect::builder<T>>(name.empty()?type::create<T>().pretty_name():name, attributes))
+                    : mbuilder(ttl::make_unique<reflect::builder<T>>(name.empty()?type::create<T>().pretty_name():name, attributes))
                 {}
                 builder(builder&& other)
                     : mbuilder(std::move(other.mbuilder))
@@ -90,17 +91,19 @@ namespace ttl
     }
 }
 
-#define TTL_REFLECT(x) \
-struct ttl_reflect_init { \
-    ttl_reflect_init() { \
+#define TTL_REFLECT_IMPL2(x,y) \
+struct ttl_reflect_init##y { \
+    ttl_reflect_init##y () { \
         using namespace ttl::reflect; \
         x \
     } \
 }; \
-static struct ttl_reflect_init ttl_reflect_init_constructor;
+static struct ttl_reflect_init##y ttl_reflect_init_constructor##y;
+#define TTL_REFLECT_IMPL(x,y) TTL_REFLECT_IMPL2(x, y)
+#define TTL_REFLECT(x) TTL_REFLECT_IMPL(x, __COUNTER__)
 
 #define TTL_REFLECT_REGISTRATION_IMPL() \
 ttl::reflect::registration& ttl::reflect::registration::get_instance() { \
     static ttl::reflect::registration instance; \
     return instance; \
-};
+}

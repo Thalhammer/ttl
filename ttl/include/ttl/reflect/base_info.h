@@ -16,6 +16,8 @@ namespace ttl
             template<typename T> struct deduction_helper {};
             template<typename TBase, typename TDerived>
             base_info(deduction_helper<TBase> b, deduction_helper<TDerived> d) : basetype(type::create<TBase>()) {
+                (void)b;
+                (void)d;
                 static_assert(std::is_base_of<TBase, TDerived>::value, "TBase is not a base class");
                 convertfn = [](any instance) -> any {
                     TDerived* i = nullptr;

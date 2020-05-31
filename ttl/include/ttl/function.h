@@ -3,6 +3,7 @@
 #include <functional>
 #include "any.h"
 #include "optional.h"
+#include "cxx11_helpers.h"
 
 namespace ttl
 {
@@ -24,6 +25,7 @@ namespace ttl
         {
             static void get_types(std::vector<type> &vect)
             {
+                (void)vect;
             }
         };
         template <typename Result>
@@ -118,6 +120,7 @@ namespace ttl
 
             optional<any> invoke_dynamic(any &instance, const std::vector<any> &params) const override
             {
+                (void)instance;
                 auto types = this->get_parameter_types();
                 if (params.size() != types.size())
                     throw std::logic_error("wrong parameter count");
@@ -133,7 +136,7 @@ namespace ttl
 
             std::unique_ptr<data_base> clone() const override
             {
-                return std::make_unique<data>(*this);
+                return ttl::make_unique<data>(*this);
             }
 
         private:
@@ -218,7 +221,7 @@ namespace ttl
 
             std::unique_ptr<data_base> clone() const override
             {
-                return std::make_unique<data_memberfn>(*this);
+                return ttl::make_unique<data_memberfn>(*this);
             }
 
         private:
@@ -301,7 +304,7 @@ namespace ttl
 
             std::unique_ptr<data_base> clone() const override
             {
-                return std::make_unique<data_constmemberfn>(*this);
+                return ttl::make_unique<data_constmemberfn>(*this);
             }
 
         private:
@@ -312,25 +315,25 @@ namespace ttl
     public:
         template <typename Ret, typename... Args>
         function(std::function<Ret(Args...)> fn)
-            : fn(std::make_unique<data<Ret, Args...>>(fn))
+            : fn(ttl::make_unique<data<Ret, Args...>>(fn))
         {
         }
 
         template <typename Ret, typename... Args>
         function(Ret (*ptr)(Args...))
-            : fn(std::make_unique<data<Ret, Args...>>(ptr))
+            : fn(ttl::make_unique<data<Ret, Args...>>(ptr))
         {
         }
 
         template <typename Class, typename Ret, typename... Args>
         function(Ret (Class::*ptr)(Args...))
-            : fn(std::make_unique<data_memberfn<Class, Ret, Args...>>(ptr))
+            : fn(ttl::make_unique<data_memberfn<Class, Ret, Args...>>(ptr))
         {
         }
 
         template <typename Class, typename Ret, typename... Args>
         function(Ret (Class::*ptr)(Args...) const)
-            : fn(std::make_unique<data_constmemberfn<Class, Ret, Args...>>(ptr))
+            : fn(ttl::make_unique<data_constmemberfn<Class, Ret, Args...>>(ptr))
         {
         }
 

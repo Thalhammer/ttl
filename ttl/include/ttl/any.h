@@ -119,7 +119,9 @@ namespace ttl
 			template<typename U = typename std::remove_reference<T>::type>
 			typename std::enable_if<traits::is_iterable<U>::value, std::function<bool(ttl::any&)>>::type
 				iterate_impl() const {
-				return [it=val.begin(), end=val.end()](ttl::any& out) mutable -> bool {
+				auto it = val.begin();
+				auto end = val.end();
+				return [it, end](ttl::any& out) mutable -> bool {
 					if(it == end) return false;
 					out = ttl::any::create<decltype(*it)>(*it);
 					it++;

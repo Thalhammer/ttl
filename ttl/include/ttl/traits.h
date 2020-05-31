@@ -5,6 +5,7 @@
 #include <limits>
 #include <vector>
 #include <sstream>
+#include "cxx11_helpers.h"
 
 namespace ttl
 {
@@ -18,7 +19,7 @@ namespace ttl
 		template<typename T>
 		struct is_iterable<
 				T,
-				std::conditional_t<
+				ttl::conditional_t<
 					false,
 					is_iterable_helper<
 						typename T::value_type,

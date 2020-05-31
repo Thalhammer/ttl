@@ -5,7 +5,7 @@ namespace ttl
     namespace reflect
     {
         template<typename Signature>
-        auto select_overload(Signature* func)
+        auto select_overload(Signature* func) -> decltype(func)
         {
             return func;
         }

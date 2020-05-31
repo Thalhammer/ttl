@@ -41,6 +41,7 @@ set(TEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CRCTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/DeflaterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/DynLibTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/FunctionTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/InflaterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LINQTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LoggerTest.cpp
@@ -49,9 +50,11 @@ set(TEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/PredicateTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ProcessTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/RCUTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ReflectionTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/SignalTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/StringTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/TimerTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/TraitsTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/TypeTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ZipReaderTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ZipStreamTest.cpp)
