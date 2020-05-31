@@ -395,8 +395,20 @@ namespace ttl
 				return extent_impl<std::rank<T>::value>(i);
 			}
 
+			template<typename U = T>
+			static typename std::enable_if<std::is_same<U, void>::value, size_t>::type
+				alignment_impl() {
+				return 1;
+			}
+
+			template<typename U = T>
+			static typename std::enable_if<!std::is_same<U, void>::value, size_t>::type
+				alignment_impl() {
+				return std::alignment_of<U>::value;
+			}
+
 			size_t alignment() const noexcept {
-				return std::alignment_of<T>::value;
+				return alignment_impl<T>();
 			}
 
 			template<typename U = T>
