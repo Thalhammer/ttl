@@ -78,23 +78,23 @@ namespace ttl
 			{
 			}
 
-			virtual ~data() noexcept {}
-			void* data_ptr() noexcept {
+			virtual ~data() noexcept override {}
+			void* data_ptr() noexcept override {
 				return const_cast<void*>(static_cast<const void*>(&val));
 			}
-			std::unique_ptr<data_base> clone() const {
+			std::unique_ptr<data_base> clone() const override {
 				return ttl::make_unique<data<T>>(val);
 			}
 #ifdef __cpp_lib_any
-			std::any to_std_any() const {
+			std::any to_std_any() const override {
 				return val;
 			}
 #endif
-			std::string to_string() const {
+			std::string to_string() const override {
 				return to_string_impl();
 			}
 
-			std::function<bool(ttl::any&)> iterate() const {
+			std::function<bool(ttl::any&)> iterate() const override {
 				return iterate_impl();
 			}
 

@@ -113,185 +113,185 @@ namespace ttl
 
 			data()
 			{}
-			virtual ~data() noexcept {}
-			const std::string& pretty_name() const noexcept {
+			virtual ~data() noexcept override {}
+			const std::string& pretty_name() const noexcept override {
 				const static std::string n = p_name();
 				return n;
 			}
 				
-			bool is_abstract() const noexcept {
+			bool is_abstract() const noexcept override {
 				return std::is_abstract<T>::value;
 			}
 
-			bool is_arithmetic() const noexcept {
+			bool is_arithmetic() const noexcept override {
 				return std::is_arithmetic<T>::value;
 			}
 
-			bool is_array() const noexcept {
+			bool is_array() const noexcept override {
 				return std::is_array<T>::value;
 			}
 
-			bool is_class() const noexcept {
+			bool is_class() const noexcept override {
 				return std::is_class<T>::value;
 			}
 
-			bool is_compound() const noexcept {
+			bool is_compound() const noexcept override {
 				return std::is_compound<T>::value;
 			}
 
-			bool is_const() const noexcept {
+			bool is_const() const noexcept override {
 				return std::is_const<T>::value;
 			}
 
-			bool is_copy_assignable() const noexcept {
+			bool is_copy_assignable() const noexcept override {
 				return std::is_copy_assignable<T>::value;
 			}
 
-			bool is_copy_constructible() const noexcept {
+			bool is_copy_constructible() const noexcept override {
 				return std::is_copy_constructible<T>::value;
 			}
 
-			bool is_default_constructible() const noexcept {
+			bool is_default_constructible() const noexcept override {
 				return std::is_default_constructible<T>::value;
 			}
 
-			bool is_destructible() const noexcept {
+			bool is_destructible() const noexcept override {
 				return std::is_destructible<T>::value;
 			}
 
-			bool is_empty() const noexcept {
+			bool is_empty() const noexcept override {
 				return std::is_empty<T>::value;
 			}
 
-			bool is_enum() const noexcept {
+			bool is_enum() const noexcept override {
 				return std::is_enum<T>::value;
 			}
 
-			bool is_floating_point() const noexcept {
+			bool is_floating_point() const noexcept override {
 				return std::is_floating_point<T>::value;
 			}
 
-			bool is_function() const noexcept {
+			bool is_function() const noexcept override {
 				return std::is_function<T>::value;
 			}
 
-			bool is_fundamental() const noexcept {
+			bool is_fundamental() const noexcept override {
 				return std::is_fundamental<T>::value;
 			}
 
-			bool is_integral() const noexcept {
+			bool is_integral() const noexcept override {
 				return std::is_integral<T>::value;
 			}
 
-			bool is_literal_type() const noexcept {
+			bool is_literal_type() const noexcept override {
 				return std::is_literal_type<T>::value;
 			}
 
-			bool is_lvalue_ref() const noexcept {
+			bool is_lvalue_ref() const noexcept override {
 				return std::is_lvalue_reference<T>::value;
 			}
 
-			bool is_member_function_pointer() const noexcept {
+			bool is_member_function_pointer() const noexcept override {
 				return std::is_member_function_pointer<T>::value;
 			}
 
-			bool is_member_object_pointer() const noexcept {
+			bool is_member_object_pointer() const noexcept override {
 				return std::is_member_object_pointer<T>::value;
 			}
 			
-			bool is_member_pointer() const noexcept {
+			bool is_member_pointer() const noexcept override {
 				return std::is_member_pointer<T>::value;
 			}
 
-			bool is_move_assignable() const noexcept {
+			bool is_move_assignable() const noexcept override {
 				return std::is_move_assignable<T>::value;
 			}
 
-			bool is_move_constructible() const noexcept {
+			bool is_move_constructible() const noexcept override {
 				return std::is_move_constructible<T>::value;
 			}
 			
-			bool is_nothrow_assignable() const noexcept {
+			bool is_nothrow_assignable() const noexcept override {
 				return std::is_nothrow_assignable<T,T>::value;
 			}
 
-			bool is_nothrow_constructible() const noexcept {
+			bool is_nothrow_constructible() const noexcept override {
 				return std::is_nothrow_constructible<T>::value;
 			}
 			
-			bool is_nothrow_copy_assignable() const noexcept {
+			bool is_nothrow_copy_assignable() const noexcept override {
 				return std::is_nothrow_copy_assignable<T>::value;
 			}
 
-			bool is_nothrow_copy_constructible() const noexcept {
+			bool is_nothrow_copy_constructible() const noexcept override {
 				return std::is_nothrow_copy_constructible<T>::value;
 			}
 					
-			bool is_nothrow_default_constructible() const noexcept {
+			bool is_nothrow_default_constructible() const noexcept override {
 				return std::is_nothrow_default_constructible<T>::value;
 			}
 
-			bool is_nothrow_destructible() const noexcept {
+			bool is_nothrow_destructible() const noexcept override {
 				return std::is_nothrow_destructible<T>::value;
 			}
 			
-			bool is_nothrow_move_assignable() const noexcept {
+			bool is_nothrow_move_assignable() const noexcept override {
 				return std::is_nothrow_move_assignable<T>::value;
 			}
 
-			bool is_nothrow_move_constructible() const noexcept {
+			bool is_nothrow_move_constructible() const noexcept override {
 				return std::is_nothrow_move_constructible<T>::value;
 			}
 			
-			bool is_null_pointer() const noexcept {
+			bool is_null_pointer() const noexcept override {
 				return std::is_null_pointer<T>::value;
 			}
 			
-			bool is_object() const noexcept {
+			bool is_object() const noexcept override {
 				return std::is_object<T>::value;
 			}
 			
-			bool is_pod() const noexcept {
+			bool is_pod() const noexcept override {
 				return std::is_pod<T>::value;
 			}
 			
-			bool is_pointer() const noexcept {
+			bool is_pointer() const noexcept override {
 				return std::is_pointer<T>::value;
 			}
 
-			bool is_polymorphic() const noexcept {
+			bool is_polymorphic() const noexcept override {
 				return std::is_polymorphic<T>::value;
 			}
 
-			bool is_reference() const noexcept {
+			bool is_reference() const noexcept override {
 				return std::is_reference<T>::value;
 			}
 
-			bool is_rvalue_ref() const noexcept {
+			bool is_rvalue_ref() const noexcept override {
 				return std::is_rvalue_reference<T>::value;
 			}
 
-			bool is_scalar() const noexcept {
+			bool is_scalar() const noexcept override {
 				return std::is_scalar<T>::value;
 			}
 
-			bool is_signed() const noexcept {
+			bool is_signed() const noexcept override {
 				return std::is_signed<T>::value;
 			}
 
-			bool is_standard_layout() const noexcept {
+			bool is_standard_layout() const noexcept override {
 				return std::is_standard_layout<T>::value;
 			}
 
-			bool is_trivial() const noexcept {
+			bool is_trivial() const noexcept override {
 				return std::is_trivial<T>::value;
 			}
 
-			bool is_trivially_assignable() const noexcept {
+			bool is_trivially_assignable() const noexcept override {
 				return std::is_trivially_assignable<T,T>::value;
 			}
 
-			bool is_trivially_constructible() const noexcept {
+			bool is_trivially_constructible() const noexcept override {
 				return std::is_trivially_constructible<T>::value;
 			}
 			
@@ -307,7 +307,7 @@ namespace ttl
 				return std::is_trivially_copy_assignable<U>::value;
 			}
 			
-			bool is_trivially_copy_assignable() const noexcept {
+			bool is_trivially_copy_assignable() const noexcept override {
 				return is_trivially_copy_assignable_impl<T>();
 			}
 
@@ -323,15 +323,15 @@ namespace ttl
 				return std::is_trivially_copy_constructible<U>::value;
 			}
 
-			bool is_trivially_copy_constructible() const noexcept {
+			bool is_trivially_copy_constructible() const noexcept override {
 				return is_trivially_copy_constructible_impl<T>();
 			}
 					
-			bool is_trivially_default_constructible() const noexcept {
+			bool is_trivially_default_constructible() const noexcept override {
 				return std::is_trivially_default_constructible<T>::value;
 			}
 
-			bool is_trivially_destructible() const noexcept {
+			bool is_trivially_destructible() const noexcept override {
 				return std::is_trivially_destructible<T>::value;
 			}
 
@@ -347,7 +347,7 @@ namespace ttl
 				return std::is_trivially_move_assignable<U>::value;
 			}
 			
-			bool is_trivially_move_assignable() const noexcept {
+			bool is_trivially_move_assignable() const noexcept override {
 				return is_trivially_move_assignable_impl<T>();
 			}
 
@@ -363,35 +363,35 @@ namespace ttl
 				return std::is_trivially_move_constructible<U>::value;
 			}
 
-			bool is_trivially_move_constructible() const noexcept {
+			bool is_trivially_move_constructible() const noexcept override {
 				return is_trivially_move_constructible_impl<T>();
 			}
 
-			bool is_union() const noexcept {
+			bool is_union() const noexcept override {
 				return std::is_union<T>::value;
 			}
 
-			bool is_unsigned() const noexcept {
+			bool is_unsigned() const noexcept override {
 				return std::is_unsigned<T>::value;
 			}
 
-			bool is_void() const noexcept {
+			bool is_void() const noexcept override {
 				return std::is_void<T>::value;
 			}
 
-			bool is_volatile() const noexcept {
+			bool is_volatile() const noexcept override {
 				return std::is_volatile<T>::value;
 			}
 
-			size_t rank() const noexcept {
+			size_t rank() const noexcept override {
 				return std::rank<T>::value;
 			}
 
-			bool has_virtual_destructor() const noexcept {
+			bool has_virtual_destructor() const noexcept override {
 				return std::has_virtual_destructor<T>::value;
 			}
 
-			size_t extent(size_t i) const noexcept {
+			size_t extent(size_t i) const noexcept override {
 				return extent_impl<std::rank<T>::value>(i);
 			}
 
@@ -407,7 +407,7 @@ namespace ttl
 				return std::alignment_of<U>::value;
 			}
 
-			size_t alignment() const noexcept {
+			size_t alignment() const noexcept override {
 				return alignment_impl<T>();
 			}
 
@@ -423,11 +423,11 @@ namespace ttl
 				return sizeof(U);
 			}
 
-			size_t size() const noexcept {
+			size_t size() const noexcept override {
 				return size_impl<T>();
 			}
 
-			std::shared_ptr<void> create_object() const {
+			std::shared_ptr<void> create_object() const override {
 				return create_object_impl();
 			}
 
@@ -459,13 +459,13 @@ namespace ttl
 				return std::extent<T, 0>::value;
 			}
 
-			type base_type() const {
+			type base_type() const override {
 				return type::create<typename std::remove_reference<typename std::remove_pointer<T>::type>::type>();
 			}
-			const std::type_info& std_type() const noexcept {
+			const std::type_info& std_type() const noexcept override {
 				return typeid(T);
 			}
-			std::unique_ptr<data_base> clone() const {
+			std::unique_ptr<data_base> clone() const override {
 				return ttl::make_unique<data<T>>();
 			}
 
