@@ -136,7 +136,7 @@ TEST(AnyTest, Iterate) {
 	{
 		any test = ttl::any::create<std::vector<int>&>(vec);
 		auto it = test.iterate();
-		ASSERT_TRUE(it);
+		ASSERT_TRUE(!!it);
 		any val;
 		ASSERT_TRUE(it(val));
 		ASSERT_EQ(10, val.get<int>());
@@ -152,7 +152,7 @@ TEST(AnyTest, Iterate) {
 	{
 		any test = ttl::any(vec);
 		auto it = test.iterate();
-		ASSERT_TRUE(it);
+		ASSERT_TRUE(!!it);
 		any val;
 		ASSERT_TRUE(it(val));
 		ASSERT_EQ(10, val.get<int>());
