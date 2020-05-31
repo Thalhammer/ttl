@@ -23,9 +23,9 @@ namespace ttl {
 		explicit logmodule(std::string n) : name(n) {}
 	};
 	class logger {
-		std::atomic<loglevel> level;
-		mutable std::mutex mtx;
-		std::function<bool(loglevel, const std::string&, const std::string&)> check_fn;
+		std::atomic<loglevel> m_level;
+		mutable std::mutex m_mtx;
+		std::function<bool(loglevel, const std::string&, const std::string&)> m_check_fn;
 	protected:
 		virtual void write(loglevel l, const std::string& module, const std::string& msg) = 0;
 	public:
@@ -46,30 +46,32 @@ namespace ttl {
 			set_check_function(fn);
 		}
 
+		virtual ~logger() {}
+
 		void set_loglevel(loglevel l) {
-			level = l;
+			m_level = l;
 		}
 
 		loglevel get_loglevel() {
-			return level;
+			return m_level;
 		}
 
 		void set_check_function(check_function_t fn) {
-			std::unique_lock<std::mutex> lck(mtx);
-			check_fn = fn;
+			std::unique_lock<std::mutex> lck(m_mtx);
+			m_check_fn = fn;
 		}
 
 		check_function_t get_check_function() const {
-			std::unique_lock<std::mutex> lck(mtx);
-			return check_fn;
+			std::unique_lock<std::mutex> lck(m_mtx);
+			return m_check_fn;
 		}
 
 		void log(loglevel l, const std::string& module, const std::string& message)
 		{
-			if (l >= level) {
+			if (l >= m_level) {
 				{
-					std::unique_lock<std::mutex> lck(mtx);
-					if(check_fn && !check_fn(l, module, message))
+					std::unique_lock<std::mutex> lck(m_mtx);
+					if(m_check_fn && !m_check_fn(l, module, message))
 						return;
 				}
 				this->write(l,module, message);
@@ -187,14 +189,13 @@ namespace ttl {
 
 		void write(loglevel l, const std::string& module, const std::string& message) override
 		{
-			std::string strlevel;
+			std::string strlevel = "?????";
 			switch (l) {
 			case loglevel::ERR: strlevel = "ERROR"; break;
 			case loglevel::WARN: strlevel = "WARN "; break;
 			case loglevel::INFO: strlevel = "INFO "; break;
 			case loglevel::DEBUG: strlevel = "DEBUG"; break;
 			case loglevel::TRACE: strlevel = "TRACE"; break;
-			default: strlevel = "?????"; break;
 			}
 			time_t nt = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 			struct tm t;

@@ -51,8 +51,8 @@ namespace ttl
 		{
 			for (size_t byte = 0; byte < dlen; byte++)
 			{
-				uint8_t data = reflect_data(idata[byte]) ^ (_remainder >> (WIDTH - 8));
-				_remainder = _table[data] ^ (_remainder << 8);
+				auto data = static_cast<uint8_t>(reflect_data(idata[byte]) ^ (_remainder >> (WIDTH - 8)));
+				_remainder = static_cast<crc_t>(_table[data] ^ (_remainder << 8));
 			}
 		}
 
@@ -125,7 +125,7 @@ namespace ttl
 			crc_t remainder = crc_t(crc_t(dividend) << (WIDTH - 8));
 			for (uint8_t bit = 8; bit > 0; bit--)
 			{
-				remainder = (remainder&TOPBIT) ? ((remainder << 1) ^ Polynomial) : (remainder << 1);
+				remainder = (remainder&TOPBIT) ? static_cast<crc_t>((remainder << 1) ^ Polynomial) : static_cast<crc_t>(remainder << 1);
 			}
 			return remainder;
 		}
@@ -135,7 +135,7 @@ namespace ttl
 			std::array<crc_t, 256> table;
 			for (int32_t dividend = 0; dividend < 256; dividend++)
 			{
-				table[dividend] = table_calc_remainder(dividend);
+				table[static_cast<size_t>(dividend)] = table_calc_remainder(dividend);
 			}
 			return table;
 		}

@@ -11,7 +11,7 @@ namespace ttl
         }
 
         template<typename Signature, typename ClassType>
-        auto select_overload(Signature (ClassType::*func)) -> decltype(func)
+        auto select_overload(Signature ClassType::*func) -> decltype(func)
         {
             return func;
         }

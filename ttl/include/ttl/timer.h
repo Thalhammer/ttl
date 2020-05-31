@@ -31,7 +31,7 @@ namespace ttl {
 			std::chrono::steady_clock::time_point tp;
 			handler_fn_t fn;
 		};
-		std::set<std::shared_ptr<task_t>> tasks;
+		std::set<std::shared_ptr<task_t>> m_tasks;
 		mutable std::mutex mtx;
 		std::condition_variable cv;
 		std::thread thread;
@@ -43,11 +43,11 @@ namespace ttl {
 			auto now = std::chrono::steady_clock::now();
 			std::set<std::shared_ptr<task_t>> res;
 			std::unique_lock<std::mutex> lck(mtx);
-			for (auto it = tasks.begin(); it != tasks.end();) {
+			for (auto it = m_tasks.begin(); it != m_tasks.end();) {
 				if ((*it)->tp <= now) {
 					res.insert(*it);
 					if (remove)
-						it = tasks.erase(it);
+						it = m_tasks.erase(it);
 					else it++;
 				}
 				else {
@@ -60,7 +60,7 @@ namespace ttl {
 		// Get the next task that needs to get executed
 		std::shared_ptr<task_t> get_next_task() {
 			std::shared_ptr<task_t> next;
-			for (auto& e : tasks) {
+			for (auto& e : m_tasks) {
 				if (!next || e->tp < next->tp)
 					next = e;
 			}
@@ -70,7 +70,7 @@ namespace ttl {
 		void schedule(std::shared_ptr<task_t> task)
 		{
 			std::unique_lock<std::mutex> lck(mtx);
-			tasks.insert(task);
+			m_tasks.insert(task);
 			auto next = get_next_task();
 			if (next == task) {
 				cv.notify_all();
@@ -148,10 +148,10 @@ namespace ttl {
 
 		token_t schedule(handler_fn_t fn, every t)
 		{
-			auto task = std::make_shared<task_t>();
-			auto weaktask = std::weak_ptr<task_t>(task);
+			auto newtask = std::make_shared<task_t>();
+			auto weaktask = std::weak_ptr<task_t>(newtask);
 			auto dur = t.dur;
-			task->fn = [fn, dur, weaktask, this](){
+			newtask->fn = [fn, dur, weaktask, this](){
 				auto task = weaktask.lock();
 				if(task) {
 					task->tp = std::chrono::steady_clock::now() + dur;
@@ -159,21 +159,21 @@ namespace ttl {
 				}
 				fn();
 			};
-			task->tp = std::chrono::steady_clock::now() + t.dur;
-			this->schedule(task);
-			return task;
+			newtask->tp = std::chrono::steady_clock::now() + t.dur;
+			this->schedule(newtask);
+			return newtask;
 		}
 
 		void clear(token_t t)
 		{
 			std::unique_lock<std::mutex> lck(mtx);
-			tasks.erase(std::static_pointer_cast<task_t>(t));
+			m_tasks.erase(std::static_pointer_cast<task_t>(t));
 		}
 
 		void clear_all()
 		{
 			std::unique_lock<std::mutex> lck(mtx);
-			tasks.clear();
+			m_tasks.clear();
 		}
 
 		void set_exception_handler(exception_fn_t fn)

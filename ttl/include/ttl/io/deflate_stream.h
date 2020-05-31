@@ -33,7 +33,7 @@ namespace ttl {
 				ptrdiff_t n = pptr() - pbase();
 				pbump(static_cast<int>(-n));
 
-				compressor.set_input(reinterpret_cast<uint8_t*>(pbase()), n);
+				compressor.set_input(reinterpret_cast<uint8_t*>(pbase()), static_cast<size_t>(n));
 				// Compress and write
 				std::array<char, 1024> buf;
 				size_t written = 0, read = 0;
@@ -41,7 +41,7 @@ namespace ttl {
 				while (!compressor.need_input()) {
 					if (!compressor.compress(read, written, flush))
 						return -1;
-					sink.write(buf.data(), written);
+					sink.write(buf.data(), static_cast<std::streamsize>(written));
 					compressor.set_output(reinterpret_cast<uint8_t*>(buf.data()), buf.size());
 				}
 				return 0;
@@ -49,10 +49,10 @@ namespace ttl {
 
 			void finish() {
 				ptrdiff_t n = pptr() - pbase();
-				pbump((int)-n);
+				pbump(static_cast<int>(-n));
 
 				compressor.finish();
-				compressor.set_input(reinterpret_cast<uint8_t*>(pbase()), n);
+				compressor.set_input(reinterpret_cast<uint8_t*>(pbase()), static_cast<size_t>(n));
 				// Compress and write
 				std::array<char, 1024> buf;
 				size_t written = 0, read = 0;
@@ -60,14 +60,14 @@ namespace ttl {
 				while (!compressor.finished()) {
 					if (!compressor.compress(read, written))
 						return;
-					sink.write(buf.data(), written);
+					sink.write(buf.data(), static_cast<std::streamsize>(written));
 					compressor.set_output(reinterpret_cast<uint8_t*>(buf.data()), buf.size());
 				}
 			}
 		private:
 			int_type overflow(int_type ch) override {
 				if (sink && ch != traits_type::eof()) {
-					*pptr() = ch;
+					*pptr() = static_cast<char>(ch);
 					pbump(1);
 					if (sync(false) == 0) return ch;
 				}
@@ -122,7 +122,7 @@ namespace ttl {
 					buf.resize(put_back + readsize * 2);
 
 				std::vector<char> rbuf(readsize);
-				rbuf.resize(source.read(rbuf.data(), rbuf.size()).gcount());
+				rbuf.resize(static_cast<size_t>(source.read(rbuf.data(), static_cast<std::streamsize>(rbuf.size())).gcount()));
 				if (!source)
 					compressor.finish();
 				compressor.set_input(reinterpret_cast<uint8_t*>(rbuf.data()), rbuf.size());
@@ -134,7 +134,7 @@ namespace ttl {
 					twritten += written;
 					if (compressor.need_output()) {
 						auto osize = buf.size();
-						buf.resize(osize*1.5);
+						buf.resize(osize + osize/2);
 						compressor.set_output(reinterpret_cast<uint8_t*>(buf.data()) + osize, buf.size() - osize);
 					}
 				}

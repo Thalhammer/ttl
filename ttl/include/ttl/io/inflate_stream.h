@@ -24,42 +24,42 @@ namespace ttl {
 				setp(obuf.data(), obuf.data() + obuf.size() - 1);
 			}
 
-			~inflate_ostreambuf() {
+			~inflate_ostreambuf() override {
 				finish();
 			}
 
 			int sync(bool) {
 				ptrdiff_t n = pptr() - pbase();
-				pbump((int)-n);
+				pbump(static_cast<int>(-n));
 
-				decompressor.set_input((const uint8_t*)pbase(), n);
+				decompressor.set_input(reinterpret_cast<const uint8_t*>(pbase()), static_cast<size_t>(n));
 				// decompress and write
 				std::array<char, 1024> buf;
 				size_t written = 0, read = 0;
-				decompressor.set_output((uint8_t*)buf.data(), buf.size());
+				decompressor.set_output(reinterpret_cast<uint8_t*>(buf.data()), buf.size());
 				while (!decompressor.need_input()) {
 					if (!decompressor.uncompress(read, written))
 						return -1;
-					sink.write(buf.data(), written);
-					decompressor.set_output((uint8_t*)buf.data(), buf.size());
+					sink.write(buf.data(), static_cast<std::streamsize>(written));
+					decompressor.set_output(reinterpret_cast<uint8_t*>(buf.data()), static_cast<size_t>(buf.size()));
 				}
 				return 0;
 			}
 
 			void finish() {
 				ptrdiff_t n = pptr() - pbase();
-				pbump((int)-n);
+				pbump(static_cast<int>(-n));
 
-				decompressor.set_input((const uint8_t*)pbase(), n);
+				decompressor.set_input(reinterpret_cast<const uint8_t*>(pbase()), static_cast<size_t>(n));
 				// decompress and write
 				std::array<char, 1024> buf;
 				size_t written = 0, read = 0;
-				decompressor.set_output((uint8_t*)buf.data(), buf.size());
+				decompressor.set_output(reinterpret_cast<uint8_t*>(buf.data()), buf.size());
 				while (!decompressor.need_input()) {
 					if (!decompressor.uncompress(read, written))
 						return;
-					sink.write(buf.data(), written);
-					decompressor.set_output((uint8_t*)buf.data(), buf.size());
+					sink.write(buf.data(), static_cast<std::streamsize>(written));
+					decompressor.set_output(reinterpret_cast<uint8_t*>(buf.data()), buf.size());
 				}
 			}
 
@@ -69,7 +69,7 @@ namespace ttl {
 		private:
 			int_type overflow(int_type ch) override {
 				if (sink && ch != traits_type::eof()) {
-					*pptr() = ch;
+					*pptr() = static_cast<char>(ch);
 					pbump(1);
 					if (sync(false) == 0) return ch;
 				}
@@ -111,7 +111,7 @@ namespace ttl {
 				setg(buf.data(), end, end);
 			}
 
-			~inflate_istreambuf() {
+			~inflate_istreambuf() override {
 			}
 
 		private:
@@ -124,9 +124,9 @@ namespace ttl {
 					buf.resize(put_back + readsize * 2);
 
 				std::vector<char> rbuf(readsize);
-				rbuf.resize(source.read(rbuf.data(), rbuf.size()).gcount());
+				rbuf.resize(static_cast<size_t>(source.read(rbuf.data(), static_cast<std::streamsize>(rbuf.size())).gcount()));
 				decompressor.set_input(reinterpret_cast<uint8_t*>(rbuf.data()), rbuf.size());
-				decompressor.set_output((uint8_t*)buf.data() + put_back, buf.size() - put_back);
+				decompressor.set_output(reinterpret_cast<uint8_t*>(buf.data()) + put_back, buf.size() - put_back);
 				size_t twritten = 0;
 				while (!decompressor.need_input()) {
 					size_t read, written;
@@ -134,8 +134,8 @@ namespace ttl {
 					twritten += written;
 					if (decompressor.need_output()) {
 						auto osize = buf.size();
-						buf.resize(osize*1.5);
-						decompressor.set_output((uint8_t*)buf.data() + osize, buf.size() - osize);
+						buf.resize(osize + osize/2);
+						decompressor.set_output(reinterpret_cast<uint8_t*>(buf.data()) + osize, buf.size() - osize);
 					}
 				}
 				buf.resize(twritten + put_back);

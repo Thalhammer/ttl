@@ -42,7 +42,7 @@ namespace ttl {
 		inline std::ostream& get_stdin();
 		inline std::istream& get_stdout();
 		inline std::istream& get_stderr();
-		inline uint32_t exitcode();
+		inline int exitcode();
 		native_handle_t native_handle() const {	return _native_handle; }
 
 		const std::string& errormsg() const { return _errormsg; }
@@ -198,7 +198,7 @@ namespace ttl {
 		return _stderr;
 	}
 
-	uint32_t process::exitcode() {
+	int process::exitcode() {
 		DWORD code;
 		if (GetExitCodeProcess(_native_handle, &code)) {
 			return code;
@@ -267,7 +267,7 @@ namespace ttl {
 			// Clean up resources
 			siginfo_t info;
 			memset(&info, 0x00, sizeof(siginfo_t));
-			waitid(P_PID, _native_handle, &info, WEXITED | WNOHANG);
+			waitid(P_PID, static_cast<unsigned int>(_native_handle), &info, WEXITED | WNOHANG);
 		}
 	}
 
@@ -330,7 +330,7 @@ namespace ttl {
 
 			// Setup argv and environment arrays
 			char** argv = new char*[args.size() + 2];
-			argv[args.size() + 1] = NULL;
+			argv[args.size() + 1] = nullptr;
 			argv[0] = new char[path.size() + 1];
 			memcpy(argv[0], path.c_str(), path.size());
 			for (size_t i=0; i< args.size(); i++)
@@ -341,7 +341,7 @@ namespace ttl {
 
 			size_t env_cnt = env.size();
 			char** envp = new char*[env_cnt + 1];
-			envp[env_cnt] = NULL;
+			envp[env_cnt] = nullptr;
 			for (auto& e : env)
 			{
 				env_cnt--;
@@ -358,7 +358,7 @@ namespace ttl {
 			// On error  we send errno via check_descriptor and exit
 			execve(path.c_str(), argv, envp);
 			int terrno = errno;
-			int res = write(4, &terrno, sizeof(terrno));
+			auto res = write(4, &terrno, sizeof(terrno));
 			(void)res;
 			_exit(-1);
 		} else {
@@ -412,7 +412,7 @@ namespace ttl {
 	bool process::wait() {
 		siginfo_t info;
 		memset(&info, 0x00, sizeof(siginfo_t));
-		int res = waitid(P_PID, _native_handle, &info, WEXITED | WNOWAIT);
+		int res = waitid(P_PID, static_cast<unsigned int>(_native_handle), &info, WEXITED | WNOWAIT);
 		if (res == -1) {
 			this->_errormsg = "waitid failed";
 			return false;
@@ -428,7 +428,7 @@ namespace ttl {
 		this->_errormsg = "";
 		siginfo_t info;
 		memset(&info, 0x00, sizeof(siginfo_t));
-		int res = waitid(P_PID, _native_handle, &info, WNOHANG | WEXITED | WNOWAIT);
+		int res = waitid(P_PID, static_cast<unsigned int>(_native_handle), &info, WNOHANG | WEXITED | WNOWAIT);
 		if (res == -1) {
 			this->_errormsg = "waitid failed";
 			return false;
@@ -439,11 +439,11 @@ namespace ttl {
 		return false;
 	}
 
-	uint32_t process::exitcode() {
+	int process::exitcode() {
 		this->_errormsg = "";
 		siginfo_t info;
 		memset(&info, 0x00, sizeof(siginfo_t));
-		int res = waitid(P_PID, _native_handle, &info, WNOHANG | WEXITED | WNOWAIT);
+		int res = waitid(P_PID, static_cast<unsigned int>(_native_handle), &info, WNOHANG | WEXITED | WNOWAIT);
 		if (res == -1) {
 			this->_errormsg = "waitid failed";
 			return -1;

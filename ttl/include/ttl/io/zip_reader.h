@@ -48,15 +48,15 @@ namespace ttl {
 				using zip_entry::get_last_modified;
 
 				void uncompress() {
-					if (zip_entry::is_compressed() && uncompressed.size() != header.uncompressed_size) {
+					if (zip_entry::is_compressed() && uncompressed.size() != m_header.uncompressed_size) {
 						if (zip_entry::get_compression_method() != zip_internals::compression_method::deflate)
 							throw std::runtime_error("only deflate and store is supported");
 						std::lock_guard<std::mutex> lck(mtx);
 						inflater inf(15, inflater::wrapper::none);
-						uncompressed = inflater::uncompress(raw_datastart, header.compressed_size, inf);
-						if (uncompressed.size() != header.uncompressed_size)
+						uncompressed = inflater::uncompress(raw_datastart, m_header.compressed_size, inf);
+						if (uncompressed.size() != m_header.uncompressed_size)
 							throw std::runtime_error("size missmatch");
-						if (header.crc32 != CRC_32::get_crc(uncompressed))
+						if (m_header.crc32 != CRC_32::get_crc(uncompressed))
 							throw std::runtime_error("crc missmatch");
 					}
 				}
@@ -82,7 +82,7 @@ namespace ttl {
 				if (ptr_start < zip_start || ptr_start > dataend)
 					return false;
 				auto offset = dataend - reinterpret_cast<const uint8_t*>(ptr_start);
-				if (offset < 0 || (size_t)offset < len)
+				if (offset < 0 || static_cast<size_t>(offset) < len)
 					return false;
 				return true;
 			}
@@ -105,7 +105,7 @@ namespace ttl {
 				files = read_centraldirectory();
 				for (size_t i = 0; i < files.size(); i++) {
 					if (!files[i].is_compressed()) {
-						if (files[i].header.crc32 != CRC_32::get_crc(files[i].raw_datastart, files[i].header.uncompressed_size))
+						if (files[i].m_header.crc32 != CRC_32::get_crc(files[i].raw_datastart, files[i].m_header.uncompressed_size))
 							throw std::runtime_error("crc missmatch");
 					}
 					filename_lookup.insert({ files[i].get_name(), i });
@@ -165,10 +165,10 @@ namespace ttl {
 			{
 				// Force call to underflow
 				setg(buf.data(), buf.data(), buf.data());
-				decompressor.set_input(entry.raw_datastart, entry.header.compressed_size);
+				decompressor.set_input(entry.raw_datastart, entry.m_header.compressed_size);
 			}
 
-			~zip_reader_istreambuf() {
+			~zip_reader_istreambuf() override {
 			}
 
 		private:
@@ -178,7 +178,7 @@ namespace ttl {
 
 				assert(gptr() == egptr());
 				std::lock_guard<std::mutex> lck(entry.mtx);
-				if (entry.is_compressed() && entry.uncompressed.size() != entry.header.uncompressed_size) {
+				if (entry.is_compressed() && entry.uncompressed.size() != entry.m_header.uncompressed_size) {
 					// Decompress into buffer
 					decompressor.set_output(reinterpret_cast<uint8_t*>(buf.data()), buf.size());
 					size_t read, written;
@@ -196,19 +196,19 @@ namespace ttl {
 				}
 				else {
 					// Simply copy uncompressed data to buffer
-					const uint8_t* data = nullptr;
+					const uint8_t* edata = nullptr;
 					size_t size = 0;
 					if (entry.is_compressed()) {
-						data = entry.uncompressed.data();
+						edata = entry.uncompressed.data();
 						size = std::min<size_t>(buf.size(), entry.uncompressed.size() - offset);
 					}
 					else {
-						data = entry.raw_datastart;
-						size = std::min<size_t>(buf.size(), entry.header.uncompressed_size - offset);
+						edata = entry.raw_datastart;
+						size = std::min<size_t>(buf.size(), entry.m_header.uncompressed_size - offset);
 					}
-					if (size == 0 || data == nullptr)
+					if (size == 0 || edata == nullptr)
 						return traits_type::eof();
-					memcpy(buf.data(), data + offset, size);
+					memcpy(buf.data(), edata + offset, size);
 					setg(buf.data(), buf.data(), buf.data() + size);
 					offset += size;
 				}
@@ -259,10 +259,10 @@ namespace ttl {
 					throw std::runtime_error("invalid zip file");
 
 				reader_entry e;
-				e.header = *entry;
-				e.name = std::string(filename, entry->filename_length);
-				e.extra = std::string(extra, entry->extra_length);
-				e.comment = std::string(comment, entry->filecomment_length);
+				e.m_header = *entry;
+				e.m_name = std::string(filename, entry->filename_length);
+				e.m_extra = std::string(extra, entry->extra_length);
+				e.m_comment = std::string(comment, entry->filecomment_length);
 				e.raw_datastart = dataptr;
 				result.push_back(std::move(e));
 			}

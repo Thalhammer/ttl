@@ -68,12 +68,12 @@ namespace ttl {
 
 			void set_input(const uint8_t* ptr, size_t len) {
 				zlib_stream.next_in = const_cast<uint8_t*>(ptr);
-				zlib_stream.avail_in = (uInt)len;
+				zlib_stream.avail_in = static_cast<uInt>(len);
 			}
 
 			void set_output(uint8_t* ptr, size_t len) {
 				zlib_stream.next_out = ptr;
-				zlib_stream.avail_out = (uInt)len;
+				zlib_stream.avail_out = static_cast<uInt>(len);
 			}
 
 			bool need_input() const {
@@ -123,7 +123,7 @@ namespace ttl {
 					twritten += written;
 					if (inf.need_output()) {
 						auto osize = buf.size();
-						buf.resize(osize*1.5);
+						buf.resize(osize + osize/2);
 						inf.set_output(buf.data() + osize, buf.size() - osize);
 					}
 				}

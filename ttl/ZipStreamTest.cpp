@@ -91,7 +91,7 @@ TEST(ZipStreamTest, WriteZip) {
 	}(), std::exception);
 	zip.finish();
 
-	std::string check((char*)test_zip, sizeof(test_zip));
+	std::string check(reinterpret_cast<char*>(test_zip), sizeof(test_zip));
 	ASSERT_EQ(check, file.str());
 }
 
@@ -112,6 +112,6 @@ TEST(ZipStreamTest, WriteZipCompressed) {
 	}
 	zip.finish();
 
-	std::string check((char*)test_zip_2, sizeof(test_zip_2));
+	std::string check(reinterpret_cast<char*>(test_zip_2), sizeof(test_zip_2));
 	ASSERT_EQ(check, file.str());
 }

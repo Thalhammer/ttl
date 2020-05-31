@@ -30,7 +30,7 @@ TTL_REFLECT(
     registration::method("std::to_string", select_overload<std::string(int)>(&std::to_string), { "value" });
 )
 
-std::shared_ptr<const ttl::reflect::class_info> get_info() {
+static std::shared_ptr<const ttl::reflect::class_info> get_info() {
     using namespace ReflectionTest;
     return ttl::reflect::registration::get_class<test>();
 }

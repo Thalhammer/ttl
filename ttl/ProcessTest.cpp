@@ -25,5 +25,5 @@ TEST(ProcessTest, ExecuteProcess) {
 	while (std::getline(out, line)); // Read remaining output
 	ASSERT_TRUE(p.wait());
 	ASSERT_FALSE(p.is_alive());
-	ASSERT_EQ(0, p.exitcode());
+	ASSERT_EQ(p.exitcode(), 0);
 }

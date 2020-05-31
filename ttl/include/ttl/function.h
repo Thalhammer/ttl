@@ -59,6 +59,9 @@ namespace ttl
     {
         struct data_base
         {
+            data_base() = default;
+            data_base(const data_base&) = default;
+            data_base(data_base&&) = default;
             virtual ~data_base() {}
             virtual bool requires_instance() const noexcept = 0;
             virtual bool requires_modifiable_instance() const noexcept = 0;
@@ -71,8 +74,8 @@ namespace ttl
         template <typename Ret, typename... Args>
         struct data : data_base
         {
-            data(std::function<Ret(Args...)> fn)
-                : fn_ptr(fn)
+            data(std::function<Ret(Args...)> pfn)
+                : fn_ptr(pfn)
             {
             }
 
@@ -145,8 +148,8 @@ namespace ttl
         template <typename Class, typename Ret, typename... Args>
         struct data_memberfn : data_base
         {
-            data_memberfn(Ret (Class::*fn)(Args...))
-                : fn_ptr(fn)
+            data_memberfn(Ret (Class::*pfn)(Args...))
+                : fn_ptr(pfn)
             {
             }
 
@@ -230,8 +233,8 @@ namespace ttl
         template <typename Class, typename Ret, typename... Args>
         struct data_constmemberfn : data_base
         {
-            data_constmemberfn(Ret (Class::*fn)(Args...) const)
-                : fn_ptr(fn)
+            data_constmemberfn(Ret (Class::*pfn)(Args...) const)
+                : fn_ptr(pfn)
             {
             }
 
@@ -314,8 +317,8 @@ namespace ttl
 
     public:
         template <typename Ret, typename... Args>
-        function(std::function<Ret(Args...)> fn)
-            : fn(ttl::make_unique<data<Ret, Args...>>(fn))
+        function(std::function<Ret(Args...)> pfn)
+            : fn(ttl::make_unique<data<Ret, Args...>>(pfn))
         {
         }
 

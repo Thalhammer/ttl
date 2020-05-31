@@ -82,7 +82,7 @@ TEST(DeflaterTest, DeflateIStream) {
 	std::string res;
 	while (strm) {
 		std::string b(1024, '\0');
-		b.resize(strm.read((char*)b.data(), b.size()).gcount());
+		b.resize(static_cast<size_t>(strm.read(const_cast<char*>(b.data()), static_cast<std::streamsize>(b.size())).gcount()));
 		res += b;
 	}
 	ASSERT_EQ(sizeof(test_out), res.size());

@@ -71,10 +71,10 @@ namespace ttl {
 		static module from_address(void* address) {
 			module res;
 			Dl_info info;
-			if (dladdr((void*)address, &info) == 0)
+			if (dladdr(address, &info) == 0)
 				throw std::runtime_error("Failed to get module");
 			res.filename.resize(PATH_MAX);
-			if (realpath(info.dli_fname, (char*)res.filename.data()) == NULL)
+			if (realpath(info.dli_fname, const_cast<char*>(res.filename.data())) == nullptr)
 				throw std::runtime_error("Failed to get module path");
 			res.filename.resize(strlen(res.filename.c_str()));
 			return res;
@@ -93,7 +93,7 @@ namespace ttl {
 		static module entry_module() {
 			module m;
 			m.filename.resize(PATH_MAX);
-			if (readlink("/proc/self/exe", (char*)m.filename.data(), m.filename.size()) == -1)
+			if (readlink("/proc/self/exe", const_cast<char*>(m.filename.data()), m.filename.size()) == -1)
 				throw std::runtime_error("Failed to get module");
 			m.filename.resize(strlen(m.filename.c_str()));
 			return m;

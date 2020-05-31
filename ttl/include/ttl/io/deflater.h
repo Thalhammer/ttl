@@ -38,13 +38,12 @@ namespace ttl {
 				else if (w == wrapper::gzip)
 					windowBits = windowBits + 16;
 
-				int istrat;
+				int istrat = Z_DEFAULT_STRATEGY;
 				switch (strat) {
 				case strategy::filtered: istrat = Z_FILTERED; break;
 				case strategy::huffman_only: istrat = Z_HUFFMAN_ONLY; break;
 				case strategy::run_length_encoding: istrat = Z_RLE; break;
 				case strategy::default_strategy:
-				default:
 					istrat = Z_DEFAULT_STRATEGY; break;
 				}
 
@@ -58,7 +57,7 @@ namespace ttl {
 			deflater(const deflater& other) {
 				memset(&zlib_stream, 0x00, sizeof(z_stream));
 
-				auto res = deflateCopy(&zlib_stream, (z_streamp)&other.zlib_stream);
+				auto res = deflateCopy(&zlib_stream, const_cast<z_streamp>(&other.zlib_stream));
 				if (res != Z_OK)
 					throw std::runtime_error("Failed to copy zlib state");
 			}
@@ -71,7 +70,7 @@ namespace ttl {
 
 				memset(&zlib_stream, 0x00, sizeof(z_stream));
 
-				auto res = deflateCopy(&zlib_stream, (z_streamp)&other.zlib_stream);
+				auto res = deflateCopy(&zlib_stream, const_cast<z_streamp>(&other.zlib_stream));
 				if (res != Z_OK)
 					throw std::runtime_error("Failed to copy zlib state");
 				return *this;
@@ -83,12 +82,12 @@ namespace ttl {
 
 			void set_input(const uint8_t* ptr, size_t len) {
 				zlib_stream.next_in = const_cast<uint8_t*>(ptr);
-				zlib_stream.avail_in = (uInt)len;
+				zlib_stream.avail_in = static_cast<uInt>(len);
 			}
 
 			void set_output(uint8_t* ptr, size_t len) {
 				zlib_stream.next_out = ptr;
-				zlib_stream.avail_out = (uInt)len;
+				zlib_stream.avail_out = static_cast<uInt>(len);
 			}
 
 			bool need_input() const {
@@ -144,7 +143,7 @@ namespace ttl {
 					if (def.need_input()) def.finish();
 					if (def.need_output()) {
 						auto osize = buf.size();
-						buf.resize(osize*1.5);
+						buf.resize(osize + osize/2);
 						def.set_output(buf.data() + osize, buf.size() - osize);
 					}
 				}

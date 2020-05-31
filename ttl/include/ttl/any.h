@@ -398,7 +398,7 @@ namespace ttl
 		typename std::enable_if<std::is_reference<T>::value, typename std::remove_reference<T>::type*>::type
 			get_pointer() {
 			if(empty()) throw std::logic_error("invalid any");
-			return (typename std::remove_reference<T>::type*)val->data_ptr();
+			return reinterpret_cast<typename std::remove_reference<T>::type*>(val->data_ptr());
 		}
 		/**
 		 * Returns a pointer to the contained object.

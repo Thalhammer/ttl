@@ -28,7 +28,7 @@ namespace ttl {
 		inline void* get_function(const std::string& fn);
 		template<typename T>
 		T* get_function(const std::string& fn) {
-			return (T*)get_function(fn);
+			return reinterpret_cast<T*>(get_function(fn));
 		}
 
 		const std::string& errormsg() const { return _errormsg; }
@@ -178,7 +178,7 @@ namespace ttl {
 		auto get_ptr = [](const ElfW(Dyn)* dyn, ElfW(Word) tag)-> void* {
 			for (; dyn->d_tag != DT_NULL; ++dyn) {
 				if (dyn->d_tag == tag) {
-					return (void*)dyn->d_un.d_ptr;
+					return reinterpret_cast<void*>(dyn->d_un.d_ptr);
 				}
 			}
 			return nullptr;
@@ -189,10 +189,10 @@ namespace ttl {
 			this->_errormsg = dlerror();
 			return false;
 		}
-		auto table = (ElfW(Dyn)*)map->l_ld;
-		ElfW(Word)* hashtab = (ElfW(Word)*)get_ptr(table, DT_HASH);
-		ElfW(Sym)* symtab = (ElfW(Sym)*)get_ptr(table, DT_SYMTAB);
-		const char* strtab = (const char*)get_ptr(table, DT_STRTAB);
+		auto table = reinterpret_cast<ElfW(Dyn)*>(map->l_ld);
+		auto hashtab = reinterpret_cast<ElfW(Word)*>(get_ptr(table, DT_HASH));
+		auto symtab = reinterpret_cast<ElfW(Sym)*>(get_ptr(table, DT_SYMTAB));
+		auto strtab = reinterpret_cast<const char*>(get_ptr(table, DT_STRTAB));
 		if (hashtab == nullptr || symtab == nullptr || strtab == nullptr)
 			return false;
 		ElfW(Word) nchains = hashtab[1];

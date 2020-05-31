@@ -15,7 +15,7 @@ class MMAPTest : public ::testing::Test {
 		ASSERT_NE(res, nullptr);
 		mmap_file = res;
 		std::ofstream file(mmap_file, std::ios::trunc | std::ios::binary);
-		file.write(data.data(), data.size());
+		file.write(data.data(), static_cast<std::streamsize>(data.size()));
 		file.close();
 	}
 

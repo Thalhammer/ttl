@@ -58,27 +58,27 @@ TEST(ZipReaderTest, ReadZip) {
 	ASSERT_EQ(3, rdr.get_num_entries());
 
 	auto idx1 = rdr.find_by_path("test.txt");
-	ASSERT_EQ(0, idx1);
+	ASSERT_EQ(idx1, 0);
 	auto& f1 = rdr.get_entry(idx1);
-	ASSERT_EQ("test.txt", f1.get_name());
-	ASSERT_EQ(time, f1.get_last_modified());
-	ASSERT_EQ("", f1.get_comment());
+	ASSERT_EQ(f1.get_name(), "test.txt");
+	ASSERT_EQ(f1.get_last_modified(), time);
+	ASSERT_EQ(f1.get_comment(), "");
 	ASSERT_FALSE(f1.is_directory());
 
 	auto idx2 = rdr.find_by_path("Directory");
 	ASSERT_EQ(1, idx2);
 	auto& f2 = rdr.get_entry(idx2);
-	ASSERT_EQ("Directory", f2.get_name());
-	ASSERT_EQ(time, f2.get_last_modified());
-	ASSERT_EQ("", f2.get_comment());
+	ASSERT_EQ(f2.get_name(), "Directory");
+	ASSERT_EQ(f2.get_last_modified(), time);
+	ASSERT_EQ(f2.get_comment(), "");
 	ASSERT_TRUE(f2.is_directory());
 
 	auto idx3 = rdr.find_by_path("test2.txt");
 	ASSERT_EQ(2, idx3);
 	auto& f3 = rdr.get_entry(idx3);
-	ASSERT_EQ("test2.txt", f3.get_name());
-	ASSERT_EQ(time, f3.get_last_modified());
-	ASSERT_EQ("Comment", f3.get_comment());
+	ASSERT_EQ(f3.get_name(), "test2.txt");
+	ASSERT_EQ(f3.get_last_modified(), time);
+	ASSERT_EQ(f3.get_comment(), "Comment");
 	ASSERT_FALSE(f3.is_directory());
 }
 
@@ -93,10 +93,10 @@ TEST(ZipReaderTest, ReadZipContentUncompressed) {
 	ASSERT_EQ(3, rdr.get_num_entries());
 
 	auto idx = rdr.find_by_path("test.txt");
-	ASSERT_EQ(0, idx);
+	ASSERT_EQ(idx, 0);
 	auto& ftest = rdr.get_entry(idx);
 	auto pstrm = ftest.open_stream();
-	ASSERT_EQ("Hello World", get_all(*pstrm));
+	ASSERT_EQ(get_all(*pstrm), "Hello World");
 }
 
 TEST(ZipReaderTest, ReadZipContentCompressed) {
@@ -104,8 +104,8 @@ TEST(ZipReaderTest, ReadZipContentCompressed) {
 	ASSERT_EQ(1, rdr.get_num_entries());
 
 	auto idx = rdr.find_by_path("test2.txt");
-	ASSERT_EQ(0, idx);
+	ASSERT_EQ(idx, 0);
 	auto& ftest = rdr.get_entry(idx);
 	auto pstrm = ftest.open_stream();
-	ASSERT_EQ("Hello World", get_all(*pstrm));
+	ASSERT_EQ(get_all(*pstrm), "Hello World");
 }

@@ -84,7 +84,7 @@ namespace ttl {
 			if (fstat64(_file, &statInfo) < 0)
 				return false;
 
-			_filesize = statInfo.st_size;
+			_filesize = static_cast<uint64_t>(statInfo.st_size);
 #endif
 			// initial mapping
 			remap(0, 0);
@@ -102,9 +102,9 @@ namespace ttl {
 #ifdef _WIN32
 				::UnmapViewOfFile(_view);
 #else
-				::munmap((void*)_view, _filesize);
+				::munmap(const_cast<void*>(_view), _filesize);
 #endif
-				_view = NULL;
+				_view = nullptr;
 			}
 
 #ifdef _WIN32
@@ -169,12 +169,12 @@ namespace ttl {
 
 			if (_view)
 			{
-				::munmap((void*)_view, _view_size);
+				::munmap(const_cast<void*>(_view), _view_size);
 				_view = nullptr;
 				_view_size = 0;
 			}
 
-			_view = ::mmap64(NULL, len, PROT_READ, MAP_SHARED, _file, offset);
+			_view = ::mmap64(nullptr, len, PROT_READ, MAP_SHARED, _file, static_cast<loff_t>(offset));
 			if (_view == MAP_FAILED)
 			{
 				_view = nullptr;
@@ -186,7 +186,7 @@ namespace ttl {
 		}
 
 		const uint8_t& operator[](size_t idx) const {
-			return ((const uint8_t*)_view)[idx];
+			return reinterpret_cast<const uint8_t*>(_view)[idx];
 		}
 
 		const uint8_t& at(size_t idx) const {
@@ -198,11 +198,11 @@ namespace ttl {
 		}
 
 		const uint8_t* data() const {
-			return (const uint8_t*)_view;
+			return reinterpret_cast<const uint8_t*>(_view);
 		}
 
 		size_t size() const {
-			return (size_t)_view_size;
+			return static_cast<size_t>(_view_size);
 		}
 	};
 }

@@ -5,10 +5,11 @@ using ttl::function;
 using ttl::type;
 
 namespace FunctionTest {
-    void test1() {}
-    void test2(const std::string&) {}
-    std::string test3() { return ""; }
-    std::string test4(const std::string& test) { return test + " world"; }
+    static void test1() {}
+    static void test2(const std::string&) {}
+    static std::string test3() { return ""; }
+    static std::string test4(const std::string& test) { return test + " world"; }
+    static void test5(const std::string&, int) {}
 
     struct test {
         int member_method(int i) { return i; }
@@ -40,6 +41,15 @@ TEST(FunctionTest, FunctionParameterType) {
 
     fn = function(FunctionTest::test3);
     ASSERT_TRUE(fn.get_parameter_types().empty());
+}
+
+TEST(FunctionTest, FunctionParameterTypeMulti) {
+    auto fn = function(FunctionTest::test5);
+    auto params = fn.get_parameter_types();
+    ASSERT_FALSE(params.empty());
+    ASSERT_EQ(params.size(), 2);
+    ASSERT_EQ(params[0], type::create<const std::string&>());
+    ASSERT_EQ(params[1], type::create<int>());
 }
 
 TEST(FunctionTest, Invoke) {

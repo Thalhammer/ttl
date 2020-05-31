@@ -67,7 +67,7 @@ TEST(InflaterTest, InflateStatic) {
 TEST(InflaterTest, InflateOStream) {
 	std::ostringstream ss;
 	inflate_ostream strm(ss);
-	strm.write((const char*)test_in, sizeof(test_in));
+	strm.write(reinterpret_cast<const char*>(test_in), sizeof(test_in));
 	strm.finish();
 
 	auto buf = ss.str();
@@ -76,13 +76,13 @@ TEST(InflaterTest, InflateOStream) {
 }
 
 TEST(InflaterTest, InflateIStream) {
-	std::istringstream ss(std::string((const char*)test_in, sizeof(test_in)));
+	std::istringstream ss(std::string(reinterpret_cast<const char*>(test_in), sizeof(test_in)));
 	inflate_istream strm(ss);
 
 	std::string res;
 	while (strm) {
 		std::string b(1024, '\0');
-		b.resize(strm.read((char*)b.data(), b.size()).gcount());
+		b.resize(static_cast<size_t>(strm.read(const_cast<char*>(b.data()), static_cast<std::streamsize>(b.size())).gcount()));
 		res += b;
 	}
 	ASSERT_EQ(test_out.size(), res.size());

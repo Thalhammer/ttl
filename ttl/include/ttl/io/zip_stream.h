@@ -20,20 +20,20 @@ namespace ttl {
 				zip_internals::end_record edr;
 				edr.disk_number = 0;
 				edr.central_directory_disk_number = 0;
-				edr.num_entries_this_disk = (uint32_t)files.size();
-				edr.num_entries = (uint32_t)files.size();
+				edr.num_entries_this_disk = static_cast<uint16_t>(files.size());
+				edr.num_entries = static_cast<uint16_t>(files.size());
 				edr.central_directory_size = 0;
-				edr.central_directory_offset = (uint32_t)written;
+				edr.central_directory_offset = static_cast<uint32_t>(written);
 				edr.zip_comment_length = 0;
 				for (auto& e : files) {
-					stream.write((const char*)&e.header, sizeof(struct zip_internals::global_file_header));
-					stream.write(e.name.data(), e.name.size());
-					stream.write(e.extra.data(), e.extra.size());
-					stream.write(e.comment.data(), e.comment.size());
-					written += sizeof(struct zip_internals::global_file_header) + e.name.size() + e.extra.size() + e.comment.size();
+					stream.write(reinterpret_cast<const char*>(&e.m_header), sizeof(struct zip_internals::global_file_header));
+					stream.write(e.m_name.data(), static_cast<std::streamsize>(e.m_name.size()));
+					stream.write(e.m_extra.data(), static_cast<std::streamsize>(e.m_extra.size()));
+					stream.write(e.m_comment.data(), static_cast<std::streamsize>(e.m_comment.size()));
+					written += sizeof(struct zip_internals::global_file_header) + e.m_name.size() + e.m_extra.size() + e.m_comment.size();
 				}
-				edr.central_directory_size = (uint32_t)(written - edr.central_directory_offset);
-				stream.write((const char*)&edr, sizeof(edr));
+				edr.central_directory_size = static_cast<uint32_t>(written - edr.central_directory_offset);
+				stream.write(reinterpret_cast<const char*>(&edr), sizeof(edr));
 			}
 
 			inline void write_stream(std::istream& fstream, uint32_t& compressed_size, uint32_t& uncompressed_size, uint32_t& crc, bool compress);
@@ -47,13 +47,13 @@ namespace ttl {
 					throw std::logic_error("compression not supported");
 				if (entry.is_compressed() && entry.get_compression_method() != zip_internals::compression_method::deflate)
 					throw std::logic_error("only deflate compression is supported");
-				auto& gheader = entry.header;
-				gheader.relative_header_offset = (uint32_t)written;
+				auto& gheader = entry.m_header;
+				gheader.relative_header_offset = static_cast<uint32_t>(written);
 				{
 					zip_internals::local_file_header fheader(gheader);
-					stream.write((const char*)&fheader, sizeof(fheader));
-					stream.write(entry.name.data(), entry.name.size());
-					written += sizeof(fheader) + entry.name.size();
+					stream.write(reinterpret_cast<const char*>(&fheader), sizeof(fheader));
+					stream.write(entry.m_name.data(), static_cast<std::streamsize>(entry.m_name.size()));
+					written += sizeof(fheader) + entry.m_name.size();
 				}
 				uint32_t csize, usize, crc;
 				write_stream(fstream, csize, usize, crc, entry.is_compressed());
@@ -62,21 +62,21 @@ namespace ttl {
 				gheader.crc32 = crc;
 				{					
 					zip_internals::data_descriptor descriptor(gheader);
-					stream.write((const char*)&descriptor, sizeof(descriptor));
+					stream.write(reinterpret_cast<const char*>(&descriptor), sizeof(descriptor));
 					written += descriptor.compressed_size + sizeof(descriptor);
 				}
 				files.emplace_back(std::move(entry));
 			}
 
 			void add_entry(zip_entry entry) {
-				auto& gheader = entry.header;
+				auto& gheader = entry.m_header;
 				gheader.flags &= ~zip_internals::file_flags::data_descriptor;
-				gheader.relative_header_offset = (uint32_t)written;
+				gheader.relative_header_offset = static_cast<uint32_t>(written);
 				{
 					zip_internals::local_file_header fheader(gheader);
-					stream.write((const char*)&fheader, sizeof(fheader));
-					stream.write(entry.name.data(), entry.name.size());
-					written += sizeof(fheader) + entry.name.size();
+					stream.write(reinterpret_cast<const char*>(&fheader), sizeof(fheader));
+					stream.write(entry.m_name.data(), static_cast<std::streamsize>(entry.m_name.size()));
+					written += sizeof(fheader) + entry.m_name.size();
 				}
 				files.emplace_back(std::move(entry));
 			}
@@ -118,9 +118,9 @@ namespace ttl {
 			{
 				while (fstream) {
 					auto read = fstream.read(readbuf.data(), readbuf.size()).gcount();
-					gen_crc.update(reinterpret_cast<uint8_t*>(readbuf.data()), read);
-					uncompressed_size += (uint32_t)read;
-					compressed_size += (uint32_t)read;
+					gen_crc.update(reinterpret_cast<uint8_t*>(readbuf.data()), static_cast<size_t>(read));
+					uncompressed_size += static_cast<uint32_t>(read);
+					compressed_size += static_cast<uint32_t>(read);
 					stream.write(readbuf.data(), read);
 				}
 			}
@@ -130,17 +130,17 @@ namespace ttl {
 				deflater zlib(9, 15, deflater::wrapper::none);
 				while (fstream) {
 					auto read = fstream.read(readbuf.data(), readbuf.size()).gcount();
-					gen_crc.update(reinterpret_cast<uint8_t*>(readbuf.data()), read);
-					uncompressed_size += (uint32_t)read;
+					gen_crc.update(reinterpret_cast<uint8_t*>(readbuf.data()), static_cast<size_t>(read));
+					uncompressed_size += static_cast<uint32_t>(read);
 
-					zlib.set_input(reinterpret_cast<uint8_t*>(readbuf.data()), read);
+					zlib.set_input(reinterpret_cast<uint8_t*>(readbuf.data()), static_cast<size_t>(read));
 					while (!zlib.need_input()) {
 						size_t zread = 0, zwritten = 0;
 						zlib.set_output(reinterpret_cast<uint8_t*>(compressbuf.data()), compressbuf.size());
 						if (!zlib.compress(zread, zwritten))
 							throw std::runtime_error("zlib error");
-						compressed_size += (uInt)zwritten;
-						stream.write(compressbuf.data(), zwritten);
+						compressed_size += static_cast<uInt>(zwritten);
+						stream.write(compressbuf.data(), static_cast<std::streamsize>(zwritten));
 					}
 				}
 				zlib.finish();
@@ -149,8 +149,8 @@ namespace ttl {
 					zlib.set_output(reinterpret_cast<uint8_t*>(compressbuf.data()), compressbuf.size());
 					if (!zlib.compress(zread, zwritten))
 						throw std::runtime_error("zlib error");
-					compressed_size += (uInt)zwritten;
-					stream.write(compressbuf.data(), zwritten);
+					compressed_size += static_cast<uint32_t>(zwritten);
+					stream.write(compressbuf.data(), static_cast<std::streamsize>(zwritten));
 				}
 			}
 			crc = gen_crc.finalize();
@@ -165,9 +165,9 @@ namespace ttl {
 			uncompressed_size = 0;
 			while (fstream) {
 				auto read = fstream.read(readbuf.data(), readbuf.size()).gcount();
-				gen_crc.update(reinterpret_cast<uint8_t*>(readbuf.data()), read);
-				uncompressed_size += (uint32_t)read;
-				compressed_size += (uint32_t)read;
+				gen_crc.update(reinterpret_cast<uint8_t*>(readbuf.data()), static_cast<size_t>(read));
+				uncompressed_size += static_cast<uint32_t>(read);
+				compressed_size += static_cast<uint32_t>(read);
 				stream.write(readbuf.data(), read);
 			}
 			crc = gen_crc.finalize();
