@@ -49,6 +49,7 @@ set(TEST_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/ModuleTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/PredicateTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ProcessTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/PromiseTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/RCUTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ReflectionTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/SignalTest.cpp
