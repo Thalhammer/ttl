@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <thread>
 
 #include "ttl/promise.h"
 
@@ -397,4 +398,43 @@ TEST(PromiseTest, All) {
         ASSERT_TRUE(error_executed);
         ASSERT_FALSE(resolve_executed);
     }
+}
+
+TEST(PromiseTest, Wait) {
+    auto t = promise<int>::create([&](promise<int>::resolve_fn_t resolve, promise<int>::reject_fn_t){
+        std::thread([resolve](){
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            resolve(10);
+        }).detach();
+    });
+    ASSERT_EQ(t->get_state(), promise<int>::state::pending);
+    
+    t->wait();
+
+    ASSERT_EQ(t->get_state(), promise<int>::state::resolved);
+    ASSERT_EQ(t->get(), 10);
+
+    t->wait();
+
+    ASSERT_EQ(t->get_state(), promise<int>::state::resolved);
+    ASSERT_EQ(t->get(), 10);
+}
+
+TEST(PromiseTest, WaitFor) {
+    auto t = promise<int>::create([&](promise<int>::resolve_fn_t resolve, promise<int>::reject_fn_t){
+        std::thread([resolve](){
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            resolve(10);
+        }).detach();
+    });
+    ASSERT_EQ(t->get_state(), promise<int>::state::pending);
+    
+    t->wait_for(std::chrono::milliseconds(1));
+
+    ASSERT_EQ(t->get_state(), promise<int>::state::pending);
+    
+    t->wait_for(std::chrono::seconds(1));
+
+    ASSERT_EQ(t->get_state(), promise<int>::state::resolved);
+    ASSERT_EQ(t->get(), 10);
 }
