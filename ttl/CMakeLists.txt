@@ -93,6 +93,10 @@ install(
     DIRECTORY ${CMAKE_SOURCE_DIR}/include/
     DESTINATION include
     FILES_MATCHING PATTERN "*.h*")
+install(
+    DIRECTORY ${CMAKE_BINARY_DIR}/include/
+    DESTINATION include
+    FILES_MATCHING PATTERN "*.h*")
 
 set(CPACK_PACKAGE_NAME "libttl")
 set(CPACK_PACKAGE_VENDOR "Dominik Thalhammer")
