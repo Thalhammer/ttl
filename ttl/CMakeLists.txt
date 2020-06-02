@@ -10,7 +10,7 @@ target_include_directories(ttl INTERFACE
 find_package (Git)
 if (GIT_FOUND)
     execute_process(
-        COMMAND ${GIT_EXECUTABLE} describe --tags --dirty=-d
+        COMMAND ${GIT_EXECUTABLE} describe --long --tags --dirty=-d
         OUTPUT_VARIABLE VERSION)
 else (GIT_FOUND)
       set(VERSION "v0.0.0-0-00000000-d")
