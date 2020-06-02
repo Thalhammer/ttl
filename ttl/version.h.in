@@ -1,0 +1,11 @@
+#pragma once
+#include <cstddef>
+
+namespace ttl
+{
+    constexpr size_t version_major = @VERSION_MAJOR@;
+    constexpr size_t version_minor = @VERSION_MINOR@;
+    constexpr size_t version_patch = @VERSION_PATCH@;
+    constexpr size_t version_commit = @VERSION_COMMIT@;
+    constexpr const char* version_sha1 = "@VERSION_SHA1@";
+}

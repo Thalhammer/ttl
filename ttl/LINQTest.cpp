@@ -37,7 +37,7 @@ TEST(LINQTest, IteratorMembers) {
 TEST(LINQTest, Where) {
 	std::vector<std::string> data{ "Hello", "World", "how", "are", "you", "?" };
 
-	auto query = linq(data).where([](const std::string& data) { return data.size() == 3; }).to_vector();
+	auto query = linq(data).where([](const std::string& rdata) { return rdata.size() == 3; }).to_vector();
 	ASSERT_EQ(3, query.size());
 	ASSERT_EQ("how", query[0]);
 	ASSERT_EQ("are", query[1]);

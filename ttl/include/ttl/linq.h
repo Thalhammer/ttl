@@ -33,6 +33,9 @@ namespace ttl {
 			virtual const T& element() = 0;
 			virtual bool next() = 0;
 			virtual bool is_end() = 0;
+			iterator() = default;
+			iterator(const iterator&) = default;
+			iterator(iterator&&) = default;
 			virtual ~iterator() {}
 
 			template<typename Func>
